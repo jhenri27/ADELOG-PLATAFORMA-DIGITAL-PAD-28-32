@@ -1,0 +1,17 @@
+FORMULARIO PAD-28-32
+
+CAMPOS DEL FORMULARIO
+
+ID (automatico)
+NÚMERO DE LISTA (automatico)
+NÚMERO DE CÉDULA (extracción del documento via OCR)
+NOMBRE(S) (extracción del documento via OCR)
+APELLODO (S) (extracción del documento via OCR)
+NACIONALIDAD (extracción del documento via OCR)
+COLEGIO ELECTORAL (extracción del documento via OCR)
+UBICACIÓN DEL COLEGIO O RECINTO (extracción del documento via OCR)
+DIRECCIÓN (extracción del documento via OCR)
+SECTOR (extracción del documento via OCR)
+MUNICIPIO (extracción del documento via OCR)
+TELEFONO CELULAR (Dato Manual)
+CORREO ELECTRÓNICO (Dato Manual)

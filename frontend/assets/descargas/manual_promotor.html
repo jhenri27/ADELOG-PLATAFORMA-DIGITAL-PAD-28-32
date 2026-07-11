@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Manual de Operación de la Plataforma Oficial Digital Pastora Altagracia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-banner {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header-banner img {
+            width: 100%;
+            height: auto;
+            border-bottom: 4px solid #E3A113;
+            border-radius: 8px;
+        }
+
+        .title {
+            font-family: 'Outfit', sans-serif;
+            color: #0054A6;
+            text-align: center;
+            margin: 10px 0 5px 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 35px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            color: #0054A6;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+
+        .step-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #E3A113;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .step-title {
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .alert-box {
+            background-color: rgba(227, 161, 19, 0.08);
+            border: 1px solid rgba(227, 161, 19, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #b45309;
+            font-size: 13px;
+        }
+
+        .alert-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        ol, ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .no-print {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-print {
+            background-color: #0054A6;
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 84, 166, 0.2);
+            transition: all 0.2s;
+        }
+
+        .btn-print:hover {
+            background-color: #003d7a;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .container {
+                border: none;
+                padding: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print">
+        <button class="btn-print" onclick="window.print()">
+            🖨️ Imprimir / Guardar PDF
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="header-banner">
+            <img src="GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="Pastora Altagracia De Los Santos" style="width: 100%; height: auto; display: block; border-bottom: 4px solid #E3A113; border-radius: 8px;">
+        </div>
+
+        <div class="title">Manual Oficial de Formación y Manejo de Plataforma</div>
+        <div class="subtitle">Guía de Entrenamiento para Digitadores, Administradores y Promotores Electorales</div>
+
+        <h2>1. Gestión y Acceso de Colaboradores</h2>
+        <p>La plataforma electoral Plataforma Oficial Digital Pastora Altagracia divide las responsabilidades en diferentes perfiles para garantizar la seguridad de la información:</p>
+        <ul>
+            <li><strong>Administrador:</strong> Control de configuraciones, asignación de mallas de permisos (incluyendo visualización del padrón histórico 2024), inactivación/eliminación de enlaces QR y visualización total.</li>
+            <li><strong>Digitador:</strong> Encargado de la validación rápida de formularios físicos y soporte de chat con los coordinadores en tiempo real.</li>
+            <li><strong>Coordinador:</strong> Líder de campo encargado de captar nuevos electores y dar seguimiento a su red.</li>
+        </ul>
+
+        <h2>2. Escaneo Inteligente OCR (Frente y Reverso)</h2>
+        <p>El sistema utiliza algoritmos de Inteligencia Artificial para agilizar el registro a través de fotografías de la cédula:</p>
+        <div class="step-box">
+            <div class="step-title">Paso 1: Foto Frontal de la Cédula</div>
+            El sistema solicitará cargar la imagen frontal. Al procesarla, extraerá el número de cédula, nombres y apellidos de forma autónoma.
+        </div>
+        <div class="step-box">
+            <div class="step-title">Paso 2: Foto Dorsal (Reverso) de la Cédula</div>
+            Una vez validada la parte frontal, el sistema solicitará la foto trasera para extraer la dirección, sector, municipio y colegio electoral de la zona de lectura mecánica (MRZ).
+        </div>
+
+        <div class="alert-box">
+            <div class="alert-title">⚠️ REGLA DE LIMPIEZA DE DATOS (CIRCUNSCRIPCIÓN 3)</div>
+            La plataforma posee una validación algorítmica tanto en backend como frontend que bloquea cualquier registro cuyos datos territoriales no correspondan a la <strong>Circunscripción 3 de Santo Domingo</strong> (Santo Domingo Este Región 3, Guerra, Boca Chica, San Luis, La Caleta). Esto evita el ingreso accidental de electores de otras localidades.
+        </div>
+
+        <h2>3. Padrón Histórico 2024 y Consultas</h2>
+        <p>Los operadores autorizados cuentan con herramientas avanzadas para consultar el padrón de la contienda electoral pasada:</p>
+        <ul>
+            <li><strong>Selector de Periodos:</strong> Permite alternar la interfaz en tiempo real entre la consulta de inscritos actuales (2028) y los registrados históricos (2024).</li>
+            <li><strong>Descarga en Excel:</strong> Permite exportar a Microsoft Excel la planilla limpia y formateada del padrón según la región y periodo activos.</li>
+            <li><strong>Impresión del Listado:</strong> Genera planillas de firmas oficiales con la estética de la diputada para el trabajo de auditoría en campo.</li>
+        </ul>
+
+        <h2>4. Chat en Vivo y Enlace con WhatsApp Web</h2>
+        <p>Para agilizar la comunicación con los promotores y coordinadores de campo, la plataforma ofrece dos canales integrados:</p>
+        <ol>
+            <li><strong>Chat Webhook de WhatsApp:</strong> Recibe las solicitudes entrantes del bot interactivo cuando el votante requiere soporte humano ("Humano").</li>
+            <li><strong>Mensajero WhatsApp Web Externo:</strong> Permite al operador loguear su propia cuenta de WhatsApp y abrir conversaciones click-to-chat automáticas directas con cualquier número telefónico de su red, de forma paralela al chat interno.</li>
+        </ol>
+
+        <div class="footer-note">
+            Plataforma Digital Plataforma Oficial Digital Pastora Altagracia. Todos los derechos reservados. Cumplimiento estricto con las normativas electorales vigentes.
+        </div>
+    </div>
+
+</body>
+</html>

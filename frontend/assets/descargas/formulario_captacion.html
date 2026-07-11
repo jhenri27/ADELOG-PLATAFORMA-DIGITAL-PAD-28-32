@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Oficial de Captación de Votantes - Pastora Altagracia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #fff;
+            color: #000;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            border: 1px solid #cbd5e1;
+            padding: 25px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .header-banner {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-banner img {
+            width: 100%;
+            height: auto;
+            border-bottom: 4px solid #E3A113;
+            border-radius: 8px;
+        }
+
+        .title {
+            font-family: 'Outfit', sans-serif;
+            color: #0054A6;
+            text-align: center;
+            margin: 10px 0 25px 0;
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 800;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .meta-box {
+            border: 2px solid #e2e8f0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meta-label {
+            font-weight: 700;
+            color: #0054A6;
+            font-size: 14px;
+        }
+
+        .meta-line {
+            flex-grow: 1;
+            border-bottom: 1px dashed #94a3b8;
+            height: 18px;
+        }
+
+        .voter-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .voter-table th, .voter-table td {
+            border: 1px solid #94a3b8;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .voter-table th {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .voter-table td {
+            height: 35px;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 30px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+
+        .no-print {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-print {
+            background-color: #0054A6;
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 84, 166, 0.2);
+            transition: all 0.2s;
+        }
+
+        .btn-print:hover {
+            background-color: #003d7a;
+            box-shadow: 0 10px 15px -3px rgba(0, 84, 166, 0.3);
+        }
+
+        @page {
+            size: letter;
+            margin: 8mm 10mm;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+            body {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .container {
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+            }
+            .header-banner {
+                margin-bottom: 10px !important;
+            }
+            .title {
+                margin: 5px 0 15px 0 !important;
+                font-size: 18px !important;
+            }
+            .meta-grid {
+                margin-bottom: 12px !important;
+                gap: 8px !important;
+            }
+            .meta-box {
+                padding: 6px 12px !important;
+            }
+            .voter-table {
+                margin-bottom: 12px !important;
+            }
+            .voter-table th, .voter-table td {
+                padding: 5px 8px !important;
+                font-size: 11px !important;
+            }
+            .voter-table td {
+                height: 25px !important;
+            }
+            .footer-note {
+                margin-top: 10px !important;
+                padding-top: 8px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print">
+        <button class="btn-print" onclick="window.print()">
+            🖨️ Imprimir Formulario
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- Header Banner matching the example exactly -->
+        <div class="header-banner">
+            <img src="../../../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="Pastora Altagracia">
+        </div>
+
+        <div class="title">Formulario de Inscripción y Registro de Votantes</div>
+
+        <!-- Metadata Section with boxes -->
+        <div class="meta-grid">
+            <div class="meta-box">
+                <span class="meta-label">Coordinador:</span>
+                <span class="meta-line"></span>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">Región:</span>
+                <span class="meta-line"></span>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">Teléfono:</span>
+                <span class="meta-line"></span>
+            </div>
+            <div class="meta-box">
+                <span class="meta-label">Zona / Municipio:</span>
+                <span class="meta-line"></span>
+            </div>
+        </div>
+
+        <!-- Elector Rows Table -->
+        <table class="voter-table">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">No.</th>
+                    <th style="width: 25%;">Cédula de Identidad</th>
+                    <th style="width: 35%;">Nombres y Apellidos</th>
+                    <th style="width: 15%;">Teléfono</th>
+                    <th style="width: 10%;">Colegio</th>
+                    <th style="width: 10%;">Firma</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Generate empty rows for manual capturing -->
+                <tr><td>1</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>2</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>3</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>4</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>5</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>6</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>7</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>8</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>9</td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>10</td><td></td><td></td><td></td><td></td><td></td></tr>
+            </tbody>
+        </table>
+
+        <div class="footer-note">
+            Este formulario es propiedad oficial de la campaña electoral de la Diputada Pastora Altagracia. Ley 172-13 Protección de Datos Personales de la República Dominicana.
+        </div>
+    </div>
+
+</body>
+</html>

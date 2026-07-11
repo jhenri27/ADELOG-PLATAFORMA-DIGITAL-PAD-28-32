@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - PAD/28-32 Plataforma Electoral</title>
+    <link rel="shortcut icon" type="image/png" href="../GRAFICOS PARA LA PAGINA WEB/adelog_logo_icon.png">
+    <link rel="stylesheet" href="assets/css/styles.css?v=1.7">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js para gráficos dinámicos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body id="dashboard-view">
+
+    <!-- Header Banner -->
+    <div class="banner-container">
+        <img id="dashboard-header-banner" src="../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="PAD/28-32 Cabecera" class="banner-img">
+    </div>
+
+    <!-- User Navigation & Welcome bar -->
+    <div class="welcome-nav-bar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <img src="../GRAFICOS PARA LA PAGINA WEB/adelog_logo_icon.png" alt="ADELOG" style="width: 25px; height: 25px; border-radius: 4px; border: 1px solid var(--secondary); background: rgba(255,255,255,0.1); padding: 1px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="badge badge-success" style="height: 10px; width: 10px; border-radius: 50%; padding: 0;"></span>
+                    <span id="nav-user-name" style="font-family: var(--font-outfit); font-weight: 600; font-size: 15px;">Cargando usuario...</span>
+                </div>
+                <span id="nav-user-progress" class="badge badge-info" style="font-family: var(--font-outfit); font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 20px; display: none;">Mi Progreso: 0 inscritos</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button id="theme-toggle" class="btn btn-outline btn-sm" style="padding: 6px 12px; font-size: 13px;"><i class="fa fa-adjust"></i> Cambiar Tema</button>
+                <a href="#" id="btn-logout" class="btn btn-outline btn-sm" style="padding: 6px 12px; font-size: 13px;"><i class="fa fa-sign-out-alt"></i> Salir</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container" style="flex: 1;">
+        
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <a class="tab-link active" data-tab="dashboard"><i class="fa fa-chart-line"></i> Dashboard</a>
+            <a class="tab-link" data-tab="padron"><i class="fa fa-address-book"></i> Padrón Real-Time</a>
+            <a class="tab-link" data-tab="chat" id="tab-chat"><i class="fa fa-comments"></i> Chat Coordinadores</a>
+            <a class="tab-link" data-tab="helpdesk" id="tab-helpdesk"><i class="fa fa-ticket-alt"></i> Helpdesk</a>
+            <a class="tab-link" data-tab="docs"><i class="fa fa-file-text"></i> Documentos</a>
+            <a class="tab-link" data-tab="permissions" id="tab-permissions"><i class="fa fa-sliders-h"></i> Ajustes / QR</a>
+            <a class="tab-link" data-tab="config" id="tab-config" style="display: none;"><i class="fa fa-cogs"></i> Configuración</a>
+        </nav>
+
+        <!-- 1. TAB: DASHBOARD -->
+        <section id="tab-content-dashboard" class="tab-content active">
+            <!-- Quick Actions Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                <h3 style="font-family: var(--font-outfit); font-size: 18px; margin: 0; color: var(--text-white);">PROYECTO POLÍTICO PASTORA ALTAGRACIA</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button id="btn-dashboard-register-collaborator" class="btn btn-secondary btn-sm" style="display: none; padding: 10px 16px; font-size: 14px;"><i class="fa fa-user-plus"></i> Registrar Nuevo Colaborador</button>
+                    <button id="btn-dashboard-register-voter" class="btn btn-primary btn-sm" style="padding: 10px 16px; font-size: 14px;"><i class="fa fa-user-check"></i> Registrar Nuevo Votante</button>
+                </div>
+            </div>
+            
+            <!-- Metrics Cards -->
+            <div class="grid-4" style="margin-bottom: 24px;">
+                <div class="card" style="display: flex; align-items: center; gap: 16px;">
+                    <div style="background: rgba(0, 84, 166, 0.1); color: var(--primary-light); padding: 16px; border-radius: 12px; font-size: 24px;">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">TOTAL INSCRITOS</div>
+                        <h2 id="stat-total-inscritos" style="font-size: 28px; margin-top: 4px;">0</h2>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 16px;">
+                    <div style="background: rgba(227, 161, 19, 0.1); color: var(--secondary); padding: 16px; border-radius: 12px; font-size: 24px;">
+                        <i class="fa fa-keyboard"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">DIGITACIÓN MANUAL</div>
+                        <h2 id="stat-total-manual" style="font-size: 28px; margin-top: 4px;">0</h2>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 16px;">
+                    <div style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 16px; border-radius: 12px; font-size: 24px;">
+                        <i class="fa fa-qrcode"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">REGISTROS OCR / DIGITAL</div>
+                        <h2 id="stat-total-ocr" style="font-size: 28px; margin-top: 4px;">0</h2>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 16px;">
+                    <div style="background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 16px; border-radius: 12px; font-size: 24px;">
+                        <i class="fa fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">INCIDENCIAS ABIERTAS</div>
+                        <h2 id="stat-incidencias" style="font-size: 28px; margin-top: 4px;">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regional Chart -->
+            <div class="card" style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h3 style="font-size: 18px; color: var(--text-white);"><i class="fa fa-chart-bar"></i> Crecimiento por Regiones (Meta vs Histórico)</h3>
+                        <p style="color: var(--text-muted); font-size: 13px; margin-top: 2px;">Comparativa en tiempo real de inscritos contra votos obtenidos por la Diputada Pastora Altagracia en las elecciones del 2024.</p>
+                    </div>
+                </div>
+                <!-- Canvas para Chart.js -->
+                <div style="height: 350px; position: relative; width: 100%;">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            <!-- Buscador Padrón Histórico 2024 -->
+            <div id="historical-lookup-card" class="card" style="margin-bottom: 24px; display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <h3 style="font-size: 18px; color: var(--text-white);"><i class="fa fa-history"></i> Consulta de Estatus Elector - Padrón Histórico 2024</h3>
+                        <p style="color: var(--text-muted); font-size: 13px; margin-top: 2px;">Consulte electores registrados en la contienda del 2024, imprima sus constancias o descargue el padrón histórico completo.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="btn-export-excel-2024" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;"><i class="fa fa-file-excel"></i> Descargar Padrón 2024 (Excel)</button>
+                        <button id="btn-export-pdf-2024" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;"><i class="fa fa-file-pdf"></i> Imprimir Padrón 2024 (PDF)</button>
+                    </div>
+                </div>
+                
+                <!-- Search bar -->
+                <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <input type="text" id="input-query-2024" class="form-control" placeholder="Escriba Cédula, Nombres o Apellidos a consultar..." style="flex: 1; min-width: 250px;">
+                    <button id="btn-submit-query-2024" class="btn btn-primary" style="padding: 10px 24px;"><i class="fa fa-search"></i> Consultar</button>
+                </div>
+                
+                <!-- Query Result Box -->
+                <div id="query-2024-results" style="display: none;">
+                    <div id="query-2024-status-alert" style="margin-bottom: 20px; border-radius: 8px; padding: 15px; font-weight: 500; font-size: 14px;"></div>
+                    
+                    <!-- Table for matches -->
+                    <div class="table-responsive">
+                        <table class="table" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th>Cédula</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Colegio</th>
+                                    <th>Sector / Región</th>
+                                    <th>Recinto</th>
+                                    <th style="text-align: right;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="query-2024-tbody">
+                                <!-- Dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. TAB: PADRÓN REAL-TIME -->
+        <section id="tab-content-padron" class="tab-content">
+            <div class="card">
+                <!-- Search & Filters -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 12px; flex: 1; max-width: 600px; width: 100%;">
+                        <div style="position: relative; flex: 1;">
+                            <input type="text" id="padron-search" class="form-control" placeholder="Buscar por cédula, nombre, colegio, sector...">
+                        </div>
+                        <select id="filter-region" class="form-control" style="max-width: 180px;">
+                            <option value="">Todas las Regiones</option>
+                            <option value="REGION 3-B">Región 3-B</option>
+                            <option value="REGION 3">Región 3</option>
+                            <option value="REGION 3-E">Región 3-E</option>
+                            <option value="REGION 3-C">Región 3-C</option>
+                            <option value="REGION 3-D">Región 3-D</option>
+                            <option value="REGION 3-A">Región 3-A</option>
+                            <option value="SAN LUIS">San Luis</option>
+                            <option value="LA CALETA">La Caleta</option>
+                            <option value="BOCA CHICA">Boca Chica</option>
+                            <option value="REGION 3-F">Región 3-F</option>
+                            <option value="GUERRA">Guerra</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <select id="filter-periodo" class="form-control" style="max-width: 180px; display: none;">
+                            <option value="2028">Periodo 2028 (Actual)</option>
+                            <option value="2024">Periodo 2024 (Histórico)</option>
+                        </select>
+                        <button id="btn-export-excel" class="btn btn-outline" style="padding: 10px 16px;"><i class="fa fa-file-excel"></i> Exportar Excel</button>
+                        <button id="btn-open-create" class="btn btn-secondary"><i class="fa fa-user-plus"></i> Nueva Inscripción</button>
+                    </div>
+                </div>
+
+                <!-- Live Voter Table -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No. Lista</th>
+                                <th>Cédula</th>
+                                <th>Nombre Completo</th>
+                                <th>Colegio</th>
+                                <th>Ubicación / Sector</th>
+                                <th>Coordinador</th>
+                                <th>Origen</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="padron-tbody">
+                            <!-- Inyectado dinámicamente por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. TAB: CHAT DE WHATSAPP EN VIVO -->
+        <section id="tab-content-chat" class="tab-content">
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <div class="chat-container">
+                    
+                    <!-- Left: Users list -->
+                    <div class="chat-list">
+                        <div style="padding: 16px; border-bottom: 1px solid var(--border-color); font-family: var(--font-outfit); font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+                            <span>Conversaciones Recientes</span>
+                            <button id="btn-chat-start-conversation" class="btn btn-primary btn-sm" style="padding: 4px 10px; font-size: 12px;"><i class="fa fa-plus"></i> Iniciar</button>
+                        </div>
+                        <div id="chat-list-users">
+                            <!-- Inyectado por JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Right: Message Window -->
+                    <div class="chat-window" id="chat-active-window" style="display: none;">
+                        <div class="chat-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <span id="chat-active-name">Seleccione una conversación</span>
+                            <button id="btn-clear-chat" class="btn btn-outline btn-sm" style="padding: 4px 8px; font-size: 11px; color: var(--danger); border-color: rgba(239, 68, 68, 0.3);" onclick="clearActiveChat()"><i class="fa fa-trash"></i> Limpiar Chat / Reiniciar Bot</button>
+                        </div>
+                        
+                        <div class="chat-messages" id="chat-messages-container">
+                            <!-- Inyectado por JS -->
+                        </div>
+                        
+                        <div class="chat-input-area">
+                            <input type="text" id="chat-input" class="form-control" placeholder="Escriba un mensaje para el coordinador...">
+                            <button id="btn-send-msg" class="btn btn-primary"><i class="fa fa-paper-plane"></i> Responder</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Empty chat state -->
+                    <div class="chat-window" id="chat-empty-state" style="display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                        <div style="text-align: center;">
+                            <i class="fa fa-comments" style="font-size: 48px; margin-bottom: 12px;"></i>
+                            <p>Seleccione un chat en la lista para comenzar a comunicarse con los coordinadores.</p>
+                        </div>
+                    </div>
+
+            </div>
+
+            <!-- WhatsApp External Link Widget -->
+            <div class="card" style="margin-top: 20px;">
+                <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 15px;">
+                    <div style="background-color: rgba(37, 211, 102, 0.1); color: #25D366; padding: 12px; border-radius: 8px; font-size: 20px;">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; color: var(--text-white);">Mensajero Externo de WhatsApp Web</h4>
+                        <p style="margin: 3px 0 0 0; font-size: 13px; color: var(--text-muted);">Comuníquese directamente con cualquier contacto de su red de WhatsApp usando su cuenta vinculada al navegador (fuera del bot de la base de datos).</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label for="ext-chat-phone" style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Número de Teléfono del Destinatario (10 dígitos)</label>
+                        <input type="text" id="ext-chat-phone" class="form-control" placeholder="Ej: 8095551234">
+                    </div>
+                    <div style="flex: 2; min-width: 300px;">
+                        <label for="ext-chat-msg" style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Mensaje de Texto Personalizado</label>
+                        <input type="text" id="ext-chat-msg" class="form-control" placeholder="Escriba su mensaje aquí...">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="btn-ext-chat-send" class="btn btn-success" style="background-color: #25D366; border-color: #25D366; color: white;"><i class="fab fa-whatsapp"></i> Enviar WhatsApp</button>
+                        <button id="btn-ext-chat-web" class="btn btn-outline" style="border-color: #25D366; color: #25D366;"><i class="fa fa-external-link-alt"></i> WhatsApp Web</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WhatsApp Bot Simulator Widget -->
+            <div class="card" style="margin-top: 20px;">
+                <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 15px;">
+                    <div style="background-color: rgba(0, 84, 166, 0.1); color: var(--primary-light); padding: 12px; border-radius: 8px; font-size: 20px;">
+                        <i class="fa fa-robot"></i>
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; color: var(--text-white);">Simulador de Entrada de Chat/WhatsApp (Pruebas del Bot)</h4>
+                        <p style="margin: 3px 0 0 0; font-size: 13px; color: var(--text-muted);">Simule un mensaje de WhatsApp enviado por un ciudadano. El sistema procesará el flujo automático del bot y actualizará la consola de chat.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label for="sim-chat-phone" style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Número de Teléfono del Votante/Coordinador</label>
+                        <input type="text" id="sim-chat-phone" class="form-control" placeholder="Ej: 8295554321">
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label for="sim-chat-name" style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Nombre del Remitente</label>
+                        <input type="text" id="sim-chat-name" class="form-control" placeholder="Ej: Juan Pérez">
+                    </div>
+                    <div style="flex: 2; min-width: 250px;">
+                        <label for="sim-chat-msg" style="font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px;">Mensaje de WhatsApp Enviado</label>
+                        <input type="text" id="sim-chat-msg" class="form-control" placeholder="Escriba 'hola' para iniciar la inscripción...">
+                    </div>
+                    <button id="btn-sim-chat-send" class="btn btn-primary" style="padding: 10px 24px;"><i class="fa fa-cog"></i> Simular Envío</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. TAB: HELPDESK -->
+        <section id="tab-content-helpdesk" class="tab-content">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h3 style="font-size: 18px;"><i class="fa fa-ticket-alt"></i> Helpdesk de Incidencias</h3>
+                        <p style="color: var(--text-muted); font-size: 13px; margin-top: 2px;">Reporte anomalías técnicas del sistema o dificultades logísticas en las campañas de recolección.</p>
+                    </div>
+                    <button id="btn-open-ticket-modal" class="btn btn-outline"><i class="fa fa-plus"></i> Reportar Incidencia</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ticket</th>
+                                <th>Reportado Por</th>
+                                <th>Categoría</th>
+                                <th>Descripción del Problema</th>
+                                <th>Estado</th>
+                                <th>Asignado A</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="helpdesk-tbody">
+                            <!-- Inyectado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. TAB: DOCUMENTOS INFORMATIVOS -->
+        <section id="tab-content-docs" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h3 style="font-family: var(--font-outfit); font-size: 18px; margin: 0; color: var(--text-white);"><i class="fa fa-file-alt"></i> Biblioteca de Documentación</h3>
+                <button id="btn-print-all-docs" class="btn btn-secondary btn-sm" style="padding: 10px 16px;"><i class="fa fa-print"></i> Imprimir Toda la Documentación</button>
+            </div>
+            <div id="docs-container">
+                <!-- Tarjetas inyectadas dinámicamente -->
+            </div>
+        </section>
+
+        <!-- 6. TAB: PERMISOS Y AJUSTES -->
+        <section id="tab-content-permissions" class="tab-content">
+            <div class="grid-2">
+                <!-- User management and permissions -->
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--secondary);"><i class="fa fa-key"></i> Administración de Permisos</h3>
+                    
+                    <form id="user-form" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);">
+                        <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--text-white);">Crear Nuevo Usuario</h4>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="user-username" class="form-label">Usuario</label>
+                                <input type="text" id="user-username" class="form-control" required autocomplete="username">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-pass" class="form-label">Contraseña</label>
+                                <input type="password" id="user-pass" class="form-control" required autocomplete="new-password">
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="user-nombre" class="form-label">Nombre Completo</label>
+                                <input type="text" id="user-nombre" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="user-role" class="form-label">Rol del Sistema</label>
+                                <select id="user-role" class="form-control">
+                                    <option value="Digitador">Digitador</option>
+                                    <option value="Coordinador">Coordinador</option>
+                                    <option value="Jefe Electoral">Jefe Electoral</option>
+                                    <option value="Administrador">Administrador</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 10px;"><i class="fa fa-user-plus"></i> Crear Usuario</button>
+                    </form>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Teléfono</th>
+                                    <th>Rol</th>
+                                    <th>Progreso</th>
+                                    <th>Permisos Asignados</th>
+                                    <th>Estado</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="users-tbody">
+                                <!-- Usuarios inyectados -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- QR Campaigns Creator -->
+                <div class="card">
+                    <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--secondary);"><i class="fa fa-qrcode"></i> Enlaces QR de Campañas Masivas</h3>
+                    
+                    <form id="qr-form" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);">
+                        <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--text-white);">Generar Enlace QR de Campaña</h4>
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="qr-campana-nombre" class="form-label">Nombre de Campaña / Red</label>
+                                <input type="text" id="qr-campana-nombre" class="form-control" placeholder="Ej: Campaña Facebook" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="qr-campana-coordinador" class="form-label">Coordinador Asignado</label>
+                                <input type="text" id="qr-campana-coordinador" class="form-control" placeholder="Ej: Ing. Anderson" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-secondary" style="margin-top: 10px;"><i class="fa fa-plus"></i> Crear Enlace Campaña</button>
+                    </form>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Campaña</th>
+                                    <th>Coordinador</th>
+                                    <th>Clicks</th>
+                                    <th>Inscritos</th>
+                                    <th>QR</th>
+                                    <th>Estado</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="campaigns-tbody">
+                                <!-- Campañas creadas -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. TAB: CONFIGURACIÓN ADELOG -->
+        <section id="tab-content-config" class="tab-content">
+            <div class="card" style="display: flex; gap: 20px; flex-direction: row; min-height: 500px; padding: 20px;">
+                <!-- Sidebar Sub-Tabs -->
+                <div style="width: 220px; border-right: 1px solid var(--border-color); padding-right: 15px; display: flex; flex-direction: column; gap: 8px;">
+                    <h4 style="font-family: var(--font-outfit); font-size: 15px; color: var(--secondary); margin-bottom: 15px;"><i class="fa fa-cogs"></i> Panel de Control</h4>
+                    <button class="subtab-link active" data-subtab="marca"><i class="fa fa-paint-brush"></i> Personalización Marca</button>
+                    <button class="subtab-link" data-subtab="smtp"><i class="fa fa-envelope-open-text"></i> Servidor SMTP (Correo)</button>
+                    <button class="subtab-link" data-subtab="notif"><i class="fa fa-bell"></i> Bitácora Envíos</button>
+                    <button class="subtab-link" data-subtab="apis"><i class="fa fa-key"></i> Integración APIs</button>
+                    <button class="subtab-link" data-subtab="etl"><i class="fa fa-database"></i> Motor Importación ETL</button>
+                    <button class="subtab-link" data-subtab="finanzas"><i class="fa fa-wallet"></i> Gestión Financiera</button>
+                    <button class="subtab-link" data-subtab="reglas"><i class="fa fa-shield-alt"></i> Reglas de Integridad</button>
+                    <button class="subtab-link" data-subtab="backups"><i class="fa fa-copy"></i> Copias y Despliegues</button>
+                </div>
+                
+                <!-- Content Area -->
+                <div style="flex: 1; padding-left: 10px;">
+                    <!-- A. SUBTAB: PERSONALIZACIÓN MARCA -->
+                    <div id="subtab-content-marca" class="subtab-content active">
+                        <h3 style="color: var(--text-white); margin-top: 0;"><i class="fa fa-paint-brush"></i> Ajustes de Marca de la Campaña</h3>
+                        <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">Personaliza el branding, nombres y logos de la candidata. La plataforma de ADELOG regenerará todos los recursos descargables en caliente.</p>
+                        
+                        <form id="form-config-marca">
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Nombre del Candidato</label>
+                                    <input type="text" id="config-candidato-nombre" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Cargo Postulado</label>
+                                    <input type="text" id="config-candidato-cargo" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="grid-3">
+                                <div class="form-group">
+                                    <label class="form-label">Nombre de la Plataforma</label>
+                                    <input type="text" id="config-plataforma-nombre" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">URL del Banner/Logo Oficial</label>
+                                    <input type="text" id="config-candidato-logo" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">URL del Banner del Login</label>
+                                    <input type="text" id="config-login-banner" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <h4 style="color: var(--text-white); margin-top: 20px;">Políticas de Seguridad de Acceso</h4>
+                            <div class="grid-3">
+                                <div class="form-group">
+                                    <label class="form-label">Límite Intentos Fallidos</label>
+                                    <input type="number" id="config-intentos-fallidos" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Bloqueo IP (minutos)</label>
+                                    <input type="number" id="config-bloqueo-tiempo" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Inactividad Sesión (minutos)</label>
+                                    <input type="number" id="config-inactividad" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" style="margin-top: 15px;"><i class="fa fa-save"></i> Guardar y Compilar Recursos</button>
+                        </form>
+                    </div>
+                    
+                    <!-- B. SUBTAB: SERVIDOR SMTP -->
+                    <div id="subtab-content-smtp" class="subtab-content">
+                        <h3 style="color: var(--text-white); margin-top: 0;"><i class="fa fa-envelope-open-text"></i> Servidor SMTP y Consola de Pruebas</h3>
+                        <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">Configura las credenciales de correo saliente para el envío automatizado de boucher de inscripción.</p>
+                        
+                        <form id="form-config-smtp">
+                            <div class="grid-3">
+                                <div class="form-group col-span-2">
+                                    <label class="form-label">Host SMTP</label>
+                                    <input type="text" id="smtp-host" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Puerto SMTP</label>
+                                    <input type="number" id="smtp-port" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="grid-3">
+                                <div class="form-group">
+                                    <label class="form-label">Usuario SMTP</label>
+                                    <input type="text" id="smtp-user" class="form-control" required autocomplete="username">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Contraseña SMTP</label>
+                                    <input type="password" id="smtp-pass" class="form-control" autocomplete="new-password">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Seguridad SMTP</label>
+                                    <select id="smtp-secure" class="form-control">
+                                        <option value="tls">TLS (Recomendado)</option>
+                                        <option value="ssl">SSL</option>
+                                        <option value="none">Ninguna</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Correo Remitente</label>
+                                    <input type="email" id="smtp-from-email" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Nombre Remitente</label>
+                                    <input type="text" id="smtp-from-name" class="form-control" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="margin-top: 15px;"><i class="fa fa-save"></i> Guardar Ajustes SMTP</button>
+                        </form>
+                        
+                        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
+                        
+                        <div class="card" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);">
+                            <h4 style="color: var(--text-white); margin-top: 0;"><i class="fa fa-vial"></i> Consola de Prueba SMTP en Vivo</h4>
+                            <p style="color: var(--text-gray); font-size: 13px;">Escribe un destinatario para simular un envío de comprobante y verificar la traza SMTP de conexión remota.</p>
+                            <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 15px;">
+                                <div class="form-group" style="flex: 1; margin: 0;">
+                                    <label class="form-label">Correo de Destino</label>
+                                    <input type="email" id="test-smtp-email" class="form-control" placeholder="Ej: admin@sypempresariales.com">
+                                </div>
+                                <button type="button" id="btn-test-smtp" class="btn btn-secondary" style="height: 44px;"><i class="fa fa-paper-plane"></i> Ejecutar Prueba SMTP</button>
+                            </div>
+                            
+                            <label class="form-label">Consola de Depuración SMTP (Handshake Log):</label>
+                            <pre id="smtp-console-log" style="background: #000; color: #39FF14; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; height: 180px; overflow-y: auto; white-space: pre-wrap; border: 1px solid #333; margin: 5px 0 0 0;">Esperando inicialización de prueba...</pre>
+                        </div>
+                    </div>
+                    
+                    <!-- C. SUBTAB: FLUJOS DE NOTIFICACIONES -->
+                    <div id="subtab-content-notif" class="subtab-content">
+                        <h3 style="color: var(--text-white); margin-top: 0;"><i class="fa fa-bell"></i> Flujos de Notificación y Bitácora</h3>
+                        <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">Administra los flujos automatizados de comunicación y audita el historial de envíos de la plataforma.</p>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="color: var(--secondary); margin: 0;"><i class="fa fa-sliders-h"></i> Administración de Flujos de Notificación</h4>
+                            <button type="button" id="btn-configure-flows-modal" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 12px; height: 32px;"><i class="fa fa-cog"></i> Configurar Plantillas</button>
+                        </div>
+                        <div style="display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;">
+                            <!-- Card 1 -->
+                            <div class="card" style="flex: 1; min-width: 280px; background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
+                                <div>
+                                    <h4 style="color: var(--text-white); margin-bottom: 5px;"><i class="fa fa-envelope" style="color: var(--secondary); margin-right: 8px;"></i> Comprobante por Correo</h4>
+                                    <p style="color: var(--text-gray); font-size: 12px; margin-bottom: 15px; min-height: 48px;">Envío automatizado del boucher de inscripción por correo electrónico al registrar un nuevo votante.</p>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                                    <span style="font-size: 11px; font-weight: bold; color: var(--text-gray);">ESTADO DEL FLUJO:</span>
+                                    <button type="button" class="btn btn-flow-toggle" id="btn-flow-email" data-flow="flow_email_voucher" data-active="0" style="background:#ef4444; color:#fff; border:none; padding:6px 14px; border-radius:20px; font-weight:bold; font-size:11px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                                        <i class="fa fa-toggle-off"></i> INACTIVO
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Card 2 -->
+                            <div class="card" style="flex: 1; min-width: 280px; background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
+                                <div>
+                                    <h4 style="color: var(--text-white); margin-bottom: 5px;"><i class="fab fa-whatsapp" style="color: #25d366; margin-right: 8px;"></i> Notificaciones WhatsApp</h4>
+                                    <p style="color: var(--text-gray); font-size: 12px; margin-bottom: 15px; min-height: 48px;">Envío automático de resúmenes de inscripción interactivos a los celulares por parte del bot.</p>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                                    <span style="font-size: 11px; font-weight: bold; color: var(--text-gray);">ESTADO DEL FLUJO:</span>
+                                    <button type="button" class="btn btn-flow-toggle" id="btn-flow-whatsapp" data-flow="flow_whatsapp_voucher" data-active="0" style="background:#ef4444; color:#fff; border:none; padding:6px 14px; border-radius:20px; font-weight:bold; font-size:11px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                                        <i class="fa fa-toggle-off"></i> INACTIVO
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Card 3 -->
+                            <div class="card" style="flex: 1; min-width: 280px; background: var(--card-bg); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
+                                <div>
+                                    <h4 style="color: var(--text-white); margin-bottom: 5px;"><i class="fa fa-exclamation-triangle" style="color: #ef4444; margin-right: 8px;"></i> Alertas de Incidencias</h4>
+                                    <p style="color: var(--text-gray); font-size: 12px; margin-bottom: 15px; min-height: 48px;">Notificar de inmediato por correo a la administración cada vez que se registre un ticket en Helpdesk.</p>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                                    <span style="font-size: 11px; font-weight: bold; color: var(--text-gray);">ESTADO DEL FLUJO:</span>
+                                    <button type="button" class="btn btn-flow-toggle" id="btn-flow-helpdesk" data-flow="flow_helpdesk_alert" data-active="0" style="background:#ef4444; color:#fff; border:none; padding:6px 14px; border-radius:20px; font-weight:bold; font-size:11px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                                        <i class="fa fa-toggle-off"></i> INACTIVO
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 style="color: var(--text-white); margin-bottom: 12px;"><i class="fa fa-history"></i> Bitácora General de Envíos Realizados</h4>
+                        <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Tipo</th>
+                                        <th>Destinatario</th>
+                                        <th>Asunto / Detalle</th>
+                                        <th>Estado</th>
+                                        <th style="width: 160px; text-align: center;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="notif-tbody">
+                                    <!-- Inyectado dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- D. SUBTAB: INTEGRACIÓN DE APIS -->
+                    <div id="subtab-content-apis" class="subtab-content">
+                        <h3 style="color: var(--text-white); margin-top: 0;"><i class="fa fa-key"></i> Llaves API e Integraciones Externas</h3>
+                        <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">Gestión de endpoints y tokens para servicios automatizados de la plataforma electoral.</p>
+                        
+                        <form id="form-config-apis">
+                            <h4 style="color: var(--secondary); margin-bottom: 10px;">Google Vision API (OCR de Cédulas)</h4>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">Google Vision API Key</label>
+                                    <input type="password" id="api-ocr-key" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Vision Endpoint URL</label>
+                                    <input type="text" id="api-ocr-url" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <h4 style="color: var(--secondary); margin-top: 20px; margin-bottom: 10px;">Consulta Padrón / DGII (Validación)</h4>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">API Key / Token de Acceso</label>
+                                    <input type="password" id="api-dgii-key" class="form-control" placeholder="Ej: DGII-API-TOKEN-XYZ">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">DGII Endpoint URL</label>
+                                    <input type="text" id="api-dgii-url" class="form-control" placeholder="https://api.dgii.gov.do/contribuyentes">
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" style="margin-top: 15px;"><i class="fa fa-save"></i> Guardar Llaves API</button>
+                        </form>
+                        
+                        <!-- Panel de Pruebas de APIs -->
+                        <div style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 25px;">
+                            <h4 style="color: var(--text-white); margin-bottom: 15px;"><i class="fa fa-plug"></i> Estado de Conectividad de APIs Integradas</h4>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>API / Servicio</th>
+                                            <th>Endpoint</th>
+                                            <th>Estado</th>
+                                            <th style="text-align: center;">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Google Vision OCR</strong></td>
+                                            <td id="status-ocr-url" style="font-size:12px; font-family:monospace; color:var(--text-gray);">Cargando...</td>
+                                            <td><span class="badge badge-success" id="status-ocr-badge">ACTIVO</span></td>
+                                            <td style="text-align: center;">
+                                                <button type="button" class="btn btn-outline btn-sm btn-test-api" data-service="google_vision" style="padding: 4px 8px; font-size: 11px; border-color: var(--secondary); color: var(--secondary);">
+                                                    <i class="fa fa-sync-alt"></i> Probar Conexión
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>DGII Validador (Cédula)</strong></td>
+                                            <td id="status-dgii-url" style="font-size:12px; font-family:monospace; color:var(--text-gray);">Cargando...</td>
+                                            <td><span class="badge badge-success" id="status-dgii-badge">ACTIVO</span></td>
+                                            <td style="text-align: center;">
+                                                <button type="button" class="btn btn-outline btn-sm btn-test-api" data-service="dgii_validador" style="padding: 4px 8px; font-size: 11px; border-color: var(--secondary); color: var(--secondary);">
+                                                    <i class="fa fa-sync-alt"></i> Probar Conexión
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="margin-top: 15px;">
+                                <h5 style="color: var(--text-white); margin-bottom: 5px;">Consola de Pruebas de APIs</h5>
+                                <pre id="api-console-log" style="background: #090d16; border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; font-family: monospace; font-size: 12px; color: #10b981; max-height: 200px; overflow-y: auto; white-space: pre-wrap;">Haga clic en "Probar Conexión" para auditar una API externa...</pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- E. SUBTAB: MOTOR ETL -->
+                    <div id="subtab-content-etl" class="subtab-content">
+                        <h3 style="color: var(--text-white); margin-top: 0;"><i class="fa fa-database"></i> Motor ETL: Importador de Padrones Históricos</h3>
+                        <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">Sube, mapea, sanea e importa de forma masiva electores de archivos Excel o CSV.</p>
+                        
+                        <div id="etl-upload-area" style="border: 2px dashed var(--border-color); padding: 40px; text-align: center; border-radius: 12px; cursor: pointer; transition: background 0.3s; margin-bottom: 20px;">
+                            <i class="fa fa-cloud-upload-alt" style="font-size: 40px; color: var(--primary-light); margin-bottom: 15px;"></i>
+                            <h4 style="margin: 0 0 5px 0; color: var(--text-white);">Arrastra tu archivo aquí o haz clic para buscar</h4>
+                            <p style="margin: 0; font-size: 12px; color: var(--text-gray);">Formatos permitidos: .xlsx, .csv</p>
+                            <input type="file" id="etl-file-input" style="display: none;" accept=".xlsx,.csv">
+                        </div>
+                        
+                        <!-- Mapeador de Columnas -->
+                        <div id="etl-mapping-area" style="display: none; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                            <h4 style="color: var(--secondary); margin-top: 0;"><i class="fa fa-arrows-alt"></i> Mapeador de Columnas</h4>
+                            <p style="color: var(--text-gray); font-size: 12px; margin-bottom: 15px;">Asocia los campos requeridos en la base de datos de ADELOG con las columnas de tu hoja de cálculo.</p>
+                            
+                            <div class="grid-3" id="mapping-fields-container">
+                                <!-- Generado por JS -->
+                            </div>
+                            
+                            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                                <button type="button" id="btn-cancel-etl" class="btn btn-outline"><i class="fa fa-times"></i> Cancelar</button>
+                                <button type="button" id="btn-run-etl" class="btn btn-primary"><i class="fa fa-cog"></i> Ejecutar Carga y Saneamiento</button>
+                            </div>
+                        </div>
+                        
+                        <h4 style="color: var(--text-white); margin-top: 20px;">Historial de Cargas Realizadas</h4>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Archivo</th>
+                                        <th>Cargados</th>
+                                        <th>Omitidos (Duplicados / Cédulas Inválidas)</th>
+                                        <th>Errores</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="etl-history-tbody">
+                                    <!-- Inyectado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- F. SUBTAB: GESTIÓN FINANCIERA -->
+                    <div id="subtab-content-finanzas" class="subtab-content">
+                        <h3 style="color: var(--text-white); margin-top: 0;"><i class="fa fa-wallet"></i> Gestión Financiera y Contrapartida Contable</h3>
+                        <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">Visualiza los ingresos brutos, netos y comisiones cobradas por PayPal en la venta de la plataforma.</p>
+                        
+                        <div class="grid-3" style="margin-bottom: 20px;">
+                            <div class="card" style="background: linear-gradient(135deg, rgba(0, 84, 166, 0.2), rgba(0,0,0,0)); border: 1px solid var(--border-color); text-align: center;">
+                                <h4 style="margin: 0; color: var(--text-gray); font-size: 12px; text-transform: uppercase;">Ingresos Brutos</h4>
+                                <p style="font-size: 24px; font-weight: 700; color: var(--text-white); margin: 10px 0 0 0;" id="finanzas-bruto">USD $0.00</p>
+                            </div>
+                            <div class="card" style="background: linear-gradient(135deg, rgba(227, 161, 19, 0.2), rgba(0,0,0,0)); border: 1px solid var(--border-color); text-align: center;">
+                                <h4 style="margin: 0; color: var(--text-gray); font-size: 12px; text-transform: uppercase;">Comisiones PayPal</h4>
+                                <p style="font-size: 24px; font-weight: 700; color: var(--secondary); margin: 10px 0 0 0;" id="finanzas-comisiones">USD $0.00</p>
+                            </div>
+                            <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(0,0,0,0)); border: 1px solid var(--border-color); text-align: center;">
+                                <h4 style="margin: 0; color: var(--text-gray); font-size: 12px; text-transform: uppercase;">Saldo Neto Recibido</h4>
+                                <p style="font-size: 24px; font-weight: 700; color: #10b981; margin: 10px 0 0 0;" id="finanzas-neto">USD $0.00</p>
+                            </div>
+                        </div>
+                        
+                        <h4 style="color: var(--text-white); margin-top: 20px;">Bitácora de Ventas Realizadas</h4>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>ID Transacción</th>
+                                        <th>Comprador</th>
+                                        <th>Plan</th>
+                                        <th>Monto Bruto</th>
+                                        <th>Comisión</th>
+                                        <th>Monto Neto</th>
+                                        <th style="text-align: center;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="finanzas-tbody">
+                                    <!-- Inyectado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- G. SUBTAB: REGLAS DE INTEGRIDAD -->
+                    <div id="subtab-content-reglas" class="subtab-content">
+                        <h3 style="color: var(--text-white); margin-top: 0;"><i class="fa fa-shield-alt"></i> Reglas Estrictas de Integridad y Cumplimiento</h3>
+                        <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">Esta sección enumera los controles automáticos y de auditoría integrados bajo la normativa PLAD para blindar el padrón electoral.</p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div class="card" style="display: flex; align-items: flex-start; gap: 15px; background: rgba(227, 161, 19, 0.05); border-left: 4px solid var(--secondary);">
+                                <div style="font-size: 24px; color: var(--secondary);"><i class="fa fa-fingerprint"></i></div>
+                                <div>
+                                    <h4 style="color: var(--text-white); margin: 0 0 6px 0; font-size: 15px;">Regla Anti-Duplicidad de Cédulas</h4>
+                                    <p style="color: var(--text-gray); font-size: 13px; margin: 0; line-height: 1.4;">El motor de base de datos impone una restricción única (`UNIQUE KEY`) sobre el campo de cédula. Esto imposibilita que el mismo ciudadano sea inscrito más de una vez en el padrón 2028, evitando la inflación artificial de metas.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="card" style="display: flex; align-items: flex-start; gap: 15px; background: rgba(0, 84, 166, 0.05); border-left: 4px solid var(--primary-light);">
+                                <div style="font-size: 24px; color: var(--primary-light);"><i class="fa fa-calculator"></i></div>
+                                <div>
+                                    <h4 style="color: var(--text-white); margin: 0 0 6px 0; font-size: 15px;">Validación Estructural de Identidad (Algoritmo de Luhn)</h4>
+                                    <p style="color: var(--text-gray); font-size: 13px; margin: 0; line-height: 1.4;">El sistema valida matemáticamente el dígito verificador de cada cédula ingresada aplicando el Algoritmo de Luhn dominicano. Bloquea inscripciones con numeraciones inválidas antes de enviar peticiones al servidor.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="card" style="display: flex; align-items: flex-start; gap: 15px; background: rgba(16, 185, 129, 0.05); border-left: 4px solid var(--success);">
+                                <div style="font-size: 24px; color: var(--success);"><i class="fa fa-building"></i></div>
+                                <div>
+                                    <h4 style="color: var(--text-white); margin: 0 0 6px 0; font-size: 15px;">Consulta de Padrón y Filtro de Existencia (DGII API)</h4>
+                                    <p style="color: var(--text-gray); font-size: 13px; margin: 0; line-height: 1.4;">La plataforma integra un handshake cURL contra la API del validador de contribuyentes (DGII) para auditar la existencia real del ciudadano, asegurando que las identidades inscritas correspondan a personas físicas reales.</p>
+                                </div>
+                            </div>
+
+                            <div class="card" style="display: flex; align-items: flex-start; gap: 15px; background: rgba(239, 68, 68, 0.05); border-left: 4px solid var(--danger);">
+                                <div style="font-size: 24px; color: var(--danger);"><i class="fa fa-map-marked-alt"></i></div>
+                                <div>
+                                    <h4 style="color: var(--text-white); margin: 0 0 6px 0; font-size: 15px;">Validación del Colegio Electoral (COEL Restrictivo)</h4>
+                                    <p style="color: var(--text-gray); font-size: 13px; margin: 0; line-height: 1.4;">Cada colegio es comparado contra la estructura JCE 2024. Si el colegio ingresado no coincide con ninguna Región/Zona/Circunscripción oficial, el sistema bloquea el registro directo y ofrece canalizarlo en estado `Pendiente de Regularización` para fidelización.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- H. SUBTAB: COPIAS DE SEGURIDAD Y DESPLIEGUE -->
+                    <div id="subtab-content-backups" class="subtab-content">
+                        <h3 style="color: var(--text-white); margin-top: 0;"><i class="fa fa-copy"></i> Centro de Respaldos y Push Update a GitHub</h3>
+                        <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">Administración de copias de seguridad en caliente hacia unidades externas y sincronización automatizada con el repositorio ADELOG en GitHub.</p>
+                        
+                        <div class="grid-2" style="margin-bottom: 20px;">
+                            <div class="card">
+                                <h4 style="color: var(--secondary); margin-top: 0;"><i class="fa fa-hdd"></i> 1. Copias de Seguridad (Backup)</h4>
+                                <p style="font-size: 12px; color: var(--text-gray); line-height: 1.5; margin-bottom: 15px;">
+                                    Genera una copia en caliente de la base de datos (estructura vacía de electores para proteger la privacidad) y guarda los scripts del sistema en:
+                                    <br><strong style="color: var(--text-white); font-size: 11px;">F:\\ADELOG\\PLATAFORMA DIGITAL-PAD-28-32\\backups</strong>
+                                </p>
+                                <button type="button" id="btn-action-backup" class="btn btn-primary" style="width: 100%;"><i class="fa fa-database"></i> Ejecutar Copia de Seguridad</button>
+                            </div>
+                            
+                            <div class="card">
+                                <h4 style="color: var(--primary-light); margin-top: 0;"><i class="fa-brands fa-github"></i> 2. Push Update a GitHub</h4>
+                                <p style="font-size: 12px; color: var(--text-gray); line-height: 1.5; margin-bottom: 15px;">
+                                    Sincroniza y sube de forma instantánea todos los cambios del código fuente local y las copias de seguridad generadas al repositorio remoto de GitHub **ADELOG**.
+                                </p>
+                                <button type="button" id="btn-action-push" class="btn btn-secondary" style="width: 100%;"><i class="fa fa-cloud-upload-alt"></i> Ejecutar Push Update</button>
+                            </div>
+                        </div>
+
+                        <div class="card" style="background: #05080e; border: 1px solid var(--border-color);">
+                            <h4 style="color: var(--text-white); margin-top: 0; font-size: 13px; font-family: monospace; display: flex; justify-content: space-between; align-items: center;">
+                                <span><i class="fa fa-terminal"></i> SALIDA DE CONSOLA DE EJECUCIÓN</span>
+                                <button type="button" id="btn-clear-console" style="background:none; border:none; color:var(--text-gray); cursor:pointer; font-size:11px;"><i class="fa fa-trash"></i> Limpiar Consola</button>
+                            </h4>
+                            <pre id="backup-console" style="margin: 0; background: transparent; color: #10b981; font-family: monospace; font-size: 12px; height: 180px; overflow-y: auto; white-space: pre-wrap; line-height: 1.4; padding: 5px;">Esperando comando administrativo...</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ==================== MODAL: REGISTRO DE VOTANTE ==================== -->
+    <div id="voter-modal" class="modal">
+        <div class="modal-content" style="max-width: 750px;">
+            <div class="modal-header">
+                <h3 id="voter-form-title">Nueva Inscripción de Votante</h3>
+                <button onclick="closeModal('voter-modal')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                
+                <!-- OCR Assistant -->
+                <div style="background-color: rgba(255,255,255,0.02); border: 1px dashed var(--border-color); padding: 14px; border-radius: 8px; margin-bottom: 16px; text-align: center;">
+                    <h4 style="margin-bottom: 8px; font-size: 14px;"><i class="fa fa-camera"></i> Asistente de Captura OCR (Cédula Frente/Reverso)</h4>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <input type="file" id="ocr-file" accept="image/*" style="display: none;">
+                        <button type="button" id="btn-admin-ocr" class="btn btn-outline btn-sm" onclick="document.getElementById('ocr-file').click()"><i class="fa fa-upload"></i> Cargar foto frontal de cédula</button>
+                        <button type="button" id="btn-camera-ocr" class="btn btn-outline btn-sm"><i class="fa fa-camera"></i> Capturar con Webcam</button>
+                        <span id="ocr-loader" style="display: none; align-items: center; gap: 6px; font-size: 13px; color: var(--secondary);"><i class="fa fa-spinner fa-spin"></i> Ejecutando OCR...</span>
+                    </div>
+                    
+                    <!-- WebCam block -->
+                    <div id="camera-container">
+                        <video id="webcam" autoplay playsinline></video>
+                        <div style="padding: 10px; text-align: center; background: rgba(0,0,0,0.8);">
+                            <button type="button" id="btn-capture-photo" class="btn btn-secondary btn-sm"><i class="fa fa-camera"></i> Tomar Foto</button>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="voter-form">
+                    <input type="hidden" id="voter-id">
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="cedula" class="form-label">Número de Cédula (Luhn) *</label>
+                            <input type="text" id="cedula" class="form-control" required placeholder="001-xxxxxxx-x">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono" class="form-label">Teléfono Celular (Dominicano) *</label>
+                            <input type="text" id="telefono" class="form-control" required placeholder="809-xxx-xxxx">
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="nombres" class="form-label">Nombre(s) *</label>
+                            <input type="text" id="nombres" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apellidos" class="form-label">Apellido(s) *</label>
+                            <input type="text" id="apellidos" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label for="colegio_electoral" class="form-label">Colegio Electoral *</label>
+                            <input type="text" id="colegio_electoral" class="form-control" required placeholder="1401">
+                        </div>
+                        <div class="form-group">
+                            <label for="sector" class="form-label">Sector *</label>
+                            <input type="text" id="sector" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="municipio" class="form-label">Municipio *</label>
+                            <input type="text" id="municipio" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recinto_ubicacion" class="form-label">Ubicación del Recinto/Recinto Electoral *</label>
+                        <input type="text" id="recinto_ubicacion" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="direccion" class="form-label">Dirección Residencial</label>
+                        <input type="text" id="direccion" class="form-control">
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" id="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="coordinador" class="form-label">Coordinador Suministrante *</label>
+                            <input type="text" id="coordinador" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="centro_acopio" class="form-label">Centro de Acopio *</label>
+                            <input type="text" id="centro_acopio" class="form-control" required placeholder="Ej: Invivienda">
+                        </div>
+                        <div class="form-group">
+                            <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                            <input type="text" id="nacionalidad" class="form-control" value="DOMINICANA">
+                        </div>
+                    </div>
+
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button type="button" onclick="closeModal('voter-modal')" class="btn btn-outline">Cancelar</button>
+                        <button type="submit" class="btn btn-secondary">Guardar Registro</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: HELPDESK CREAR INCIDENCIA ==================== -->
+    <div id="ticket-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reportar Incidencia Electoral / Sistema</h3>
+                <button onclick="closeModal('ticket-modal')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="ticket-form">
+                    <div class="form-group">
+                        <label for="ticket-tipo" class="form-label">Tipo de Incidencia</label>
+                        <select id="ticket-tipo" class="form-control">
+                            <option value="Campaña Electoral">Campaña Electoral (Logística de Campo)</option>
+                            <option value="Anomalía del Sistema">Anomalía del Sistema (Error Técnico)</option>
+                            <option value="Soporte Técnico">Soporte Técnico (General)</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ticket-desc" class="form-label">Describa la Incidencia *</label>
+                        <textarea id="ticket-desc" class="form-control" rows="5" placeholder="Detalle el inconveniente..." required></textarea>
+                    </div>
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button type="button" onclick="closeModal('ticket-modal')" class="btn btn-outline">Cancelar</button>
+                        <submit class="btn btn-primary" onclick="document.getElementById('ticket-form').dispatchEvent(new Event('submit'))">Enviar Incidencia</submit>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: MOSTRAR CÓDIGO QR ==================== -->
+    <div id="qr-display-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div class="modal-header">
+                <h3>Código QR de Campaña</h3>
+                <button onclick="closeModal('qr-display-modal')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <img id="qr-modal-image" src="" alt="Código QR" style="width: 200px; height: 200px; margin: 10px auto; display: block; border: 2px solid var(--border-color); border-radius: 8px;">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Enlace digital de inscripción:</p>
+                <input type="text" id="qr-modal-link" class="form-control" readonly style="text-align: center;">
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('qr-display-modal')" class="btn btn-primary btn-sm">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: REGISTRAR COLABORADOR ==================== -->
+    <div id="collaborator-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fa fa-user-plus"></i> Registrar Nuevo Colaborador</h3>
+                <button onclick="closeModal('collaborator-modal')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="collaborator-form" onsubmit="event.preventDefault(); saveCollaborator();">
+                    <div class="form-group">
+                        <label for="colab-nombre" class="form-label">Nombre Completo *</label>
+                        <input type="text" id="colab-nombre" class="form-control" required placeholder="Ej: Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label for="colab-telefono" class="form-label">Teléfono Celular (WhatsApp) *</label>
+                        <input type="text" id="colab-telefono" class="form-control" required placeholder="Ej: 809-555-0199">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="colab-username" class="form-label">Usuario de Acceso *</label>
+                            <input type="text" id="colab-username" class="form-control" required placeholder="Ej: juanp" autocomplete="username">
+                        </div>
+                        <div class="form-group">
+                            <label for="colab-role" class="form-label">Rol del Sistema *</label>
+                            <select id="colab-role" class="form-control" required>
+                                <option value="Coordinador">Coordinador</option>
+                                <option value="Digitador">Digitador</option>
+                                <option value="Jefe Electoral">Jefe Electoral</option>
+                                <option value="Administrador">Administrador</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="colab-password" class="form-label">Contraseña *</label>
+                        <input type="password" id="colab-password" class="form-control" required placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+                    </div>
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button type="button" onclick="closeModal('collaborator-modal')" class="btn btn-outline">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Registrar Colaborador</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: NUEVA CONVERSACIÓN CHAT ==================== -->
+    <div id="start-chat-modal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3><i class="fa fa-comments"></i> Iniciar Nueva Conversación</h3>
+                <button onclick="closeModal('start-chat-modal')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="start-chat-form" onsubmit="event.preventDefault(); triggerNewChat();">
+                    <div class="form-group">
+                        <label for="chat-select-colab" class="form-label">Seleccionar Colaborador Registrado</label>
+                        <select id="chat-select-colab" class="form-control" onchange="fillChatModalFields()">
+                            <option value="">-- Seleccionar o escribir manual --</option>
+                        </select>
+                    </div>
+                    <div style="border-top: 1px dashed var(--border-color); margin: 15px 0; padding-top: 15px;">
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">O ingrese los datos manualmente:</p>
+                        <div class="form-group">
+                            <label for="chat-manual-nombre" class="form-label">Nombre del Coordinador *</label>
+                            <input type="text" id="chat-manual-nombre" class="form-control" placeholder="Ej: Pedro Santana">
+                        </div>
+                        <div class="form-group">
+                            <label for="chat-manual-telefono" class="form-label">Teléfono WhatsApp *</label>
+                            <input type="text" id="chat-manual-telefono" class="form-control" placeholder="Ej: 829-555-0100">
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button type="button" onclick="closeModal('start-chat-modal')" class="btn btn-outline">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Iniciar Chat</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuración de Flujos de Notificaciones Modal -->
+    <div id="modal-configure-flows" class="modal" style="display: none; z-index: 9999;">
+        <div class="modal-content" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3><i class="fa fa-sliders-h" style="color: var(--secondary);"></i> Configurar Plantillas de Notificación</h3>
+                <span class="close-modal" onclick="closeModal('modal-configure-flows')">&times;</span>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label class="form-label">Seleccionar Flujo a Configurar</label>
+                    <select id="select-config-flow-type" class="form-control" style="background-color: var(--input-bg); color: var(--text-white);">
+                        <option value="email">Comprobante por Correo (Email)</option>
+                        <option value="whatsapp">Notificaciones WhatsApp</option>
+                        <option value="helpdesk">Alertas de Incidencias (Helpdesk)</option>
+                    </select>
+                </div>
+                
+                <div style="border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <!-- Email Flow Panel -->
+                    <div id="flow-config-panel-email" class="flow-config-panel">
+                        <div class="form-group">
+                            <label class="form-label">Asunto del Correo</label>
+                            <input type="text" id="flow-email-subject" class="form-control" placeholder="Ej: Tu Constancia de Inscripción Padronal">
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label class="form-label">Cuerpo de la Plantilla (HTML Soportado)</label>
+                            <textarea id="flow-email-body" class="form-control" style="height: 250px; font-family: monospace; font-size: 12px;" placeholder="Escribe la plantilla de correo..."></textarea>
+                            <small style="color: var(--text-gray); font-size: 11px; display: block; margin-top: 5px;">
+                                Placeholders válidos: <code>{numero_lista}</code>, <code>{cedula}</code>, <code>{nombre_completo}</code>, <code>{colegio}</code>, <code>{recinto}</code>, <code>{region}</code>, <code>{coordinador}</code>, <code>{centro_acopio}</code>, <code>{fecha}</code>.
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- WhatsApp Flow Panel -->
+                    <div id="flow-config-panel-whatsapp" class="flow-config-panel" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Plantilla del Mensaje del Bot</label>
+                            <textarea id="flow-whatsapp-body" class="form-control" style="height: 250px; font-family: monospace; font-size: 12px;" placeholder="Escribe el mensaje del bot..."></textarea>
+                            <small style="color: var(--text-gray); font-size: 11px; display: block; margin-top: 5px;">
+                                Placeholders válidos: <code>{numero_lista}</code>, <code>{cedula}</code>, <code>{nombre_completo}</code>, <code>{colegio}</code>, <code>{recinto}</code>, <code>{region}</code>, <code>{coordinador}</code>, <code>{centro_acopio}</code>, <code>{fecha}</code>.
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Helpdesk Flow Panel -->
+                    <div id="flow-config-panel-helpdesk" class="flow-config-panel" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Asunto del Correo de Alerta</label>
+                            <input type="text" id="flow-helpdesk-subject" class="form-control" placeholder="Ej: [Alerta Helpdesk] Nueva Incidencia Reportada">
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label class="form-label">Cuerpo de la Plantilla de Alerta</label>
+                            <textarea id="flow-helpdesk-body" class="form-control" style="height: 250px; font-family: monospace; font-size: 12px;" placeholder="Escribe el mensaje de la alerta..."></textarea>
+                            <small style="color: var(--text-gray); font-size: 11px; display: block; margin-top: 5px;">
+                                Placeholders válidos: <code>{ticket_id}</code>, <code>{titulo}</code>, <code>{descripcion}</code>, <code>{usuario_creador}</code>, <code>{fecha}</code>.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: right; margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <button type="button" onclick="closeModal('modal-configure-flows')" class="btn btn-outline">Cancelar</button>
+                    <button type="button" id="btn-save-flows-templates" class="btn btn-primary"><i class="fa fa-save"></i> Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div class="modal" id="custom-confirm-modal" style="z-index: 10000; align-items: center; justify-content: center;">
+        <div class="modal-content" style="max-width: 450px; text-align: center; border-color: var(--secondary);">
+            <div class="modal-body" style="padding: 30px 20px;">
+                <div style="font-size: 48px; color: #E3A113; margin-bottom: 15px;"><i class="fa fa-exclamation-triangle"></i></div>
+                <h3 id="custom-confirm-title" style="margin-bottom: 12px; font-family: var(--font-outfit);">Confirmación</h3>
+                <p id="custom-confirm-message" style="color: var(--text-muted); font-size: 15px; margin-bottom: 25px; line-height: 1.5;"></p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button id="btn-custom-confirm-accept" class="btn btn-primary" style="padding: 10px 24px;">Aceptar</button>
+                    <button id="btn-custom-confirm-cancel" class="btn btn-outline" style="padding: 10px 24px;">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div class="modal" id="custom-alert-modal" style="z-index: 10000; align-items: center; justify-content: center;">
+        <div class="modal-content" style="max-width: 400px; text-align: center; border-color: var(--secondary);">
+            <div class="modal-body" style="padding: 30px 20px;">
+                <div id="custom-alert-icon" style="font-size: 48px; color: var(--secondary); margin-bottom: 15px;"><i class="fa fa-info-circle"></i></div>
+                <h3 id="custom-alert-title" style="margin-bottom: 12px; font-family: var(--font-outfit);">Notificación</h3>
+                <p id="custom-alert-message" style="color: var(--text-muted); font-size: 15px; margin-bottom: 25px; line-height: 1.5;"></p>
+                <button id="btn-custom-alert-accept" class="btn btn-primary" style="padding: 10px 30px; width: 100%;">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Area -->
+    <div id="print-voucher-area" class="print-hidden-container"></div>
+
+    <!-- Script Global de la Aplicación -->
+    <script src="assets/js/app.js?v=1.6"></script>
+</body>
+</html>

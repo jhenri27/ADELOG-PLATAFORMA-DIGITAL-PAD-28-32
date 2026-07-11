@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso - PAD/28-32 Plataforma Electoral</title>
+    <link rel="shortcut icon" type="image/png" href="../GRAFICOS PARA LA PAGINA WEB/adelog_logo_icon.png">
+    <link rel="stylesheet" href="assets/css/styles.css?v=1.3">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="align-items: center; justify-content: center; padding: 20px;">
+    <!-- Theme Switcher Floating Widget -->
+    <div style="position: absolute; top: 20px; right: 20px; z-index: 100;">
+        <button id="theme-toggle" class="btn btn-outline btn-sm" style="padding: 6px 12px; font-size: 13px;"><i class="fa fa-adjust"></i> Cambiar Tema</button>
+    </div>
+    
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+        }
+        document.getElementById('theme-toggle').addEventListener('click', (e) => {
+            e.preventDefault();
+            const isLight = document.body.classList.toggle('light-theme');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        });
+    </script>
+
+    <div class="card" style="width: 100%; max-width: 440px; text-align: center; padding: 0; overflow: hidden; border-radius: 16px;">
+        <!-- Banner de Campaña Configurable -->
+        <img id="login-banner" src="../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="Banner Campaña" style="width: 100%; height: auto; display: block; border-bottom: 4px solid var(--secondary);">
+        
+        <div style="padding: 24px 24px 15px 24px;">
+            <div style="display: flex; justify-content: center; gap: 15px; align-items: center; margin-bottom: 12px; margin-top: 10px;">
+                <img src="../GRAFICOS PARA LA PAGINA WEB/LOGO-PRM.jpg" alt="Logo PRM" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--secondary); box-shadow: 0 0 10px rgba(227, 161, 19, 0.4);">
+                <img src="../GRAFICOS PARA LA PAGINA WEB/adelog_logo_icon.png" alt="Logo ADELOG" style="width: 55px; height: 55px; border-radius: 10px; border: 2px solid var(--secondary); box-shadow: 0 0 10px rgba(227, 161, 19, 0.4); background: rgba(255,255,255,0.1); padding: 2px;">
+            </div>
+            <h2 id="login-plataforma-nombre" style="font-size: 24px; color: var(--text-white); margin-top: 0; margin-bottom: 5px;">PAD/28-32</h2>
+            <p style="color: var(--text-muted); font-size: 13px; margin: 0;">Plataforma de Administración y Logística Electoral</p>
+        </div>
+
+        <div style="padding: 0 24px 24px 24px;">
+            <div id="login-error-alert" class="badge badge-danger" style="display: none; width: 100%; margin-bottom: 16px; padding: 10px; border-radius: 8px;">
+                Credenciales incorrectas.
+            </div>
+
+            <form id="login-form">
+                <div class="form-group" style="text-align: left;">
+                    <label for="username" class="form-label">Nombre de Usuario</label>
+                    <input type="text" id="username" class="form-control" placeholder="Escriba su usuario" required autocomplete="username">
+                </div>
+
+                <div class="form-group" style="text-align: left; margin-bottom: 24px;">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" id="password" class="form-control" placeholder="Escriba su contraseña" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;"><i class="fa fa-sign-in-alt"></i> Ingresar al Sistema</button>
+            </form>
+
+            <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                <p id="login-copy" style="font-size: 12px; color: var(--text-muted); margin: 0 0 4px 0;">© Campaña Pastora Altagracia SDE Circ. 3</p>
+                <p style="font-size: 11px; color: rgba(255,255,255,0.2); margin: 0;">Cumplimiento Estándar de Seguridad ISO 27001</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cargar configuración de marca en el login
+        fetch('../backend/api/settings.php?action=get')
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    const c = data.configuraciones;
+                    if (c.plataforma_nombre) {
+                        document.getElementById('login-plataforma-nombre').innerText = c.plataforma_nombre;
+                    }
+                    if (c.candidato_nombre && c.candidato_cargo) {
+                        document.getElementById('login-copy').innerText = `© Campaña ${c.candidato_nombre} ${c.candidato_cargo}`;
+                    }
+                    const bannerUrl = c.login_banner_url || '../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png';
+                    const bannerImg = document.getElementById('login-banner');
+                    if (bannerImg) {
+                        bannerImg.src = bannerUrl;
+                    }
+                }
+            })
+            .catch(err => console.error("Error al cargar marca:", err));
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value;
+            const alertBox = document.getElementById('login-error-alert');
+
+            alertBox.style.display = 'none';
+
+            fetch('../backend/api/auth.php?action=login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Credenciales inválidas");
+                return res.json();
+            })
+            .then(data => {
+                if (data.exito) {
+                    window.location.href = 'dashboard.html';
+                }
+            })
+            .catch(() => {
+                alertBox.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>

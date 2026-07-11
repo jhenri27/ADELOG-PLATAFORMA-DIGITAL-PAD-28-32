@@ -1,0 +1,19 @@
+# Archivos de configuración locales con credenciales sensibles
+backend/config.php
+
+# Logs de desarrollo y del servidor de correos
+backend/logs/*.log
+backend/error.log
+
+# Archivos temporales y de pruebas locales
+scratch/describe_*.php
+scratch/search_*.php
+scratch/seed_*.php
+scratch/cleanup_*.php
+scratch/check_*.php
+scratch/test_*.php
+
+# Respaldos locales de base de datos
+backend/backups/
+backups/
+*.sql

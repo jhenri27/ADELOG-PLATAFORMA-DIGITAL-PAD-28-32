@@ -1,0 +1,6 @@
+Credenciales por defecto sembradas:
+
+Administrador: Usuario: admin | Contraseña: admin123 (8 caracteres)
+Digitador: Usuario: digitador1 | Contraseña: digitador123
+Coordinador: Usuario: coordinador1 | Contraseña: coordinador123
+Jefe Electoral: Usuario: jefe1 | Contraseña: jefe123

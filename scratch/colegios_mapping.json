@@ -1,0 +1,6538 @@
+[
+  {
+    "colegio": "1109",
+    "recinto": "CENT.EDUC.FCO.DEL ROSARIO SANCHEZ",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL VISO",
+    "votos_prm": 190,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1766",
+    "recinto": "CENT.EDUC.FCO.DEL ROSARIO SANCHEZ",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL VISO",
+    "votos_prm": 54,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1110",
+    "recinto": "CENT.EDUC.FRANK.MIESES BURGOS",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "HATO VIEJO BATEY 2",
+    "votos_prm": 148,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1110A",
+    "recinto": "CENT.EDUC.FRANK.MIESES BURGOS",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "HATO VIEJO BATEY 2",
+    "votos_prm": 149,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1111",
+    "recinto": "CENT.EDUC.FRANK.MIESES BURGOS",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "HATO VIEJO BATEY 2",
+    "votos_prm": 173,
+    "votos_diputada": 14
+  },
+  {
+    "colegio": "1112",
+    "recinto": "CENT.EDUC.JUAN FELIZ ORTIS",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL TORO",
+    "votos_prm": 186,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1112A",
+    "recinto": "CENT.EDUC.JUAN FELIZ ORTIS",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL TORO",
+    "votos_prm": 161,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1113",
+    "recinto": "CENT.EDUC.JUAN FELIZ ORTIS",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL TORO",
+    "votos_prm": 170,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1765",
+    "recinto": "CENT.EDUC.JUAN FELIZ ORTIS",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL TORO",
+    "votos_prm": 163,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1775",
+    "recinto": "CENT.EDUC.JUAN FELIZ ORTIS",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL TORO",
+    "votos_prm": 37,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "TATAL",
+    "recinto": "N/A",
+    "region": "N/A",
+    "zona": "N/A",
+    "votos_prm": 717,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "0001",
+    "recinto": "CENT.EDUC.JUAN REYES SANTANA",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE MOJARRA",
+    "votos_prm": 133,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1773",
+    "recinto": "CENT.EDUC.JUAN REYES SANTANA",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE MOJARRA",
+    "votos_prm": 79,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1108",
+    "recinto": "CENT.EDUC.MADRE LAURA",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE ESTORGA",
+    "votos_prm": 207,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1108A",
+    "recinto": "CENT.EDUC.MADRE LAURA",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE ESTORGA",
+    "votos_prm": 164,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1649",
+    "recinto": "CENT.EDUC.MADRE LAURA",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE ESTORGA",
+    "votos_prm": 178,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1106",
+    "recinto": "CENT.EDUC.MERCEDES KRAWINKEL",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE LA JOYA",
+    "votos_prm": 165,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1106A",
+    "recinto": "CENT.EDUC.MERCEDES KRAWINKEL",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE LA JOYA",
+    "votos_prm": 167,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1107",
+    "recinto": "CENT.EDUC.MERCEDES KRAWINKEL",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE LA JOYA",
+    "votos_prm": 204,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1107A",
+    "recinto": "CENT.EDUC.MERCEDES KRAWINKEL",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE LA JOYA",
+    "votos_prm": 155,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1585",
+    "recinto": "CENT.EDUC.MERCEDES KRAWINKEL",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE LA JOYA",
+    "votos_prm": 162,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1118",
+    "recinto": "ESC. PRIMARIA TANCREDO VASQUEZ",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE LA PLUMA",
+    "votos_prm": 141,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1122",
+    "recinto": "ESC.PRIM.CARMEN DELIA ORTIZ",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL CAJUILITO",
+    "votos_prm": 106,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1122A",
+    "recinto": "ESC.PRIM.CARMEN DELIA ORTIZ",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL CAJUILITO",
+    "votos_prm": 81,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1120",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 192,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1120A",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 153,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1120B",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 145,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1121",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 192,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1121A",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 183,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1121B",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 176,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1324",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 167,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1324A",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 187,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1324B",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 156,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1425",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 182,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1425A",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 182,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1587",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 186,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1762",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 171,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1764",
+    "recinto": "ESC.PRIM.LEONOR MARIA FELTZ.M ROSAR.",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 156,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1713",
+    "recinto": "ESC.PRIM.VICENTE C.DUARTE",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL CEA LA REFORMA",
+    "votos_prm": 69,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1117",
+    "recinto": "ESC.PRIMARIA ARCADIA REYES",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE LA PIÑA",
+    "votos_prm": 234,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1117A",
+    "recinto": "ESC.PRIMARIA ARCADIA REYES",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE LA PIÑA",
+    "votos_prm": 222,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1114",
+    "recinto": "ESC.PRIMARIA JOBITA SORIANO",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL MAMON",
+    "votos_prm": 145,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1761",
+    "recinto": "ESC.PRIMARIA JOBITA SORIANO",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL MAMON",
+    "votos_prm": 167,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1774",
+    "recinto": "ESC.PRIMARIA JOBITA SORIANO",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE EL MAMON",
+    "votos_prm": 23,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1772",
+    "recinto": "ESC.PRIMARIA JUANA TAVERAS LIRIANO",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "BARRIO NICANOR",
+    "votos_prm": 157,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1776",
+    "recinto": "ESC.PRIMARIA JUANA TAVERAS LIRIANO",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "BARRIO NICANOR",
+    "votos_prm": 109,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1778",
+    "recinto": "ESC.PRIMARIA JUANA TAVERAS LIRIANO",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "BARRIO NICANOR",
+    "votos_prm": 70,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1770",
+    "recinto": "ESC.PRIMARIA LA CONCORDIA",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE CONCORDIA BANI",
+    "votos_prm": 79,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1767",
+    "recinto": "ESC.PRIMARIA THOMAS HERNANDEZ",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE MATA DE PALMA",
+    "votos_prm": 197,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1697",
+    "recinto": "LIC.DIURNO PROF.MARIO AMADOR ALVAR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 174,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1763",
+    "recinto": "LIC.DIURNO PROF.MARIO AMADOR ALVAR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 166,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1768",
+    "recinto": "LIC.DIURNO PROF.MARIO AMADOR ALVAR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 152,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1769",
+    "recinto": "LIC.DIURNO PROF.MARIO AMADOR ALVAR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 151,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1771",
+    "recinto": "LIC.DIURNO PROF.MARIO AMADOR ALVAR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "GUERRA",
+    "votos_prm": 183,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1115",
+    "recinto": "POLIT.EUGENIO DE JESUS MARC FONDEUR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE MATA DE PALMA",
+    "votos_prm": 197,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1115A",
+    "recinto": "POLIT.EUGENIO DE JESUS MARC FONDEUR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE MATA DE PALMA",
+    "votos_prm": 220,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1116",
+    "recinto": "POLIT.EUGENIO DE JESUS MARC FONDEUR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE MATA DE PALMA",
+    "votos_prm": 210,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1116A",
+    "recinto": "POLIT.EUGENIO DE JESUS MARC FONDEUR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE MATA DE PALMA",
+    "votos_prm": 223,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1586",
+    "recinto": "POLIT.EUGENIO DE JESUS MARC FONDEUR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE MATA DE PALMA",
+    "votos_prm": 211,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1777",
+    "recinto": "POLIT.EUGENIO DE JESUS MARC FONDEUR",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE MATA DE PALMA",
+    "votos_prm": 81,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1690",
+    "recinto": "PRE.ESCOLAR NUEVO HORIZONTE",
+    "region": "SAN ANT. DE GUERRA",
+    "zona": "PARAJE JOYITA",
+    "votos_prm": 100,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1164",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 135,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1164A",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 150,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1165",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 136,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1165A",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 150,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1606",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 125,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1805",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 126,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1825",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 122,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1850",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 137,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1952",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 311,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2027",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 138,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2110",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 129,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2250",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 80,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2273",
+    "recinto": "CENT.EDUC.INICIAL RAFAEL AMERICO HENRRIQUEZ",
+    "region": "SAN LUIS",
+    "zona": "EL BONITO, SAN LUIS",
+    "votos_prm": 96,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1119",
+    "recinto": "ESC.BASICA MARIA DE LA CRUZ",
+    "region": "SAN LUIS",
+    "zona": "PARAJE EL CABRESITO",
+    "votos_prm": 163,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1119A",
+    "recinto": "ESC.BASICA MARIA DE LA CRUZ",
+    "region": "SAN LUIS",
+    "zona": "PARAJE EL CABRESITO",
+    "votos_prm": 200,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "2025",
+    "recinto": "ESC.BASICA MARIA DE LA CRUZ",
+    "region": "SAN LUIS",
+    "zona": "PARAJE EL CABRESITO",
+    "votos_prm": 110,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1706",
+    "recinto": "ESC.CALIXTA ESTELA REYES",
+    "region": "SAN LUIS",
+    "zona": "ANTIGUO INGENIO OZAMA",
+    "votos_prm": 126,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1726",
+    "recinto": "ESC.CALIXTA ESTELA REYES",
+    "region": "SAN LUIS",
+    "zona": "ANTIGUO INGENIO OZAMA",
+    "votos_prm": 120,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1786",
+    "recinto": "ESC.CALIXTA ESTELA REYES",
+    "region": "SAN LUIS",
+    "zona": "ANTIGUO INGENIO OZAMA",
+    "votos_prm": 114,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1787",
+    "recinto": "ESC.CALIXTA ESTELA REYES",
+    "region": "SAN LUIS",
+    "zona": "ANTIGUO INGENIO OZAMA",
+    "votos_prm": 128,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2017",
+    "recinto": "ESC.CALIXTA ESTELA REYES",
+    "region": "SAN LUIS",
+    "zona": "ANTIGUO INGENIO OZAMA",
+    "votos_prm": 126,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2121",
+    "recinto": "ESC.CALIXTA ESTELA REYES",
+    "region": "SAN LUIS",
+    "zona": "ANTIGUO INGENIO OZAMA",
+    "votos_prm": 120,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2231",
+    "recinto": "ESC.CALIXTA ESTELA REYES",
+    "region": "SAN LUIS",
+    "zona": "ANTIGUO INGENIO OZAMA",
+    "votos_prm": 99,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "2299",
+    "recinto": "ESC.CALIXTA ESTELA REYES",
+    "region": "SAN LUIS",
+    "zona": "ANTIGUO INGENIO OZAMA",
+    "votos_prm": 105,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1156",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 132,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1156A",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 147,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1157",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 157,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1157A",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 130,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1158",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 155,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1158A",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 142,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1159",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 126,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1159A",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 141,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1160",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 134,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1160A",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 100,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1161",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 148,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1161A",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 152,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1162",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 143,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1162A",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 135,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1163",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 146,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1163A",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 126,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1163B",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/JUAN ROSARIO",
+    "votos_prm": 169,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1824",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/ JUAN ROSARIO",
+    "votos_prm": 128,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1849",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/ JUAN ROSARIO",
+    "votos_prm": 123,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1902",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/ JUAN ROSARIO",
+    "votos_prm": 151,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2045",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/ JUAN ROSARIO",
+    "votos_prm": 140,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2095",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/ JUAN ROSARIO",
+    "votos_prm": 138,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "2354",
+    "recinto": "ESC.INST.ELDA REYES MUÑOS",
+    "region": "SAN LUIS",
+    "zona": "C/ JUAN ROSARIO",
+    "votos_prm": 61,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1937",
+    "recinto": "ESC.MARIA MERCEDAS GOMES",
+    "region": "SAN LUIS",
+    "zona": "PROYECTO-INVI",
+    "votos_prm": 128,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1991",
+    "recinto": "ESC.MARIA MERCEDAS GOMES",
+    "region": "SAN LUIS",
+    "zona": "PROYECTO-INVI",
+    "votos_prm": 179,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "2080",
+    "recinto": "ESC.MARIA MERCEDAS GOMES",
+    "region": "SAN LUIS",
+    "zona": "PROYECTO-INVI",
+    "votos_prm": 146,
+    "votos_diputada": 21
+  },
+  {
+    "colegio": "2303",
+    "recinto": "ESC.MARIA MERCEDAS GOMES",
+    "region": "SAN LUIS",
+    "zona": "PROYECTO-INVI",
+    "votos_prm": 107,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1166",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 129,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1166A",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 118,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1166B",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 103,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1166C",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 138,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1167",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 167,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1167A",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 115,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1168",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 148,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1168A",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 120,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1168B",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 120,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1168C",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 124,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1168D",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 118,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1709",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 114,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1744",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 107,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1784",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 106,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2023",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 110,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2132",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 111,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "2196",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 99,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2251",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 94,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2309",
+    "recinto": "ESC.PRIM.SAN ISIDRO LABRADOR",
+    "region": "SAN LUIS",
+    "zona": "C/ 1RA",
+    "votos_prm": 77,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "2355",
+    "recinto": "INSTITUTO TEC.SUPERIOR COMUNITARIO",
+    "region": "SAN LUIS",
+    "zona": "CARRETRA MELLA",
+    "votos_prm": 33,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1943",
+    "recinto": "MULTIUSO NUEVO PARAISO",
+    "region": "SAN LUIS",
+    "zona": "C/ FCO JAVIER",
+    "votos_prm": 128,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1992",
+    "recinto": "MULTIUSO NUEVO PARAISO",
+    "region": "SAN LUIS",
+    "zona": "C/ FCO JAVIER",
+    "votos_prm": 137,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "2172",
+    "recinto": "MULTIUSO NUEVO PARAISO",
+    "region": "SAN LUIS",
+    "zona": "C/ FCO JAVIER",
+    "votos_prm": 86,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2242",
+    "recinto": "MULTIUSO NUEVO PARAISO",
+    "region": "SAN LUIS",
+    "zona": "C/ FCO JAVIER",
+    "votos_prm": 113,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "2306",
+    "recinto": "MULTIUSO NUEVO PARAISO",
+    "region": "SAN LUIS",
+    "zona": "C/ FCO JAVIER",
+    "votos_prm": 86,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "2363",
+    "recinto": "MULTIUSO NUEVO PARAISO",
+    "region": "SAN LUIS",
+    "zona": "C/ FCO JAVIER",
+    "votos_prm": 76,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1719",
+    "recinto": "CENT.EDUC.CRISTIANO LIC.MATEO LAFOND",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 107,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1750",
+    "recinto": "CENT.EDUC.CRISTIANO LIC.MATEO LAFOND",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 136,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1761",
+    "recinto": "CENT.EDUC.CRISTIANO LIC.MATEO LAFOND",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 119,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1812",
+    "recinto": "CENT.EDUC.CRISTIANO LIC.MATEO LAFOND",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 53,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1196",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 144,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1196A",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 132,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1196B",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 140,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1196C",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 154,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1196D",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 164,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1197",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 163,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1197A",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 174,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1197B",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 161,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1197C",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 124,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1197D",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 154,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1198",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 149,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1198A",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 143,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1198B",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 132,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1198C",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 160,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1198D",
+    "recinto": "CENT.EDUC.PROF.MANUEL CRUZ ALVAREZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 164,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1723",
+    "recinto": "COLEGIO FINANDIA MONTERO",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 144,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1804",
+    "recinto": "COLEGIO FINANDIA MONTERO",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 107,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1678",
+    "recinto": "ESC.BASICA EL VALIENTE",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 107,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1722",
+    "recinto": "ESC.BASICA EL VALIENTE",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 137,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1734",
+    "recinto": "ESC.BASICA EL VALIENTE",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 101,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1764",
+    "recinto": "ESC.BASICA EL VALIENTE",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 128,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1784",
+    "recinto": "ESC.BASICA EL VALIENTE",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 113,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1805",
+    "recinto": "ESC.BASICA EL VALIENTE",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 112,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1715",
+    "recinto": "ESC.BASICA SANTA LUCIA",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 179,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1756",
+    "recinto": "ESC.BASICA SANTA LUCIA",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 125,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1802",
+    "recinto": "ESC.BASICA SANTA LUCIA",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 73,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1709",
+    "recinto": "ESC.HERMANAS MIRABAL",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 117,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1754",
+    "recinto": "ESC.HERMANAS MIRABAL",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 112,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1783",
+    "recinto": "ESC.HERMANAS MIRABAL",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 95,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1806",
+    "recinto": "ESC.HERMANAS MIRABAL",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 80,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1706",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 118,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1725",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 121,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1731",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 94,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1737",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 102,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1757",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 110,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1762",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 33,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1769",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 126,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1777",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 128,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1787",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 120,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1795",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 92,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1800",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 104,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1811",
+    "recinto": "ESC.PRIM.CASANDRA DAMIRON",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 39,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1680",
+    "recinto": "ESC.PRIMARIA ANACAONA",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 136,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1681",
+    "recinto": "ESC.PRIMARIA ANACAONA",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 133,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1735",
+    "recinto": "ESC.PRIMARIA ANACAONA",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 129,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1748",
+    "recinto": "ESC.PRIMARIA ANACAONA",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 129,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1774",
+    "recinto": "ESC.PRIMARIA ANACAONA",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 142,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1785",
+    "recinto": "ESC.PRIMARIA ANACAONA",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 120,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1797",
+    "recinto": "ESC.PRIMARIA ANACAONA",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 137,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1711",
+    "recinto": "ESC.PROF.RAFAEL DELGADILLO",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 145,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1739",
+    "recinto": "ESC.PROF.RAFAEL DELGADILLO",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 252,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1773",
+    "recinto": "ESC.PROF.RAFAEL DELGADILLO",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 142,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1707",
+    "recinto": "ESC.SAMIRA MASSIT DE HANEST",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 102,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1717",
+    "recinto": "ESC.SAMIRA MASSIT DE HANEST",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 134,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1738",
+    "recinto": "ESC.SAMIRA MASSIT DE HANEST",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 109,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1768",
+    "recinto": "ESC.SAMIRA MASSIT DE HANEST",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 110,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1786",
+    "recinto": "ESC.SAMIRA MASSIT DE HANEST",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 97,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1626",
+    "recinto": "LIC.FCO DEL ROSARIO SANCHEZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 112,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1626A",
+    "recinto": "LIC.FCO DEL ROSARIO SANCHEZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 120,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1626B",
+    "recinto": "LIC.FCO DEL ROSARIO SANCHEZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 131,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1708",
+    "recinto": "LIC.FCO DEL ROSARIO SANCHEZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 168,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1755",
+    "recinto": "LIC.FCO DEL ROSARIO SANCHEZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 133,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1763",
+    "recinto": "LIC.FCO DEL ROSARIO SANCHEZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 151,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1772",
+    "recinto": "LIC.FCO DEL ROSARIO SANCHEZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 146,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1788",
+    "recinto": "LIC.FCO DEL ROSARIO SANCHEZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 128,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1801",
+    "recinto": "LIC.FCO DEL ROSARIO SANCHEZ",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 149,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1813",
+    "recinto": "LIC.PROF.ELADIO AQUINO",
+    "region": "LA CALETA",
+    "zona": "N/A",
+    "votos_prm": 60,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1207",
+    "recinto": "CENT.CULTURAL BOCA CHICA",
+    "region": "BOCA CHICA",
+    "zona": "BOCA CHICA",
+    "votos_prm": 149,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1207A",
+    "recinto": "CENT.CULTURAL BOCA CHICA",
+    "region": "BOCA CHICA",
+    "zona": "BOCA CHICA",
+    "votos_prm": 126,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1207B",
+    "recinto": "CENT.CULTURAL BOCA CHICA",
+    "region": "BOCA CHICA",
+    "zona": "BOCA CHICA",
+    "votos_prm": 125,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1207C",
+    "recinto": "CENT.CULTURAL BOCA CHICA",
+    "region": "BOCA CHICA",
+    "zona": "BOCA CHICA",
+    "votos_prm": 113,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1718",
+    "recinto": "CENT.DE ORGANIZACIONES J MONTERO G",
+    "region": "BOCA CHICA",
+    "zona": "CALLE MANUEL JIMENEZ",
+    "votos_prm": 168,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1803",
+    "recinto": "CENT.DE ORGANIZACIONES J MONTERO G",
+    "region": "BOCA CHICA",
+    "zona": "CALLE MANUEL JIMENEZ",
+    "votos_prm": 55,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1203",
+    "recinto": "CENT.EDUC.LIC.JOSEFA CASTILLO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE JOSE FCO PEÑA G",
+    "votos_prm": 186,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1203A",
+    "recinto": "CENT.EDUC.LIC.JOSEFA CASTILLO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE JOSE FCO PEÑA G",
+    "votos_prm": 180,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1203B",
+    "recinto": "CENT.EDUC.LIC.JOSEFA CASTILLO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE JOSE FCO PEÑA G",
+    "votos_prm": 194,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1713",
+    "recinto": "CENT.EDUC.PROF.ALBALINA A VASQUEZ",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 138,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1716",
+    "recinto": "CENT.EDUC.PROF.ALBALINA A VASQUEZ",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 157,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1741",
+    "recinto": "CENT.EDUC.PROF.ALBALINA A VASQUEZ",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 157,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1767",
+    "recinto": "CENT.EDUC.PROF.ALBALINA A VASQUEZ",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 181,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1792",
+    "recinto": "CENT.EDUC.PROF.ALBALINA A VASQUEZ",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 156,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1435",
+    "recinto": "CENT.EDUC.REPUBLICA DE GUYANAS",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 205,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1435A",
+    "recinto": "CENT.EDUC.REPUBLICA DE GUYANAS",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 169,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1436",
+    "recinto": "CENT.EDUC.REPUBLICA DE GUYANAS",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 210,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1436A",
+    "recinto": "CENT.EDUC.REPUBLICA DE GUYANAS",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 156,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1629",
+    "recinto": "CENT.EDUC.REPUBLICA DE GUYANAS",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 181,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1710",
+    "recinto": "CENT.EDUC.REPUBLICA DE GUYANAS",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 161,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1751",
+    "recinto": "CENT.EDUC.REPUBLICA DE GUYANAS",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 180,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1775",
+    "recinto": "CENT.EDUC.REPUBLICA DE GUYANAS",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 196,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1781",
+    "recinto": "CENT.EDUC.REPUBLICA DE GUYANAS",
+    "region": "BOCA CHICA",
+    "zona": "N/A",
+    "votos_prm": 170,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1720",
+    "recinto": "CLUB JUAN ALBERTO OZORIA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 140,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1743",
+    "recinto": "CLUB JUAN ALBERTO OZORIA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 167,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1704",
+    "recinto": "COLEGIO SAN RAFAEL",
+    "region": "BOCA CHICA",
+    "zona": "PADRE ERNESTO GOLLENC",
+    "votos_prm": 167,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1728",
+    "recinto": "COLEGIO SAN RAFAEL",
+    "region": "BOCA CHICA",
+    "zona": "PADRE ERNESTO GOLLENC",
+    "votos_prm": 187,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1736",
+    "recinto": "COLEGIO SAN RAFAEL",
+    "region": "BOCA CHICA",
+    "zona": "PADRE ERNESTO GOLLENC",
+    "votos_prm": 185,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1746",
+    "recinto": "COLEGIO SAN RAFAEL",
+    "region": "BOCA CHICA",
+    "zona": "PADRE ERNESTO GOLLENC",
+    "votos_prm": 156,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1753",
+    "recinto": "COLEGIO SAN RAFAEL",
+    "region": "BOCA CHICA",
+    "zona": "PADRE ERNESTO GOLLENC",
+    "votos_prm": 206,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1758",
+    "recinto": "COLEGIO SAN RAFAEL",
+    "region": "BOCA CHICA",
+    "zona": "PADRE ERNESTO GOLLENC",
+    "votos_prm": 170,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1765",
+    "recinto": "COLEGIO SAN RAFAEL",
+    "region": "BOCA CHICA",
+    "zona": "PADRE ERNESTO GOLLENC",
+    "votos_prm": 76,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1776",
+    "recinto": "COLEGIO SAN RAFAEL",
+    "region": "BOCA CHICA",
+    "zona": "PADRE ERNESTO GOLLENC",
+    "votos_prm": 180,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1799",
+    "recinto": "COLEGIO SAN RAFAEL",
+    "region": "BOCA CHICA",
+    "zona": "PADRE ERNESTO GOLLENC",
+    "votos_prm": 175,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1809",
+    "recinto": "COLEGIO SAN RAFAEL",
+    "region": "BOCA CHICA",
+    "zona": "PADRE ERNESTO GOLLENC",
+    "votos_prm": 105,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1714",
+    "recinto": "ESC.BASICA FORMENTO RODRIGUEZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 1RA",
+    "votos_prm": 153,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1742",
+    "recinto": "ESC.BASICA FORMENTO RODRIGUEZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 1RA",
+    "votos_prm": 143,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1766",
+    "recinto": "ESC.BASICA FORMENTO RODRIGUEZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 1RA",
+    "votos_prm": 152,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1794",
+    "recinto": "ESC.BASICA FORMENTO RODRIGUEZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 1RA",
+    "votos_prm": 168,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "0001",
+    "recinto": "ESC.BASICA JUAN PABLO II",
+    "region": "BOCA CHICA",
+    "zona": "ALTOS DE MONTE REY",
+    "votos_prm": 142,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1703",
+    "recinto": "ESC.BASICA JUAN PABLO II",
+    "region": "BOCA CHICA",
+    "zona": "ALTOS DE MONTE REY",
+    "votos_prm": 120,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1747",
+    "recinto": "ESC.BASICA JUAN PABLO II",
+    "region": "BOCA CHICA",
+    "zona": "ALTOS DE MONTE REY",
+    "votos_prm": 116,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1780",
+    "recinto": "ESC.BASICA JUAN PABLO II",
+    "region": "BOCA CHICA",
+    "zona": "ALTOS DE MONTE REY",
+    "votos_prm": 153,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1214",
+    "recinto": "ESC.BASICA MERCEDES RAFAEL VAZQUE S",
+    "region": "BOCA CHICA",
+    "zona": "PARAJE LA MALENA",
+    "votos_prm": 157,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1733",
+    "recinto": "ESC.BASICA MERCEDES RAFAEL VAZQUE S",
+    "region": "BOCA CHICA",
+    "zona": "PARAJE LA MALENA",
+    "votos_prm": 137,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1729",
+    "recinto": "ESC.BASICA PROF.PEDRO ANT. BATISTA",
+    "region": "BOCA CHICA",
+    "zona": "PROLONGACION CALLE H",
+    "votos_prm": 154,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1790",
+    "recinto": "ESC.BASICA PROF.PEDRO ANT. BATISTA",
+    "region": "BOCA CHICA",
+    "zona": "PROLONGACION CALLE H",
+    "votos_prm": 87,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1726",
+    "recinto": "ESC.LIC.MARTHA ROSA CASTILLO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE LAS MERCEDES",
+    "votos_prm": 168,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1744",
+    "recinto": "ESC.LIC.MARTHA ROSA CASTILLO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE LAS MERCEDES",
+    "votos_prm": 186,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1749",
+    "recinto": "ESC.LIC.MARTHA ROSA CASTILLO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE  LAS MERCEDES",
+    "votos_prm": 154,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1779",
+    "recinto": "ESC.LIC.MARTHA ROSA CASTILLO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE LAS MERCEDES",
+    "votos_prm": 181,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1793",
+    "recinto": "ESC.LIC.MARTHA ROSA CASTILLO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE LAS MERCEDES",
+    "votos_prm": 150,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1712",
+    "recinto": "ESC.MARIA TRINIDAD SANCHEZ",
+    "region": "BOCA CHICA",
+    "zona": "BRISAS DEL NORTE LOS BT",
+    "votos_prm": 130,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1740",
+    "recinto": "ESC.MARIA TRINIDAD SANCHEZ",
+    "region": "BOCA CHICA",
+    "zona": "BRISAS DEL NORTE LOS BT",
+    "votos_prm": 121,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1759",
+    "recinto": "ESC.MARIA TRINIDAD SANCHEZ",
+    "region": "BOCA CHICA",
+    "zona": "BRISAS DEL NORTE LOS BT",
+    "votos_prm": 120,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1778",
+    "recinto": "ESC.MARIA TRINIDAD SANCHEZ",
+    "region": "BOCA CHICA",
+    "zona": "BRISAS DEL NORTE LOS BT",
+    "votos_prm": 135,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1791",
+    "recinto": "ESC.MARIA TRINIDAD SANCHEZ",
+    "region": "BOCA CHICA",
+    "zona": "BRISAS DEL NORTE LOS BT",
+    "votos_prm": 133,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1808",
+    "recinto": "ESC.MARIA TRINIDAD SANCHEZ",
+    "region": "BOCA CHICA",
+    "zona": "BRISAS DEL NORTE LOS BT",
+    "votos_prm": 110,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1204",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 162,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1204A",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 140,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1204B",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 144,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1204C",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 157,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1205",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 161,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1205A",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 157,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1205B",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 148,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1206",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 154,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1206A",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 158,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1206B",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 165,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1209",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 179,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1209A",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 190,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1209B",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 182,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1210",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 129,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1210A",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 156,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1210B",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 195,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1211",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 141,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1211A",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 159,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1211B",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 138,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1212",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 150,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1212A",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 153,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1213",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 154,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1628",
+    "recinto": "ESC.PRIM. INT. VITALINA MORDAN DE CRUZ",
+    "region": "BOCA CHICA",
+    "zona": "CALLE 27 FEBRERO",
+    "votos_prm": 158,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1195",
+    "recinto": "ESC.PRIM.PROF.AQUILES SANTANA",
+    "region": "BOCA CHICA",
+    "zona": "PARAJE CRUCE BOCA CHICA",
+    "votos_prm": 186,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1727",
+    "recinto": "ESC.PRIM.PROF.AQUILES SANTANA",
+    "region": "BOCA CHICA",
+    "zona": "PARAJE CRUCE BOCA CHICA",
+    "votos_prm": 204,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1732",
+    "recinto": "ESC.PRIM.PROF.AQUILES SANTANA",
+    "region": "BOCA CHICA",
+    "zona": "PARAJE CRUCE BOCA CHICA",
+    "votos_prm": 155,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1199",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 141,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1199A",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 170,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1200",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 154,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1200A",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 175,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1200B",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 151,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1201",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 144,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1201A",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 154,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1627",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 149,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1730",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 158,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1752",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 156,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1771",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 143,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1782",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 148,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1796",
+    "recinto": "ESC.PRIM.SRA ELVIRA DE MENDOZA",
+    "region": "BOCA CHICA",
+    "zona": "AV.20 DICIEMBRE BOCA CH",
+    "votos_prm": 151,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1702",
+    "recinto": "LIC.ANDRES AVELINO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE ERNESTO GOYENEC",
+    "votos_prm": 134,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1724",
+    "recinto": "LIC.ANDRES AVELINO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE ERNESTO GOYENEC",
+    "votos_prm": 174,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1770",
+    "recinto": "LIC.ANDRES AVELINO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE ERNESTO GOYENEC",
+    "votos_prm": 185,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1789",
+    "recinto": "LIC.ANDRES AVELINO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE ERNESTO GOYENEC",
+    "votos_prm": 167,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1807",
+    "recinto": "LIC.ANDRES AVELINO",
+    "region": "BOCA CHICA",
+    "zona": "CALLE ERNESTO GOYENEC",
+    "votos_prm": 185,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1810",
+    "recinto": "LIC.DEL ARTE MODERNO EUGENIO MARIA H",
+    "region": "BOCA CHICA",
+    "zona": "C/ ALBALINA ACOSTA",
+    "votos_prm": 43,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1798",
+    "recinto": "LIC.HILDA GUTIERREZ",
+    "region": "BOCA CHICA",
+    "zona": "C/PROLONGACION CARACOL",
+    "votos_prm": 172,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1721",
+    "recinto": "POLITECNICO CAMILA HERRIQUEZ UREÑA",
+    "region": "BOCA CHICA",
+    "zona": "BRISAS DE CAUCEDO",
+    "votos_prm": 139,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1745",
+    "recinto": "POLITECNICO CAMILA HERRIQUEZ UREÑA",
+    "region": "BOCA CHICA",
+    "zona": "BRISAS DE CAUCEDO",
+    "votos_prm": 107,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1760",
+    "recinto": "POLITECNICO CAMILA HERRIQUEZ UREÑA",
+    "region": "BOCA CHICA",
+    "zona": "BRISAS DE CAUCEDO",
+    "votos_prm": 87,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1202",
+    "recinto": "SINDICATO ARRIMO,SALOME UREÑA",
+    "region": "BOCA CHICA",
+    "zona": "PARAJE ANDRE BOCA CHICA",
+    "votos_prm": 142,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1202A",
+    "recinto": "SINDICATO ARRIMO,SALOME UREÑA",
+    "region": "BOCA CHICA",
+    "zona": "PARAJE ANDRE BOCA CHICA",
+    "votos_prm": 150,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1202B",
+    "recinto": "SINDICATO ARRIMO,SALOME UREÑA",
+    "region": "BOCA CHICA",
+    "zona": "PARAJE ANDRE BOCA CHICA",
+    "votos_prm": 135,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1208",
+    "recinto": "UNI. SIND.DE TRABAJ.D PUERT MUELLES",
+    "region": "BOCA CHICA",
+    "zona": "CALLE R",
+    "votos_prm": 129,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1208A",
+    "recinto": "UNI. SIND.DE TRABAJ.D PUERT MUELLES",
+    "region": "BOCA CHICA",
+    "zona": "CALLE R",
+    "votos_prm": 123,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1411",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 84,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1411A",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 76,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1437",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 103,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1437A",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 80,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1438",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 99,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1438A",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 93,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1439",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 73,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1439A",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 71,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1439B",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 78,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1847",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 77,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2094",
+    "recinto": "CEN.EDUC.JUAN FELIX PEPEN",
+    "region": "REGION  3",
+    "zona": "ZONA P-1",
+    "votos_prm": 71,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1688",
+    "recinto": "CENT.EDUC.INVI RONDA",
+    "region": "REGION  3",
+    "zona": "ZONA P-6",
+    "votos_prm": 109,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1737",
+    "recinto": "CENT.EDUC.INVI RONDA",
+    "region": "REGION  3",
+    "zona": "ZONA P-6",
+    "votos_prm": 147,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1772",
+    "recinto": "CENT.EDUC.INVI RONDA",
+    "region": "REGION  3",
+    "zona": "ZONA P-6",
+    "votos_prm": 108,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1872",
+    "recinto": "CENT.EDUC.INVI RONDA",
+    "region": "REGION  3",
+    "zona": "ZONA P-6",
+    "votos_prm": 108,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1920",
+    "recinto": "CENT.EDUC.INVI RONDA",
+    "region": "REGION  3",
+    "zona": "ZONA P-6",
+    "votos_prm": 126,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "2041",
+    "recinto": "CENT.EDUC.INVI RONDA",
+    "region": "REGION  3",
+    "zona": "ZONA P-6",
+    "votos_prm": 137,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2223",
+    "recinto": "CENT.EDUC.INVI RONDA",
+    "region": "REGION  3",
+    "zona": "ZONA P-6",
+    "votos_prm": 100,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2292",
+    "recinto": "CENT.EDUC.INVI RONDA",
+    "region": "REGION  3",
+    "zona": "ZONA P-6",
+    "votos_prm": 95,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1469",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 117,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1469A",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 98,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1469B",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 96,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1469C",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 115,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1469D",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 88,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1469E",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 93,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1471",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 107,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1471A",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 115,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1471B",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 113,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1472",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 113,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1472A",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 120,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1472B",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 99,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1472C",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 123,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "1828",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 100,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1856",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 108,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1907",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 121,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "2033",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 150,
+    "votos_diputada": 14
+  },
+  {
+    "colegio": "2117",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 126,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "2144",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 108,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2197",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 82,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "2252",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 88,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2336",
+    "recinto": "ESC. LILIAN PORTALATIN S.",
+    "region": "REGION  3",
+    "zona": "ZONA  P",
+    "votos_prm": 58,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1821",
+    "recinto": "ESC.ARGENTINA MATEO LARA",
+    "region": "REGION  3",
+    "zona": "ZONA  P3/P4",
+    "votos_prm": 114,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1888",
+    "recinto": "ESC.ARGENTINA MATEO LARA",
+    "region": "REGION  3",
+    "zona": "ZONA  P3/P4",
+    "votos_prm": 83,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1889",
+    "recinto": "ESC.ARGENTINA MATEO LARA",
+    "region": "REGION  3",
+    "zona": "ZONA  P3/P4",
+    "votos_prm": 93,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1892",
+    "recinto": "ESC.ARGENTINA MATEO LARA",
+    "region": "REGION  3",
+    "zona": "ZONA  P3/P4",
+    "votos_prm": 105,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1893",
+    "recinto": "ESC.ARGENTINA MATEO LARA",
+    "region": "REGION  3",
+    "zona": "ZONA  P3/P4",
+    "votos_prm": 86,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1894",
+    "recinto": "ESC.ARGENTINA MATEO LARA",
+    "region": "REGION  3",
+    "zona": "ZONA  P3/P4",
+    "votos_prm": 91,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "2016",
+    "recinto": "ESC.ARGENTINA MATEO LARA",
+    "region": "REGION  3",
+    "zona": "ZONA  P3/P4",
+    "votos_prm": 126,
+    "votos_diputada": 19
+  },
+  {
+    "colegio": "2168",
+    "recinto": "ESC.ARGENTINA MATEO LARA",
+    "region": "REGION  3",
+    "zona": "ZONA  P3/P4",
+    "votos_prm": 84,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2238",
+    "recinto": "ESC.ARGENTINA MATEO LARA",
+    "region": "REGION  3",
+    "zona": "ZONA  P3/P4",
+    "votos_prm": 100,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1701",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 97,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "1736",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 116,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1796",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 109,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1835",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 110,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1871",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 98,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1978",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 120,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "2135",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 115,
+    "votos_diputada": 13
+  },
+  {
+    "colegio": "2154",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 81,
+    "votos_diputada": 13
+  },
+  {
+    "colegio": "2222",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 108,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "2291",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 82,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2359",
+    "recinto": "ESC.BASICA ENRIQUILLO",
+    "region": "REGION  3",
+    "zona": "ZONA P-5",
+    "votos_prm": 41,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1470",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 122,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "1470A",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 107,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1470B",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 114,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1470C",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 118,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1470D",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 135,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1470E",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 103,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1470F",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 118,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1608",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 86,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1608A",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 121,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1608B",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 119,
+    "votos_diputada": 13
+  },
+  {
+    "colegio": "1608C",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 110,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1608D",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 101,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1608E",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 99,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1820",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 138,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1833",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 117,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1864",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 127,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1914",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 120,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2049",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 162,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2104",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 148,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2182",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 110,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2287",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 96,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2366",
+    "recinto": "LIC.PROF.SIMON OROZCO",
+    "region": "REGION  3",
+    "zona": "ZONA P-2",
+    "votos_prm": 50,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1760",
+    "recinto": "COLEGIO MARTIN LUTER KING",
+    "region": "REGION 3-A",
+    "zona": "ZONA X-3",
+    "votos_prm": 151,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1886",
+    "recinto": "COLEGIO MARTIN LUTER KING",
+    "region": "REGION 3-A",
+    "zona": "ZONA X-3",
+    "votos_prm": 138,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1989",
+    "recinto": "COLEGIO MARTIN LUTER KING",
+    "region": "REGION 3-A",
+    "zona": "ZONA X-3",
+    "votos_prm": 127,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2088",
+    "recinto": "COLEGIO MARTIN LUTER KING",
+    "region": "REGION 3-A",
+    "zona": "ZONA X-3",
+    "votos_prm": 117,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2207",
+    "recinto": "COLEGIO MARTIN LUTER KING",
+    "region": "REGION 3-A",
+    "zona": "ZONA X-3",
+    "votos_prm": 128,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1757",
+    "recinto": "COLEGIO PROFESOR PEGUERO",
+    "region": "REGION 3-A",
+    "zona": "ZONA U",
+    "votos_prm": 189,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1793",
+    "recinto": "COLEGIO PROFESOR PEGUERO",
+    "region": "REGION 3-A",
+    "zona": "ZONA U",
+    "votos_prm": 113,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1931",
+    "recinto": "COLEGIO PROFESOR PEGUERO",
+    "region": "REGION 3-A",
+    "zona": "ZONA U",
+    "votos_prm": 124,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2012",
+    "recinto": "COLEGIO PROFESOR PEGUERO",
+    "region": "REGION 3-A",
+    "zona": "ZONA U",
+    "votos_prm": 109,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2082",
+    "recinto": "COLEGIO PROFESOR PEGUERO",
+    "region": "REGION 3-A",
+    "zona": "ZONA U",
+    "votos_prm": 92,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2234",
+    "recinto": "COLEGIO PROFESOR PEGUERO",
+    "region": "REGION 3-A",
+    "zona": "ZONA U",
+    "votos_prm": 64,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2322",
+    "recinto": "COLEGIO PROFESOR PEGUERO",
+    "region": "REGION 3-A",
+    "zona": "ZONA U",
+    "votos_prm": 30,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1725",
+    "recinto": "ESC. BASICA FRAY BARTOLOME DE  LAS CASA",
+    "region": "REGION 3-A",
+    "zona": "ZONA U-2",
+    "votos_prm": 128,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1743",
+    "recinto": "ESC. BASICA FRAY BARTOLOME DE  LAS CASA",
+    "region": "REGION 3-A",
+    "zona": "ZONA U-2",
+    "votos_prm": 159,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1783",
+    "recinto": "ESC. BASICA FRAY BARTOLOME DE  LAS CASA",
+    "region": "REGION 3-A",
+    "zona": "ZONA U-2",
+    "votos_prm": 122,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1882",
+    "recinto": "ESC. BASICA FRAY BARTOLOME DE  LAS CASA",
+    "region": "REGION 3-A",
+    "zona": "ZONA U-2",
+    "votos_prm": 127,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1960",
+    "recinto": "ESC. BASICA FRAY BARTOLOME DE  LAS CASA",
+    "region": "REGION 3-A",
+    "zona": "ZONA U-2",
+    "votos_prm": 136,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2050",
+    "recinto": "ESC. BASICA FRAY BARTOLOME DE  LAS CASA",
+    "region": "REGION 3-A",
+    "zona": "ZONA U-2",
+    "votos_prm": 166,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2114",
+    "recinto": "ESC. BASICA FRAY BARTOLOME DE  LAS CASA",
+    "region": "REGION 3-A",
+    "zona": "ZONA U-2",
+    "votos_prm": 144,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "2185",
+    "recinto": "ESC. BASICA FRAY BARTOLOME DE  LAS CASA",
+    "region": "REGION 3-A",
+    "zona": "ZONA U-2",
+    "votos_prm": 127,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "2229",
+    "recinto": "ESC. BASICA FRAY BARTOLOME DE  LAS CASA",
+    "region": "REGION 3-A",
+    "zona": "ZONA U-2",
+    "votos_prm": 141,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1939",
+    "recinto": "ESC. LOS PALMEROS",
+    "region": "REGION 3-A",
+    "zona": "ZONA Y-2",
+    "votos_prm": 99,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2169",
+    "recinto": "ESC. LOS PALMEROS",
+    "region": "REGION 3-A",
+    "zona": "ZONA Y-2",
+    "votos_prm": 89,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "2261",
+    "recinto": "ESC. LOS PALMEROS",
+    "region": "REGION 3-A",
+    "zona": "ZONA Y-2",
+    "votos_prm": 86,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2362",
+    "recinto": "ESC. LOS PALMEROS",
+    "region": "REGION 3-A",
+    "zona": "ZONA Y-2",
+    "votos_prm": 26,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2315",
+    "recinto": "ESC. KELVIN OBRERO DE PAZ",
+    "region": "REGION 3-A",
+    "zona": "ZONA  U",
+    "votos_prm": 111,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2314",
+    "recinto": "ESC.PRIM.FRAY BARTOLOME",
+    "region": "REGION 3-A",
+    "zona": "ZONA U-2",
+    "votos_prm": 46,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1385",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 94,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1385A",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 88,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1385B",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 99,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1385C",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 92,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1385D",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 96,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1385E",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 87,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1385F",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 98,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1385G",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 91,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1613",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 81,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1613A",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 97,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1613B",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 90,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1613C",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 79,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1670",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 82,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1670A",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 101,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1670B",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 110,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1670C",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 98,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1862",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 114,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1913",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 93,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2148",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 91,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2253",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 47,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2284",
+    "recinto": "ESC.BASICA FERNANDO A DEFILLO",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-1",
+    "votos_prm": 44,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1685",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 77,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1731",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 110,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1767",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 98,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1865",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 82,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1916",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 106,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2048",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 125,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2131",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 101,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2150",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 81,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2219",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 85,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2288",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 60,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2358",
+    "recinto": "ESC.INMACULADA FE Y ALEGRIA",
+    "region": "REGION 3-A",
+    "zona": "ZONA T",
+    "votos_prm": 53,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1179",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 76,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1179A",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 95,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1179B",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 64,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1179C",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 76,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1179D",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 98,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1179E",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 100,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1179F",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 99,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1414",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 106,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1414A",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 105,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1414B",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 96,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1414C",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 90,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1650",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 88,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1657",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 85,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1827",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 84,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1855",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 85,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1906",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 91,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2022",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 122,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2102",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 99,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2177",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 88,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2217",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 93,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2278",
+    "recinto": "ESC.PRIMARIA REP,DE KOREA",
+    "region": "REGION 3-A",
+    "zona": "ZONA  T",
+    "votos_prm": 36,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1720",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 86,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1738",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 90,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1776",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 105,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1836",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 75,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1876",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 93,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "2011",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 104,
+    "votos_diputada": 14
+  },
+  {
+    "colegio": "2116",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 109,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2155",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 61,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "2224",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 89,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2319",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 33,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2340",
+    "recinto": "LICEO SAN JOSE",
+    "region": "REGION 3-A",
+    "zona": "ZONA T-3",
+    "votos_prm": 29,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1945",
+    "recinto": "CENT.EDUC.PROF.MIGUEL DADUS VALDEZ",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-7",
+    "votos_prm": 98,
+    "votos_diputada": 52
+  },
+  {
+    "colegio": "2101",
+    "recinto": "CENT.EDUC.PROF.MIGUEL DADUS VALDEZ",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-7",
+    "votos_prm": 70,
+    "votos_diputada": 35
+  },
+  {
+    "colegio": "2244",
+    "recinto": "CENT.EDUC.PROF.MIGUEL DADUS VALDEZ",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-7",
+    "votos_prm": 98,
+    "votos_diputada": 52
+  },
+  {
+    "colegio": "2348",
+    "recinto": "CENT.EDUC.PROF.MIGUEL DADUS VALDEZ",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-7",
+    "votos_prm": 48,
+    "votos_diputada": 33
+  },
+  {
+    "colegio": "1897",
+    "recinto": "COLEGIO SABIDURIA",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-9",
+    "votos_prm": 142,
+    "votos_diputada": 43
+  },
+  {
+    "colegio": "2134",
+    "recinto": "COLEGIO SABIDURIA",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-9",
+    "votos_prm": 64,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1801",
+    "recinto": "ESC.BASICA 24 DE ABRIL",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-6",
+    "votos_prm": 89,
+    "votos_diputada": 38
+  },
+  {
+    "colegio": "1802",
+    "recinto": "ESC.BASICA 24 DE ABRIL",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-6",
+    "votos_prm": 104,
+    "votos_diputada": 40
+  },
+  {
+    "colegio": "1803",
+    "recinto": "ESC.BASICA 24 DE ABRIL",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-6",
+    "votos_prm": 116,
+    "votos_diputada": 46
+  },
+  {
+    "colegio": "2070",
+    "recinto": "ESC.BASICA 24 DE ABRIL",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-6",
+    "votos_prm": 102,
+    "votos_diputada": 36
+  },
+  {
+    "colegio": "2136",
+    "recinto": "ESC.BASICA 24 DE ABRIL",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-6",
+    "votos_prm": 103,
+    "votos_diputada": 23
+  },
+  {
+    "colegio": "2186",
+    "recinto": "ESC.BASICA 24 DE ABRIL",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-6",
+    "votos_prm": 89,
+    "votos_diputada": 47
+  },
+  {
+    "colegio": "2208",
+    "recinto": "ESC.BASICA 24 DE ABRIL",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-6",
+    "votos_prm": 84,
+    "votos_diputada": 35
+  },
+  {
+    "colegio": "2235",
+    "recinto": "ESC.BASICA 24 DE ABRIL",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-6",
+    "votos_prm": 109,
+    "votos_diputada": 36
+  },
+  {
+    "colegio": "2301",
+    "recinto": "ESC.BASICA 24 DE ABRIL",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-6",
+    "votos_prm": 105,
+    "votos_diputada": 42
+  },
+  {
+    "colegio": "1759",
+    "recinto": "ESC.CARMEN QUIDIELLO D BOCH N EMMAN",
+    "region": "REGION 3-B",
+    "zona": "ZONA Y- I",
+    "votos_prm": 112,
+    "votos_diputada": 14
+  },
+  {
+    "colegio": "1936",
+    "recinto": "ESC.CARMEN QUIDIELLO D BOCH N EMMAN",
+    "region": "REGION 3-B",
+    "zona": "ZONA Y- I",
+    "votos_prm": 95,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1963",
+    "recinto": "ESC.CARMEN QUIDIELLO D BOCH N EMMAN",
+    "region": "REGION 3-B",
+    "zona": "ZONA Y- I",
+    "votos_prm": 101,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2100",
+    "recinto": "ESC.CARMEN QUIDIELLO D BOCH N EMMAN",
+    "region": "REGION 3-B",
+    "zona": "ZONA Y- I",
+    "votos_prm": 103,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "2189",
+    "recinto": "ESC.CARMEN QUIDIELLO D BOCH N EMMAN",
+    "region": "REGION 3-B",
+    "zona": "ZONA Y- I",
+    "votos_prm": 102,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "2239",
+    "recinto": "ESC.CARMEN QUIDIELLO D BOCH N EMMAN",
+    "region": "REGION 3-B",
+    "zona": "ZONA Y- I",
+    "votos_prm": 97,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "2345",
+    "recinto": "ESC.CARMEN QUIDIELLO D BOCH N EMMAN",
+    "region": "REGION 3-B",
+    "zona": "ZONA Y- I",
+    "votos_prm": 22,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "2317",
+    "recinto": "ESC.FCO DEL ROSARIO SANCHEZ",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 105,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "2312",
+    "recinto": "ESC.HERMANAS MIRABAL",
+    "region": "REGION 3-B",
+    "zona": "ZONA Y-4",
+    "votos_prm": 141,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "2371",
+    "recinto": "ESC.HERMANAS MIRABAL",
+    "region": "REGION 3-B",
+    "zona": "ZONA Y-4",
+    "votos_prm": 156,
+    "votos_diputada": 22
+  },
+  {
+    "colegio": "1800",
+    "recinto": "ESC.PRIM.MANUEL A TAVAREZ",
+    "region": "REGION 3-B",
+    "zona": "ZONA X",
+    "votos_prm": 117,
+    "votos_diputada": 56
+  },
+  {
+    "colegio": "1887",
+    "recinto": "ESC.PRIM.MANUEL A TAVAREZ",
+    "region": "REGION 3-B",
+    "zona": "ZONA X",
+    "votos_prm": 82,
+    "votos_diputada": 42
+  },
+  {
+    "colegio": "1938",
+    "recinto": "ESC.PRIM.MANUEL A TAVAREZ",
+    "region": "REGION 3-B",
+    "zona": "ZONA X",
+    "votos_prm": 123,
+    "votos_diputada": 52
+  },
+  {
+    "colegio": "1985",
+    "recinto": "ESC.PRIM.MANUEL A TAVAREZ",
+    "region": "REGION 3-B",
+    "zona": "ZONA X",
+    "votos_prm": 118,
+    "votos_diputada": 53
+  },
+  {
+    "colegio": "2316",
+    "recinto": "ESC.PRIM.MANUEL A TAVAREZ",
+    "region": "REGION 3-B",
+    "zona": "ZONA X",
+    "votos_prm": 39,
+    "votos_diputada": 25
+  },
+  {
+    "colegio": "1710",
+    "recinto": "ESC.PRIMARIA BRISAS DEL ESTE",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-1",
+    "votos_prm": 95,
+    "votos_diputada": 52
+  },
+  {
+    "colegio": "1732",
+    "recinto": "ESC.PRIMARIA BRISAS DEL ESTE",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-1",
+    "votos_prm": 81,
+    "votos_diputada": 47
+  },
+  {
+    "colegio": "1768",
+    "recinto": "ESC.PRIMARIA BRISAS DEL ESTE",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-1",
+    "votos_prm": 98,
+    "votos_diputada": 45
+  },
+  {
+    "colegio": "1956",
+    "recinto": "ESC.PRIMARIA BRISAS DEL ESTE",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-1",
+    "votos_prm": 96,
+    "votos_diputada": 53
+  },
+  {
+    "colegio": "1998",
+    "recinto": "ESC.PRIMARIA BRISAS DEL ESTE",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-1",
+    "votos_prm": 97,
+    "votos_diputada": 65
+  },
+  {
+    "colegio": "2127",
+    "recinto": "ESC.PRIMARIA BRISAS DEL ESTE",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-1",
+    "votos_prm": 89,
+    "votos_diputada": 53
+  },
+  {
+    "colegio": "2151",
+    "recinto": "ESC.PRIMARIA BRISAS DEL ESTE",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-1",
+    "votos_prm": 91,
+    "votos_diputada": 49
+  },
+  {
+    "colegio": "2220",
+    "recinto": "ESC.PRIMARIA BRISAS DEL ESTE",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-1",
+    "votos_prm": 102,
+    "votos_diputada": 54
+  },
+  {
+    "colegio": "2074",
+    "recinto": "ESC.PRIMARIA LA UNION",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-10",
+    "votos_prm": 128,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "2140",
+    "recinto": "ESC.PRIMARIA LA UNION",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-10",
+    "votos_prm": 97,
+    "votos_diputada": 22
+  },
+  {
+    "colegio": "2192",
+    "recinto": "ESC.PRIMARIA LA UNION",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-10",
+    "votos_prm": 83,
+    "votos_diputada": 14
+  },
+  {
+    "colegio": "2246",
+    "recinto": "ESC.PRIMARIA LA UNION",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-10",
+    "votos_prm": 114,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "2324",
+    "recinto": "ESC.PRIMARIA LA UNION",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-10",
+    "votos_prm": 61,
+    "votos_diputada": 13
+  },
+  {
+    "colegio": "2369",
+    "recinto": "ESC.PRIMARIA LA UNION",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-10",
+    "votos_prm": 60,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1711",
+    "recinto": "ESC.PROF.JUAN BOSCH",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-2",
+    "votos_prm": 76,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1750",
+    "recinto": "ESC.PROF.JUAN BOSCH",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-2",
+    "votos_prm": 114,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1795",
+    "recinto": "ESC.PROF.JUAN BOSCH",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-2",
+    "votos_prm": 143,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2072",
+    "recinto": "ESC.PROF.JUAN BOSCH",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-2",
+    "votos_prm": 88,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2210",
+    "recinto": "ESC.PROF.JUAN BOSCH",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-2",
+    "votos_prm": 51,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2311",
+    "recinto": "ESC.PROF.JUAN BOSCH",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-12",
+    "votos_prm": 141,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2370",
+    "recinto": "ESC.PROF.JUAN BOSCH",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-12",
+    "votos_prm": 135,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1969",
+    "recinto": "LOCAL HIPODROMA 5TO CEN.",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-3",
+    "votos_prm": 115,
+    "votos_diputada": 25
+  },
+  {
+    "colegio": "2098",
+    "recinto": "LOCAL HIPODROMA 5TO CEN.",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-3",
+    "votos_prm": 77,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "2191",
+    "recinto": "LOCAL HIPODROMA 5TO CEN.",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-3",
+    "votos_prm": 89,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2245",
+    "recinto": "LOCAL HIPODROMA 5TO CEN.",
+    "region": "REGION 3-B",
+    "zona": "ZONA U-3",
+    "votos_prm": 102,
+    "votos_diputada": 21
+  },
+  {
+    "colegio": "1724",
+    "recinto": "MULTIUSO LIC.HECTOR V ALBIZU",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 81,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "1782",
+    "recinto": "MULTIUSO LIC.HECTOR V ALBIZU",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 106,
+    "votos_diputada": 30
+  },
+  {
+    "colegio": "1881",
+    "recinto": "MULTIUSO LIC.HECTOR V ALBIZU",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 91,
+    "votos_diputada": 23
+  },
+  {
+    "colegio": "1926",
+    "recinto": "MULTIUSO LIC.HECTOR V ALBIZU",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 106,
+    "votos_diputada": 13
+  },
+  {
+    "colegio": "1981",
+    "recinto": "MULTIUSO LIC.HECTOR V ALBIZU",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 90,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "2128",
+    "recinto": "muLTIUSO LIC.HECTOR V ALBIZU",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 115,
+    "votos_diputada": 26
+  },
+  {
+    "colegio": "2160",
+    "recinto": "muLTIUSO LIC.HECTOR V ALBIZU",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 94,
+    "votos_diputada": 27
+  },
+  {
+    "colegio": "2228",
+    "recinto": "muLTIUSO LIC.HECTOR V ALBIZU",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 109,
+    "votos_diputada": 27
+  },
+  {
+    "colegio": "2321",
+    "recinto": "MULTIUSO LIC.HECTOR V ALBIZU",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 42,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "2342",
+    "recinto": "MULTIUSO LIC.HECTOR V ALBIZU",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-4",
+    "votos_prm": 39,
+    "votos_diputada": 22
+  },
+  {
+    "colegio": "1898",
+    "recinto": "PATRONATO DE VIVIENDA L0S MAESTRO",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-8",
+    "votos_prm": 161,
+    "votos_diputada": 53
+  },
+  {
+    "colegio": "2122",
+    "recinto": "PATRONATO DE VIVIENDA L0S MAESTRO",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-8",
+    "votos_prm": 122,
+    "votos_diputada": 47
+  },
+  {
+    "colegio": "2260",
+    "recinto": "PATRONATO DE VIVIENDA L0S MAESTRO",
+    "region": "REGION 3-B",
+    "zona": "ZONA X-8",
+    "votos_prm": 76,
+    "votos_diputada": 50
+  },
+  {
+    "colegio": "1192",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 110,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1192A",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 88,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1192B",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 101,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1192C",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 97,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1325",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 103,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1325A",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 90,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1325B",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 74,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1658",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 20,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1658A",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 69,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1658B",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 89,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1826",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 72,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1852",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 89,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2030",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 84,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2106",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 87,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2195",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 65,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2276",
+    "recinto": "ESC.PRIM.SANTIAGO HIRUJO SOSA",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-2",
+    "votos_prm": 82,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1193",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 81,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1193A",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 75,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1193B",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 94,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1193C",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 98,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1193D",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 109,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1193E",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 93,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1193F",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 97,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1193G",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 88,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1193H",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 93,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1193I",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 90,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1194",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 122,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1194A",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 87,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1194B",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 102,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1194C",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 98,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1194D",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 94,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1194E",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 86,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1624",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 84,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1624A",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 76,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "1624B",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 101,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1625",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 82,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1625A",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 99,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1625B",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 101,
+    "votos_diputada": 13
+  },
+  {
+    "colegio": "1625C",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 100,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1625D",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 90,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1698",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 84,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1753",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 108,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1853",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 74,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1904",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 95,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1915",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 82,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1997",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 121,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "2061",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 83,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "2175",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 79,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2307",
+    "recinto": "ESC.PROF.MANUEL B TRONCOSO",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-5",
+    "votos_prm": 52,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1695",
+    "recinto": "CENT.DE ESTUDIO JEHOVA ES MI PROVEDOR",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-6",
+    "votos_prm": 81,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1751",
+    "recinto": "CENT.DE ESTUDIO JEHOVA ES MI PROVEDOR",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-6",
+    "votos_prm": 96,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1866",
+    "recinto": "CENT.DE ESTUDIO JEHOVA ES MI PROVEDOR",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-6",
+    "votos_prm": 99,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2032",
+    "recinto": "CENT.DE ESTUDIO JEHOVA ES MI PROVEDOR",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-6",
+    "votos_prm": 86,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2198",
+    "recinto": "CENT.DE ESTUDIO JEHOVA ES MI PROVEDOR",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-6",
+    "votos_prm": 91,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2289",
+    "recinto": "CENT.DE ESTUDIO JEHOVA ES MI PROVEDOR",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-6",
+    "votos_prm": 39,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1730",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 95,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1748",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 101,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1763",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 68,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1765",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 75,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1812",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 91,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "1839",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 92,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1884",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 90,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1930",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 84,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2018",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 86,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2129",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 112,
+    "votos_diputada": 31
+  },
+  {
+    "colegio": "2165",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 68,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "2205",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 78,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2258",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 64,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2361",
+    "recinto": "ESC.DE EDUC.BASICA JAPON",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-1",
+    "votos_prm": 76,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1723",
+    "recinto": "ESC.JOHN F KENNEDY",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-3",
+    "votos_prm": 116,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1781",
+    "recinto": "ESC.JOHN F KENNEDY",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-3",
+    "votos_prm": 88,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1880",
+    "recinto": "ESC.JOHN F KENNEDY",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-3",
+    "votos_prm": 79,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2004",
+    "recinto": "ESC.JOHN F KENNEDY",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-3",
+    "votos_prm": 93,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "2078",
+    "recinto": "ESC.JOHN F KENNEDY",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-3",
+    "votos_prm": 71,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "2184",
+    "recinto": "ESC.JOHN F KENNEDY",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-3",
+    "votos_prm": 80,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "2227",
+    "recinto": "ESC.JOHN F KENNEDY",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-3",
+    "votos_prm": 81,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2320",
+    "recinto": "ESC.JOHN F KENNEDY",
+    "region": "REGION 3-C",
+    "zona": "ZONA Q-3",
+    "votos_prm": 65,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1721",
+    "recinto": "COL.INST.TAIWAN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 128,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1740",
+    "recinto": "COL.INST.TAIWAN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 137,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1778",
+    "recinto": "COL.INST.TAIWAN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 109,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1878",
+    "recinto": "COL.INST.TAIWAN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 108,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1924",
+    "recinto": "COL.INST.TAIWAN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 100,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2007",
+    "recinto": "COL.INST.TAIWAN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 104,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "2120",
+    "recinto": "COL.INST.TAIWAN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 86,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2157",
+    "recinto": "COL.INST.TAIWAN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 80,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "2225",
+    "recinto": "COL.INST.TAIWAN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 83,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2294",
+    "recinto": "COL.INST.TAIWAN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 80,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1675",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 83,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1675A",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 72,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1675B",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 87,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1675C",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 76,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1675D",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 93,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1675E",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 72,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1675F",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 72,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1675G",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 82,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1675H",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 96,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1831",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 90,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1861",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 100,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1986",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 92,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "2089",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 81,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "2283",
+    "recinto": "ESC. BASICA NICARAGUA",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-3",
+    "votos_prm": 45,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1756",
+    "recinto": "ESC.BAS.PROF.NELLY FE Y ALEG.",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-1",
+    "votos_prm": 200,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "1794",
+    "recinto": "ESC.BAS.PROF.NELLY FE Y ALEG.",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-1",
+    "votos_prm": 139,
+    "votos_diputada": 14
+  },
+  {
+    "colegio": "2069",
+    "recinto": "ESC.BAS.PROF.NELLY FE Y ALEG.",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-1",
+    "votos_prm": 118,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2166",
+    "recinto": "ESC.BAS.PROF.NELLY FE Y ALEG.",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-1",
+    "votos_prm": 83,
+    "votos_diputada": 24
+  },
+  {
+    "colegio": "1712",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 96,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1733",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 106,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1769",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 85,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1834",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 110,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1867",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 84,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1917",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 95,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1957",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 83,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1976",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 104,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "2066",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 104,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2091",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 111,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2152",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 66,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2199",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 72,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2221",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 105,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2290",
+    "recinto": "ESC.BASICA DR.JOSE FCO PEÑA GOMEZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA R",
+    "votos_prm": 109,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1809",
+    "recinto": "ESC.EUGENIO M DE HOSTO",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-1",
+    "votos_prm": 148,
+    "votos_diputada": 13
+  },
+  {
+    "colegio": "1964",
+    "recinto": "ESC.EUGENIO M DE HOSTO",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-1",
+    "votos_prm": 139,
+    "votos_diputada": 13
+  },
+  {
+    "colegio": "2125",
+    "recinto": "ESC.EUGENIO M DE HOSTO",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-1",
+    "votos_prm": 135,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "2237",
+    "recinto": "ESC.EUGENIO M DE HOSTO",
+    "region": "REGION 3-D",
+    "zona": "ZONA R-1",
+    "votos_prm": 114,
+    "votos_diputada": 14
+  },
+  {
+    "colegio": "1722",
+    "recinto": "ESC.MARIA CRISTINA D LEON THEN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S",
+    "votos_prm": 109,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1742",
+    "recinto": "ESC.MARIA CRISTINA D LEON THEN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S",
+    "votos_prm": 124,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2005",
+    "recinto": "ESC.MARIA CRISTINA D LEON THEN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S",
+    "votos_prm": 115,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2112",
+    "recinto": "ESC.MARIA CRISTINA D LEON THEN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S",
+    "votos_prm": 143,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2159",
+    "recinto": "ESC.MARIA CRISTINA D LEON THEN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S",
+    "votos_prm": 74,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2297",
+    "recinto": "ESC.MARIA CRISTINA D LEON THEN",
+    "region": "REGION 3-D",
+    "zona": "ZONA S",
+    "votos_prm": 110,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1729",
+    "recinto": "ESC.PDTE ANT.GUZMAN F",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-2",
+    "votos_prm": 87,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1747",
+    "recinto": "ESC.PDTE ANT.GUZMAN F",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-2",
+    "votos_prm": 101,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1797",
+    "recinto": "ESC.PDTE ANT.GUZMAN F",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-2",
+    "votos_prm": 97,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1883",
+    "recinto": "ESC.PDTE ANT.GUZMAN F",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-2",
+    "votos_prm": 94,
+    "votos_diputada": 13
+  },
+  {
+    "colegio": "1929",
+    "recinto": "ESC.PDTE ANT.GUZMAN F",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-2",
+    "votos_prm": 101,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2019",
+    "recinto": "ESC.PDTE ANT.GUZMAN F",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-2",
+    "votos_prm": 93,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2123",
+    "recinto": "ESC.PDTE ANT.GUZMAN F",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-2",
+    "votos_prm": 96,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2164",
+    "recinto": "ESC.PDTE ANT.GUZMAN F",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-2",
+    "votos_prm": 94,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2233",
+    "recinto": "ESC.PDTE ANT.GUZMAN F",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-2",
+    "votos_prm": 90,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2310",
+    "recinto": "ESC.PRIMARIA CONCEPCION.BONA",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 89,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2313",
+    "recinto": "POLIT.FELIZ MARIA RUIZ",
+    "region": "REGION 3-D",
+    "zona": "ZONA S-1",
+    "votos_prm": 72,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1174F",
+    "recinto": "CENT.EDUC.NIÑO KEITEL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 94,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1174G",
+    "recinto": "CENT.EDUC.NIÑO KEITEL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 94,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1174H",
+    "recinto": "CENT.EDUC.NIÑO KEITEL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 116,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1174I",
+    "recinto": "CENT.EDUC.NIÑO KEITEL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 101,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1174J",
+    "recinto": "CENT.EDUC.NIÑO KEITEL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 92,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1174K",
+    "recinto": "CENT.EDUC.NIÑO KEITEL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 79,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1954",
+    "recinto": "CENT.EDUC.NIÑO KEITEL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 103,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2035",
+    "recinto": "CENT.EDUC.NIÑO KEITEL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 124,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "2109",
+    "recinto": "CENT.EDUC.NIÑO KEITEL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 125,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1174",
+    "recinto": "COL.V CARMEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 80,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1174A",
+    "recinto": "COL.V CARMEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 110,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1174B",
+    "recinto": "COL.V CARMEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 88,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1174C",
+    "recinto": "COL.V CARMEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 105,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1174D",
+    "recinto": "COL.V CARMEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 83,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1174E",
+    "recinto": "COL.V CARMEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 101,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1174L",
+    "recinto": "COL.V CARMEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 91,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1174M",
+    "recinto": "COL.V CARMEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 76,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1177",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 92,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1177A",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 98,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1177B",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 100,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1177C",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 90,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1177D",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 95,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1473",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 83,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1473A",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 67,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1473B",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 107,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1475",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 89,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1475A",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 90,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1475B",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 88,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1475C",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 87,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1476",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 90,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1476A",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 99,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1476B",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 65,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1611",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 110,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1611A",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 80,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1611B",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 92,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1611C",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 70,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1611D",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 97,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1854",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 72,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1905",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 81,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2026",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 107,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "2176",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 62,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "2277",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 56,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2365",
+    "recinto": "ESC.PRIMARIA SAN JOSE",
+    "region": "REGION 3-E",
+    "zona": "ZONA O",
+    "votos_prm": 55,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1175",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 90,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1175A",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 56,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1175B",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 91,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1176",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 94,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1176A",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 65,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1474",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 77,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1474A",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 69,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1474B",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 94,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1908",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 86,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2028",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 60,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2034",
+    "recinto": "PARR.EPIFANIA DEL SEÑOR",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-1",
+    "votos_prm": 29,
+    "votos_diputada": 1
+  },
+  {
+    "colegio": "1708",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 97,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1745",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 137,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1785",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 102,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1927",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 106,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1961",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 79,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2040",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 99,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "2068",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 108,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "2161",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 68,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2204",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 81,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2230",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 103,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "2298",
+    "recinto": "CLUB DEPORTIVO SAN JOSE DE MENDOZA",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 75,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1692",
+    "recinto": "ESC.BASICA LOS ALIFONZOS",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-5",
+    "votos_prm": 151,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "1995",
+    "recinto": "ESC.BASICA LOS ALIFONZOS",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-5",
+    "votos_prm": 69,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "1172",
+    "recinto": "ESC.PRIMARIA RURAL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-5",
+    "votos_prm": 56,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1172A",
+    "recinto": "ESC.PRIMARIA RURAL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-5",
+    "votos_prm": 40,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "1609",
+    "recinto": "ESC.PRIMARIA RURAL",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-5",
+    "votos_prm": 49,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1758",
+    "recinto": "MULTIUSO BRISAS DEL EDEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 146,
+    "votos_diputada": 14
+  },
+  {
+    "colegio": "1840",
+    "recinto": "MULTIUSO BRISAS DEL EDEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 110,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1885",
+    "recinto": "MULTIUSO BRISAS DEL EDEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 144,
+    "votos_diputada": 27
+  },
+  {
+    "colegio": "2138",
+    "recinto": "MULTIUSO BRISAS DEL EDEN",
+    "region": "REGION 3-E",
+    "zona": "ZONA O-2",
+    "votos_prm": 107,
+    "votos_diputada": 13
+  },
+  {
+    "colegio": "1941",
+    "recinto": "ESC.JUAN PABLO DUARTE",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 114,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2013",
+    "recinto": "ESC.JUAN PABLO DUARTE",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 86,
+    "votos_diputada": 0
+  },
+  {
+    "colegio": "2115",
+    "recinto": "ESC.JUAN PABLO DUARTE",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 108,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2171",
+    "recinto": "ESC.JUAN PABLO DUARTE",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 84,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "2212",
+    "recinto": "ESC.JUAN PABLO DUARTE",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 87,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "2241",
+    "recinto": "ESC.JUAN PABLO DUARTE",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 100,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2304",
+    "recinto": "ESC.JUAN PABLO DUARTE",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 79,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2347",
+    "recinto": "ESC.JUAN PABLO DUARTE",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 81,
+    "votos_diputada": 12
+  },
+  {
+    "colegio": "1968",
+    "recinto": "COLEGIO EL SOL",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 99,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "2076",
+    "recinto": "COLEGIO EL SOL",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 109,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "2174",
+    "recinto": "COLEGIO EL SOL",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 76,
+    "votos_diputada": 15
+  },
+  {
+    "colegio": "2262",
+    "recinto": "COLEGIO EL SOL",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 59,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2349",
+    "recinto": "COLEGIO EL SOL",
+    "region": "REGION 3-E",
+    "zona": "N/A",
+    "votos_prm": 55,
+    "votos_diputada": 14
+  },
+  {
+    "colegio": "1719",
+    "recinto": "CENT.EDUCACION DOMINICA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Y",
+    "votos_prm": 109,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1775",
+    "recinto": "CENT.EDUCACION DOMINICA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Y",
+    "votos_prm": 89,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1958",
+    "recinto": "CENT.EDUCACION DOMINICA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Y",
+    "votos_prm": 115,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2008",
+    "recinto": "CENT.EDUCACION DOMINICA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Y",
+    "votos_prm": 123,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "2111",
+    "recinto": "CENT.EDUCACION DOMINICA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Y",
+    "votos_prm": 108,
+    "votos_diputada": 16
+  },
+  {
+    "colegio": "2293",
+    "recinto": "CENT.EDUCACION DOMINICA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Y",
+    "votos_prm": 96,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "1717",
+    "recinto": "ESC.BASICA LA MILAGROSA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Z",
+    "votos_prm": 139,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1808",
+    "recinto": "ESC.BASICA LA MILAGROSA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Z",
+    "votos_prm": 157,
+    "votos_diputada": 8
+  },
+  {
+    "colegio": "1932",
+    "recinto": "ESC.BASICA LA MILAGROSA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Z",
+    "votos_prm": 111,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2071",
+    "recinto": "ESC.BASICA LA MILAGROSA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Z",
+    "votos_prm": 114,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1178",
+    "recinto": "ESC.BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 145,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1178A",
+    "recinto": "ESC.BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 162,
+    "votos_diputada": 6
+  },
+  {
+    "colegio": "1612",
+    "recinto": "ESC.BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 118,
+    "votos_diputada": 11
+  },
+  {
+    "colegio": "1612A",
+    "recinto": "ESC.BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 124,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "1612B",
+    "recinto": "ESC.BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 121,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "1817",
+    "recinto": "ESC.BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 111,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1848",
+    "recinto": "ESC.BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 107,
+    "votos_diputada": 5
+  },
+  {
+    "colegio": "2029",
+    "recinto": "ESC.BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 91,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "2097",
+    "recinto": "ESC.BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 84,
+    "votos_diputada": 3
+  },
+  {
+    "colegio": "2216",
+    "recinto": "ESC.BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 119,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2357",
+    "recinto": "ESC. BASICA LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA X-1",
+    "votos_prm": 65,
+    "votos_diputada": 4
+  },
+  {
+    "colegio": "1967",
+    "recinto": "ESC.PROF.JUAN BOSCH",
+    "region": "REGION 3-F",
+    "zona": "ZONA Z-1",
+    "votos_prm": 94,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2213",
+    "recinto": "ESC.PROF.JUAN BOSCH",
+    "region": "REGION 3-F",
+    "zona": "ZONA Z-1",
+    "votos_prm": 93,
+    "votos_diputada": 9
+  },
+  {
+    "colegio": "2137",
+    "recinto": "LICEO LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Y-3",
+    "votos_prm": 107,
+    "votos_diputada": 7
+  },
+  {
+    "colegio": "2214",
+    "recinto": "LICEO LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Y-3",
+    "votos_prm": 103,
+    "votos_diputada": 2
+  },
+  {
+    "colegio": "2247",
+    "recinto": "LICEO LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Y-3",
+    "votos_prm": 110,
+    "votos_diputada": 10
+  },
+  {
+    "colegio": "2325",
+    "recinto": "LICEO LA UREÑA",
+    "region": "REGION 3-F",
+    "zona": "ZONA Y-3",
+    "votos_prm": 67,
+    "votos_diputada": 1
+  }
+]

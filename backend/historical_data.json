@@ -1,0 +1,68 @@
+[
+  {
+    "region": "REGION 3-B",
+    "votos_prm": 6589,
+    "votos_diputada": 2205,
+    "porciento": 0.35
+  },
+  {
+    "region": "REGION 3",
+    "votos_prm": 8653,
+    "votos_diputada": 722,
+    "porciento": 0.1195
+  },
+  {
+    "region": "REGION 3-E",
+    "votos_prm": 7759,
+    "votos_diputada": 704,
+    "porciento": 0.1142
+  },
+  {
+    "region": "REGION 3-C",
+    "votos_prm": 6683,
+    "votos_diputada": 551,
+    "porciento": 0.0894
+  },
+  {
+    "region": "REGION 3-D",
+    "votos_prm": 6335,
+    "votos_diputada": 487,
+    "porciento": 0.079
+  },
+  {
+    "region": "REGION 3-A",
+    "votos_prm": 8689,
+    "votos_diputada": 444,
+    "porciento": 0.072
+  },
+  {
+    "region": "SAN LUIS",
+    "votos_prm": 9660,
+    "votos_diputada": 283,
+    "porciento": 0.0459
+  },
+  {
+    "region": "LA CALETA",
+    "votos_prm": 6808,
+    "votos_diputada": 259,
+    "porciento": 0.042
+  },
+  {
+    "region": "BOCA CHICA",
+    "votos_prm": 19235,
+    "votos_diputada": 219,
+    "porciento": 0.0355
+  },
+  {
+    "region": "REGION 3-F",
+    "votos_prm": 2982,
+    "votos_diputada": 177,
+    "porciento": 0.0287
+  },
+  {
+    "region": "GUERRA",
+    "votos_prm": 9325,
+    "votos_diputada": 100,
+    "porciento": 0.0162
+  }
+]

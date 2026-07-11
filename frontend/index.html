@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscripción Padronal - Diputada Pastora Altagracia SDE Circ. 3</title>
+    <link rel="shortcut icon" type="image/png" href="../GRAFICOS PARA LA PAGINA WEB/adelog_logo_icon.png">
+    <link rel="stylesheet" href="assets/css/styles.css?v=1.5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body id="public-landing">
+
+    <!-- Header Top Navigation -->
+    <div class="top-nav-bar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0; max-width: 1440px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="../GRAFICOS PARA LA PAGINA WEB/LOGO-PRM.jpg" alt="Logo PRM" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--secondary);">
+                <img src="../GRAFICOS PARA LA PAGINA WEB/adelog_logo_icon.png" alt="Logo ADELOG" style="width: 35px; height: 35px; border-radius: 6px; border: 1px solid var(--secondary); background: rgba(255,255,255,0.1); padding: 1px;">
+                <span style="font-family: var(--font-outfit); font-weight: 700; font-size: 16px; color: var(--text-white); letter-spacing: 0.5px;">PAD/28-32 <span style="color: var(--secondary); font-size: 12px;">PASTORA ALTAGRACIA</span></span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button id="theme-toggle" class="btn btn-outline" style="padding: 8px 12px; font-size: 13px;"><i class="fa fa-adjust"></i> Cambiar Tema</button>
+                <a href="login.html" class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;"><i class="fa fa-lock"></i> Acceso Administrativo</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Banner -->
+    <div class="banner-container">
+        <img id="public-header-banner" src="../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="PAD/28-32 Cabecera" class="banner-img">
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="container" style="flex: 1;">
+        <div class="grid-2" style="grid-template-columns: 1.2fr 0.8fr; align-items: start;">
+            
+            <!-- Left Side: Registration Form -->
+            <div>
+                <div class="card" style="margin-bottom: 24px;">
+                    <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 20px;">
+                        <h2 style="color: var(--secondary); font-size: 22px;"><i class="fa fa-user-plus"></i> Formulario de Auto-Inscripción</h2>
+                        <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">Inscríbase de forma rápida utilizando su cédula dominicana (Frente y Reverso).</p>
+                    </div>
+
+                    <!-- OCR capture -->
+                    <div style="background-color: rgba(255,255,255,0.02); border: 1px dashed var(--border-color); padding: 16px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                        <h4 style="margin-bottom: 8px; font-size: 15px;"><i class="fa fa-magic"></i> ¿Desea Auto-completar con su Cédula?</h4>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Suba una foto de su Cédula Dominicana para extraer los datos automáticamente.</p>
+                        <input type="file" id="public-ocr-file" accept="image/*" style="display: none;">
+                        <button type="button" id="btn-public-ocr" class="btn btn-outline btn-sm" onclick="document.getElementById('public-ocr-file').click()"><i class="fa fa-upload"></i> Subir foto frontal de cédula</button>
+                        <span id="public-ocr-loader" style="display: none; margin-left: 10px; font-size: 13px; color: var(--secondary);"><i class="fa fa-spinner fa-spin"></i> Procesando OCR...</span>
+                    </div>
+
+                    <form id="public-voter-form">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="public-cedula" class="form-label">Número de Cédula (OCR/Manual) *</label>
+                                <input type="text" id="public-cedula" class="form-control" placeholder="001-xxxxxxx-x" required>
+                                <small id="public-cedula-validation" style="display: none; font-size: 12px;"></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-telefono" class="form-label">Teléfono Celular *</label>
+                                <input type="text" id="public-telefono" class="form-control" placeholder="809-xxx-xxxx" required>
+                                <small id="public-phone-validation" style="display: none; font-size: 12px;"></small>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="public-nombres" class="form-label">Nombres *</label>
+                                <input type="text" id="public-nombres" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-apellidos" class="form-label">Apellidos *</label>
+                                <input type="text" id="public-apellidos" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label for="public-colegio_electoral" class="form-label">Colegio Electoral *</label>
+                                <input type="text" id="public-colegio_electoral" class="form-control" placeholder="1401" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-sector" class="form-label">Sector *</label>
+                                <input type="text" id="public-sector" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="public-municipio" class="form-label">Municipio *</label>
+                                <input type="text" id="public-municipio" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="public-recinto_ubicacion" class="form-label">Ubicación del Recinto *</label>
+                            <input type="text" id="public-recinto_ubicacion" class="form-control" placeholder="Nombre de la Escuela / Politécnico" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="public-direccion" class="form-label">Dirección Residencial Completa</label>
+                            <input type="text" id="public-direccion" class="form-control">
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label for="public-email" class="form-label">Correo Electrónico</label>
+                                <input type="email" id="public-email" class="form-control" placeholder="nombre@gmail.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="public-coordinador" class="form-label">Coordinador que le invitó *</label>
+                                <input type="text" id="public-coordinador" class="form-control" placeholder="Nombre del Coordinador" required>
+                            </div>
+                        </div>
+
+                        <!-- Data Consent Warning -->
+                        <div style="background-color: rgba(0, 84, 166, 0.05); padding: 12px; border-radius: 8px; font-size: 12px; color: var(--text-muted); margin-bottom: 20px; border-left: 3px solid var(--primary);">
+                            <p><strong>Declaración de Consentimiento (Ley 172-13):</strong> Al enviar este formulario, usted autoriza el almacenamiento y tratamiento seguro de sus datos únicamente para la logística de la campaña electoral de la Diputada Pastora Altagracia.</p>
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary" style="width: 100%; padding: 14px;"><i class="fa fa-paper-plane"></i> Completar Inscripción Padronal</button>
+                    </form>
+                </div>
+
+                <!-- Printable Voucher Div (will be filled after success) -->
+                <div id="public-voucher-result"></div>
+            </div>
+
+            <!-- Right Side: News & Facebook/Instagram Feeds -->
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="card">
+                    <h3 style="color: var(--text-white); font-size: 18px; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;"><i class="fa fa-bullhorn"></i> Anuncios y Actividades</h3>
+                    <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 10px;">
+                        <div style="border-left: 3px solid var(--secondary); padding-left: 10px;">
+                            <h4 style="font-size: 14px; color: var(--text-white);">Jornada de Carnetización y Logística</h4>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Este sábado 11 de julio estaremos en el Multiuso de Invivienda carnetizando a nuestros coordinadores. ¡Asiste!</p>
+                        </div>
+                        <div style="border-left: 3px solid var(--primary); padding-left: 10px;">
+                            <h4 style="font-size: 14px; color: var(--text-white);">Marcha Caravana por el Cambio</h4>
+                            <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Únete a nuestra marcha caravana junto al PRM partiendo desde la Av. Charles de Gaulle. ¡Apoya a la Pastora Altagracia!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Social Media Feed -->
+                <div class="card" style="align-items: center; text-align: center;">
+                    <h3 style="color: var(--text-white); font-size: 18px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; width: 100%; text-align: left;"><i class="fa-brands fa-instagram"></i> Facebook & Instagram Feed</h3>
+                    
+                    <!-- Custom Synchronized Social Feed (No Blockable Iframes) -->
+                    <div style="width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; text-align: left;">
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: #fff;">PA</div>
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 600; color: #fff;">Pastora Altagracia</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">Hace 2 horas via Instagram</div>
+                                </div>
+                            </div>
+                            <p style="font-size: 12px; color: var(--text-white); line-height: 1.4; margin-bottom: 8px;">Agradecida del inmenso apoyo de nuestra comunidad en Santo Domingo Este Circ. 3 durante nuestro recorrido de hoy. ¡El cambio sigue! 🇩🇴💪</p>
+                            <div style="display: flex; gap: 6px; font-size: 11px; color: var(--secondary);">
+                                <span>#PastoraDiputada</span> <span>#SDECir3</span> <span>#PRM</span>
+                            </div>
+                        </div>
+
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: #fff;">PA</div>
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 600; color: #fff;">Pastora Altagracia</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">Ayer via Facebook</div>
+                                </div>
+                            </div>
+                            <p style="font-size: 12px; color: var(--text-white); line-height: 1.4; margin-bottom: 8px;">Reunión de planificación con nuestro equipo de coordinadores de centros de acopio. Afinando los detalles logísticos para asegurar la victoria en cada colegio electoral. 🗳️✨</p>
+                            <div style="display: flex; gap: 6px; font-size: 11px; color: var(--secondary);">
+                                <span>#LogisticaElectoral</span> <span>#VictoriaAsegurada</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Siga nuestras actividades diarias directamente en redes sociales:</p>
+                    <div style="display: flex; gap: 8px; width: 100%; justify-content: center;">
+                        <a href="https://www.instagram.com/" target="_blank" class="btn btn-outline btn-sm" style="flex: 1; padding: 8px;"><i class="fa-brands fa-instagram"></i> Instagram</a>
+                        <a href="https://www.facebook.com/" target="_blank" class="btn btn-outline btn-sm" style="flex: 1; padding: 8px;"><i class="fa-brands fa-facebook"></i> Facebook</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background-color: #05080e; border-top: 1px solid var(--border-color); padding: 20px; text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 40px;">
+        <p>© 2026 Campaña Pastora Altagracia - Diputada SDE Circ. 3. Todos los derechos reservados.</p>
+        <p style="font-size: 11px; margin-top: 6px; color: rgba(255,255,255,0.15);">Normas de Seguridad Ley 172-13 & Módulo Luhn Verificado</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/app.js?v=1.4"></script>
+    <script>
+        // Cargar configuración de marca
+        fetch('../backend/api/settings.php?action=get')
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    const c = data.configuraciones;
+                    if (c.plataforma_nombre) {
+                        document.title = `${c.plataforma_nombre} - Inscripción Padronal`;
+                        const titleEl = document.querySelector('span[style*="font-family: var(--font-outfit)"]');
+                        if (titleEl) {
+                            titleEl.innerHTML = `${c.plataforma_nombre} <span style="color: var(--secondary); font-size: 12px;">\${c.candidato_nombre || ''}</span>`;
+                        }
+                    }
+                    const bannerUrl = c.candidato_logo_url || '../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png';
+                    const bannerImg = document.getElementById('public-header-banner');
+                    if (bannerImg) {
+                        bannerImg.src = bannerUrl;
+                    }
+                }
+            })
+            .catch(err => console.error("Error al cargar marca:", err));
+
+        // Lógica de Validación Algorítmica en Caliente para Frontend
+        document.getElementById('public-cedula').addEventListener('input', function(e) {
+            const val = e.target.value;
+            const clean = val.replace(/\D/g, '');
+            const checkAlert = document.getElementById('public-cedula-validation');
+            
+            if (clean.length === 11) {
+                // Ejecutar Luhn dominicano
+                const pesos = [1, 2, 1, 2, 1, 2, 1, 2, 1, 2];
+                let suma = 0;
+                for (let i = 0; i < 10; i++) {
+                    let mult = parseInt(clean[i]) * pesos[i];
+                    if (mult >= 10) {
+                        suma += Math.floor(mult / 10) + (mult % 10);
+                    } else {
+                        suma += mult;
+                    }
+                }
+                const digitoCalculado = (10 - (suma % 10)) % 10;
+                const digitoReal = parseInt(clean[10]);
+                
+                if (digitoCalculado === digitoReal) {
+                    checkAlert.style.display = 'block';
+                    checkAlert.style.color = 'var(--success)';
+                    checkAlert.innerHTML = '<i class="fa fa-check-circle"></i> Cédula válida en padrón';
+                } else {
+                    checkAlert.style.display = 'block';
+                    checkAlert.style.color = 'var(--danger)';
+                    checkAlert.innerHTML = '<i class="fa fa-times-circle"></i> Cédula con dígito verificador inválido';
+                }
+            } else if (clean.length > 0) {
+                checkAlert.style.display = 'block';
+                checkAlert.style.color = 'var(--warning)';
+                checkAlert.innerHTML = 'Ingrese los 11 dígitos de su cédula';
+            } else {
+                checkAlert.style.display = 'none';
+            }
+        });
+
+        document.getElementById('public-telefono').addEventListener('input', function(e) {
+            const val = e.target.value.replace(/\D/g, '');
+            const phoneAlert = document.getElementById('public-phone-validation');
+            
+            if (val.length === 10) {
+                const pref = val.substring(0, 3);
+                if (['809', '829', '849'].includes(pref)) {
+                    phoneAlert.style.display = 'block';
+                    phoneAlert.style.color = 'var(--success)';
+                    phoneAlert.innerHTML = '<i class="fa fa-check-circle"></i> Teléfono dominicano válido';
+                } else {
+                    phoneAlert.style.display = 'block';
+                    phoneAlert.style.color = 'var(--danger)';
+                    phoneAlert.innerHTML = '<i class="fa fa-times-circle"></i> Prefijo inválido (Debe ser 809, 829 o 849)';
+                }
+            } else if (val.length > 0) {
+                phoneAlert.style.display = 'block';
+                phoneAlert.style.color = 'var(--warning)';
+                phoneAlert.innerHTML = 'Ingrese los 10 dígitos del celular';
+            } else {
+                phoneAlert.style.display = 'none';
+            }
+        });
+    </script>
+    <!-- Print Area -->
+    <div id="print-voucher-area" class="print-hidden-container"></div>
+</body>
+</html>
