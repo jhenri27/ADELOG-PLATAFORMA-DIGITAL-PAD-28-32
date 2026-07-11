@@ -540,6 +540,54 @@ if ($method === 'POST') {
         $logOutput .= "[OK] Guardado localmente en: backend/backups/$fileName\n";
         if ($hasExternal) {
             $logOutput .= "[OK] Guardado en disco externo F en: $externalPath\n";
+            
+            $logOutput .= "\n--- COPIANDO ARTEFACTOS Y CÓDIGO AL DISCO F ---\n";
+            $srcRoot = dirname(__DIR__, 2);
+            $dstRoot = "F:\\ADELOG\\PLATAFORMA DIGITAL-PAD-28-32";
+            
+            $copyCount = 0;
+            $copyDir = function($src, $dst) use (&$copyDir, &$copyCount) {
+                if (!is_dir($src)) return;
+                @mkdir($dst, 0777, true);
+                $files = scandir($src);
+                if ($files) {
+                    foreach ($files as $file) {
+                        if ($file === '.' || $file === '..') continue;
+                        if ($file === '.git' || $file === 'config.php' || $file === 'error.log' || $file === 'logs' || $file === 'backups') continue;
+                        
+                        $srcPath = $src . '/' . $file;
+                        $dstPath = $dst . '/' . $file;
+                        
+                        if (is_dir($srcPath)) {
+                            $copyDir($srcPath, $dstPath);
+                        } else {
+                            if (@copy($srcPath, $dstPath)) {
+                                $copyCount++;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            $filesRoot = scandir($srcRoot);
+            if ($filesRoot) {
+                foreach ($filesRoot as $file) {
+                    if ($file === '.' || $file === '..') continue;
+                    if (is_file($srcRoot . '/' . $file)) {
+                        if ($file === 'config.php' || $file === 'error.log') continue;
+                        if (@copy($srcRoot . '/' . $file, $dstRoot . '/' . $file)) {
+                            $copyCount++;
+                        }
+                    }
+                }
+            }
+            
+            $dirsToCopy = ['backend', 'frontend', 'GRAFICOS PARA LA PAGINA WEB', 'GRAFICOS DE UTILERIA', 'DATOS ELECTORALES'];
+            foreach ($dirsToCopy as $folder) {
+                $copyDir($srcRoot . '/' . $folder, $dstRoot . '/' . $folder);
+            }
+            
+            $logOutput .= "[OK] Copia de espejo completada. Se copiaron $copyCount archivos de código y recursos en F:\\ADELOG\\PLATAFORMA DIGITAL-PAD-28-32.\n";
         } else {
             $logOutput .= "[ADVERTENCIA] Unidad externa F: no accesible (F:\\ADELOG\\PLATAFORMA DIGITAL-PAD-28-32\\backups).\n";
         }
