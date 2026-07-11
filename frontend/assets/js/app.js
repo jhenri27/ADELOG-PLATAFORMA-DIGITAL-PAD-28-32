@@ -1273,7 +1273,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             
                             <!-- Footer disclaimer matching the template -->
                             <div style="text-align: center; margin-top: 35px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 12px; color: #64748b;">
-                                <p>© 2026 Campaña Pastora Altagracia - Diputada SDE Circ. 3. Todos los derechos reservados.</p>
+                                <p>Desarrollado para la administración de logisticas de comandos de campañas en RD, por sypempresariales . Copyright © 2026 Sypempresariales.</p>
                             </div>
                         </div>
                     `;
@@ -2887,7 +2887,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Footer -->
         <div style="background-color: #0f172a; padding: 15px; text-align: center; font-size: 11px; color: #64748b;">
             Este documento constituye una constancia de inscripción oficial registrada en ADELOG.<br>
-            © Campaña Pastora Altagracia - PRM 2026. Todos los derechos reservados.
+            Desarrollado para la administración de logisticas de comandos de campañas en RD, por sypempresariales . Copyright © 2026 Sypempresariales.
         </div>
     </div>
 </div>`;

@@ -132,4 +132,4 @@ La plataforma cuenta con un panel de control técnico interactivo en **Configura
     *   Crea un commit automático local y empuja los cambios fuente a tu repositorio remoto de GitHub con un solo clic.
 
 ---
-*Desarrollado para la campaña Pastora Altagracia - PRM 2026/2028. Todos los derechos reservados.*
+Desarrollado para la administración de logisticas de comandos de campañas en RD, por sypempresariales . Copyright © 2026 Sypempresariales.

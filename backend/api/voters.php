@@ -205,7 +205,7 @@ if ($method === 'GET') {
         <!-- Footer -->
         <div style=\"background-color: #0f172a; padding: 15px; text-align: center; font-size: 11px; color: #64748b;\">
             Este documento constituye una constancia de inscripción oficial registrada en ADELOG.<br>
-            © Campaña Pastora Altagracia - PRM 2026. Todos los derechos reservados.
+            Desarrollado para la administración de logisticas de comandos de campañas en RD, por sypempresariales . Copyright © 2026 Sypempresariales.
         </div>
     </div>
 </div>";
@@ -830,7 +830,7 @@ if ($method === 'POST') {
         <!-- Footer -->
         <div style=\"background-color: #0f172a; padding: 15px; text-align: center; font-size: 11px; color: #64748b;\">
             Este documento constituye una constancia de inscripción oficial registrada en ADELOG.<br>
-            © Campaña Pastora Altagracia - PRM 2026. Todos los derechos reservados.
+            Desarrollado para la administración de logisticas de comandos de campañas en RD, por sypempresariales . Copyright © 2026 Sypempresariales.
         </div>
     </div>
 </div>";
