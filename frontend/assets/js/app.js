@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             openModal('custom-confirm-modal');
         });
     }
+    window.showCustomConfirm = showCustomConfirm;
 
     // Inicializar estado global
     const State = {
@@ -252,6 +253,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnCapture) {
             btnCapture.addEventListener('click', () => {
                 capturePhoto();
+            });
+        }
+
+        // Autocompletado y Validación en Padrón Circunscripción 3
+        const inputCedula = document.getElementById('cedula');
+        if (inputCedula) {
+            inputCedula.addEventListener('input', (e) => {
+                const val = e.target.value.replace(/\D/g, '');
+                if (val.length === 11) {
+                    buscarEnPadronCirc3(e.target.value, '');
+                }
+            });
+            inputCedula.addEventListener('blur', (e) => {
+                if (e.target.value.trim() !== '') {
+                    buscarEnPadronCirc3(e.target.value, '');
+                }
             });
         }
 
@@ -506,6 +523,10 @@ document.addEventListener('DOMContentLoaded', () => {
             subtab.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetSub = subtab.getAttribute('data-subtab');
+                if (targetSub === 'perfiles_rbac') {
+                    switchTab('permissions');
+                    return;
+                }
                 document.querySelectorAll('.subtab-link').forEach(s => s.classList.remove('active'));
                 document.querySelectorAll('.subtab-content').forEach(sc => sc.classList.remove('active'));
                 subtab.classList.add('active');
@@ -931,6 +952,66 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => {
                 if (loader) loader.style.display = 'none';
                 showNotification("✗ Error de red al ejecutar OCR.", "danger", isPublic);
+            });
+    }
+
+    function buscarEnPadronCirc3(cedulaInput, targetFormPrefix = '') {
+        const cleanCed = cedulaInput.replace(/\D/g, '');
+        if (cleanCed.length !== 11) return;
+
+        let feedbackEl = document.getElementById(targetFormPrefix + 'cedula-feedback');
+        if (!feedbackEl) {
+            feedbackEl = document.createElement('div');
+            feedbackEl.id = targetFormPrefix + 'cedula-feedback';
+            feedbackEl.style.fontSize = '12px';
+            feedbackEl.style.marginTop = '4px';
+            feedbackEl.style.fontWeight = 'bold';
+            const cedInputEl = document.getElementById(targetFormPrefix + 'cedula');
+            if (cedInputEl && cedInputEl.parentNode) {
+                cedInputEl.parentNode.appendChild(feedbackEl);
+            }
+        }
+        
+        feedbackEl.innerHTML = '<span style="color:var(--secondary);"><i class="fa fa-spinner fa-spin"></i> Consultado Padrón Máster Circunscripción 3...</span>';
+
+        fetch(`../backend/api/padron_consulta.php?action=buscar&cedula=${encodeURIComponent(cedulaInput)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito && data.encontrado && data.votante) {
+                    const v = data.votante;
+                    
+                    const elemNombres = document.getElementById(targetFormPrefix + 'nombres');
+                    if (elemNombres) elemNombres.value = v.nombres;
+
+                    const elemApellidos = document.getElementById(targetFormPrefix + 'apellidos');
+                    if (elemApellidos) elemApellidos.value = v.apellidos;
+
+                    const elemSector = document.getElementById(targetFormPrefix + 'sector');
+                    if (elemSector) elemSector.value = v.sector;
+
+                    const elemMunicipio = document.getElementById(targetFormPrefix + 'municipio');
+                    if (elemMunicipio) elemMunicipio.value = v.municipio;
+
+                    const elemRecinto = document.getElementById(targetFormPrefix + 'recinto_ubicacion');
+                    if (elemRecinto) elemRecinto.value = v.recinto;
+
+                    const elemDireccion = document.getElementById(targetFormPrefix + 'direccion');
+                    if (elemDireccion && !elemDireccion.value) elemDireccion.value = v.sector;
+
+                    let htmlFeedback = `<span style="color:#10b981;"><i class="fa fa-check-circle"></i> Verificado en Padrón Circ. 3 (Zona ${v.zona})</span>`;
+                    
+                    if (data.esta_inscrito && data.detalles_inscripcion) {
+                        htmlFeedback += `<br><span style="color:#ef4444;"><i class="fa fa-exclamation-triangle"></i> ¡Ya registrado por: ${data.detalles_inscripcion.coordinador}!</span>`;
+                    }
+
+                    feedbackEl.innerHTML = htmlFeedback;
+                } else {
+                    feedbackEl.innerHTML = `<span style="color:#f59e0b;"><i class="fa fa-info-circle"></i> Cédula no registrada en Circunscripción 3 (Edición manual activa).</span>`;
+                }
+            })
+            .catch(err => {
+                console.error("Error al consultar padrón:", err);
+                if (feedbackEl) feedbackEl.innerHTML = '';
             });
     }
 
@@ -1879,10 +1960,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ─── HELPERS GENERALES ──────────────────────────────────────────────────
-    function openModal(id) {
+    window.openModal = function(id) {
         const modal = document.getElementById(id);
         if (modal) modal.style.display = 'flex';
-    }
+    };
 
     window.closeModal = function(id) {
         const modal = document.getElementById(id);

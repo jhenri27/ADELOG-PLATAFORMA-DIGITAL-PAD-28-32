@@ -1,0 +1,279 @@
+/* =========================================================================
+   ESTILOS RESPONSIVOS PARA MANTENIMIENTO DE PERFILES Y MALLA DE PERMISOS (RBAC)
+   PAD/28-32 - Plataforma Electoral
+   ========================================================================= */
+
+/* Estructura general de Subpestañas */
+.rbac-subtabs-nav {
+    display: flex;
+    gap: 12px;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 24px;
+    padding-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.rbac-subtab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-gray);
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rbac-subtab-btn:hover {
+    color: var(--secondary);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.rbac-subtab-btn.active {
+    color: #ffffff;
+    background: var(--secondary);
+    box-shadow: 0 4px 12px rgba(227, 161, 19, 0.25);
+}
+
+/* Tarjeta de Resumen Jerárquico */
+.profile-hero-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.profile-avatar-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Acciones Masivas por Columna */
+.malla-actions-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.btn-malla-toggle {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-white);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-malla-toggle:hover {
+    background: var(--secondary);
+    color: #ffffff;
+    border-color: var(--secondary);
+}
+
+/* Contenedor Adaptativo de la Malla */
+.malla-table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg);
+    margin-bottom: 24px;
+}
+
+.malla-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+.malla-table th, .malla-table td {
+    padding: 12px 14px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 13px;
+}
+
+.malla-table th {
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--secondary);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.malla-table th:first-child, .malla-table td:first-child {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    background: #0d1322;
+    z-index: 2;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+}
+
+.malla-table tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Custom Checkbox Switch */
+.switch-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--secondary);
+}
+
+/* Barra de Filtros y Búsqueda para Mantenimiento */
+.perfiles-filter-bar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.perfiles-search-group {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+    min-width: 280px;
+}
+
+/* Estilos de Botones de Acción en Tabla */
+.btn-action-sm {
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-action-sm:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+.btn-edit-perf { background: #3b82f6; color: #fff; }
+.btn-toggle-perf { background: #f59e0b; color: #fff; }
+.btn-copy-perf { background: #8b5cf6; color: #fff; }
+.btn-log-perf { background: #10b981; color: #fff; }
+
+/* MEDIA QUERIES RESPONSIVAS */
+@media (max-width: 768px) {
+    .profile-hero-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .perfiles-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .perfiles-search-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .rbac-subtabs-nav {
+        width: 100%;
+    }
+    
+    .rbac-subtab-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .modal-content {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        margin: 10px !important;
+        padding: 16px !important;
+    }
+}
+
+/* REGLAS ADAPTATIVAS PARA TEMA CLARO (LIGHT THEME SKIN) */
+body.light-theme .malla-table th:first-child,
+body.light-theme .malla-table td:first-child {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-right: 1px solid #cbd5e1;
+}
+
+body.light-theme .malla-table th {
+    background: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+
+body.light-theme .malla-table td {
+    color: #0f172a !important;
+}
+
+body.light-theme .profile-hero-card {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+}
+
+body.light-theme #hero-profile-name {
+    color: #0f172a !important;
+}
+
+body.light-theme .malla-actions-bar {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+}
+
+body.light-theme .btn-malla-toggle {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+}
+
+body.light-theme .btn-malla-toggle:hover {
+    background: var(--secondary) !important;
+    color: #ffffff !important;
+}
+
+body.light-theme .perfiles-filter-bar input,
+body.light-theme .perfiles-filter-bar select {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+}

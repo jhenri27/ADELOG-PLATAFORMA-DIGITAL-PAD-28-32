@@ -130,6 +130,15 @@
             background-color: #003d7a;
         }
 
+        .footer-note {
+            margin-top: 35px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #64748b;
+            text-align: center;
+        }
+
         @media print {
             .no-print {
                 display: none;
@@ -159,19 +168,23 @@
             <img src="{{CANDIDATO_LOGO_URL}}" alt="{{CANDIDATO_NOMBRE}}" style="width: 100%; height: auto; display: block; border-bottom: 4px solid #E3A113; border-radius: 8px;">
         </div>
 
-        <div class="title">Manual Oficial de Formación y Manejo de Plataforma</div>
-        <div class="subtitle">Guía de Entrenamiento para Digitadores, Administradores y Promotores Electorales</div>
+        <div class="title">MANUAL OFICIAL DE FORMACIÓN Y MANEJO DE PLATAFORMA</div>
+        <div class="subtitle">Guía de Entrenamiento para Digitadores, Administradores y Promotores Electorales — {{PLATAFORMA_NOMBRE}}</div>
 
-        <h2>1. Gestión y Acceso de Colaboradores</h2>
-        <p>La plataforma electoral {{PLATAFORMA_NOMBRE}} divide las responsabilidades en diferentes perfiles para garantizar la seguridad de la información:</p>
+        <!-- 1. GESTIÓN Y ACCESO DE COLABORADORES (RBAC) -->
+        <h2>1. GESTIÓN Y ACCESO DE COLABORADORES (RBAC)</h2>
+        <p>La plataforma electoral {{PLATAFORMA_NOMBRE}} implementa el estándar internacional de seguridad <strong>NIST RBAC 2.0 & ISO 27001</strong> para dividir las responsabilidades en diferentes perfiles y garantizar la seguridad de la información:</p>
         <ul>
-            <li><strong>Administrador:</strong> Control de configuraciones, asignación de mallas de permisos (incluyendo visualización del padrón histórico 2024), inactivación/eliminación de enlaces QR y visualización total.</li>
-            <li><strong>Digitador:</strong> Encargado de la validación rápida de formularios físicos y soporte de chat con los coordinadores en tiempo real.</li>
-            <li><strong>Coordinador:</strong> Líder de campo encargado de captar nuevos electores y dar seguimiento a su red.</li>
+            <li><strong>Administrador (Nivel 1):</strong> Control de configuraciones, asignación de mallas de permisos atómicos de 10 acciones (ejecutar, ver_datos, crear, editar, eliminar, reportes, exportar, importar, imprimir, solo_propios), inactivación/eliminación de enlaces QR y visualización total.</li>
+            <li><strong>Gerente Electoral (Nivel 2):</strong> Supervisión ejecutiva de metas territoriales, reportes consolidados y auditoría de recintos.</li>
+            <li><strong>Jefe Electoral (Nivel 3):</strong> Coordinación táctica de recintos y zonas electorales, atención de incidencias en Helpdesk.</li>
+            <li><strong>Coordinador (Nivel 4):</strong> Líder de campo encargado de captar nuevos electores y dar seguimiento a su red.</li>
+            <li><strong>Digitador (Nivel 5):</strong> Encargado de la validación rápida de formularios físicos y soporte de chat con los coordinadores en tiempo real.</li>
         </ul>
 
-        <h2>2. Escaneo Inteligente OCR (Frente y Reverso)</h2>
-        <p>El sistema utiliza algoritmos de Inteligencia Artificial para agilizar el registro a través de fotografías de la cédula:</p>
+        <!-- 2. ESCANEO INTELIGENTE OCR -->
+        <h2>2. ESCANEO INTELIGENTE OCR (FRENTE Y REVERSO)</h2>
+        <p>El sistema utiliza algoritmos de Inteligencia Artificial (Google Vision API) para agilizar el registro a través de fotografías de la cédula:</p>
         <div class="step-box">
             <div class="step-title">Paso 1: Foto Frontal de la Cédula</div>
             El sistema solicitará cargar la imagen frontal. Al procesarla, extraerá el número de cédula, nombres y apellidos de forma autónoma.
@@ -181,20 +194,79 @@
             Una vez validada la parte frontal, el sistema solicitará la foto trasera para extraer la dirección, sector, municipio y colegio electoral de la zona de lectura mecánica (MRZ).
         </div>
 
-        <div class="alert-box">
-            <div class="alert-title">⚠️ REGLA DE LIMPIEZA DE DATOS (CIRCUNSCRIPCIÓN 3)</div>
-            La plataforma posee una validación algorítmica tanto en backend como frontend que bloquea cualquier registro cuyos datos territoriales no correspondan a la <strong>Circunscripción 3 de Santo Domingo</strong> (Santo Domingo Este Región 3, Guerra, Boca Chica, San Luis, La Caleta). Esto evita el ingreso accidental de electores de otras localidades.
+        <!-- 3. PADRÓN DE CONSULTA Y VALIDACIÓN TERRITORIAL (CIRCUNSCRIPCIÓN 3) -->
+        <h2>3. PADRÓN DE CONSULTA Y VALIDACIÓN TERRITORIAL (CIRCUNSCRIPCIÓN 3)</h2>
+        <p>La plataforma posee el <strong>Padrón Máster de Consulta de la 3ra. Circunscripción (42,739 Electores)</strong> abarcando Santo Domingo Este Región 3, Guerra, Boca Chica, San Luis, La Caleta, Invivienda, Mendoza, Brisas del Este, Los Frailes y sectores aledaños:</p>
+        
+        <div class="step-box">
+            <div class="step-title">Paso 1: Digitación de Cédula y Autocompletado en Tiempo Real</div>
+            Al digitar los 11 números de la Cédula en el formulario de inscripción o búsqueda, el motor de la base de datos consulta el padrón de 42,739 electores y llena automáticamente los campos de: <strong>Nombres, Apellidos, Sector, Municipio, Recinto Electoral y Zona</strong> en menos de 5 milisegundos.
         </div>
 
-        <h2>3. Padrón Histórico 2024 y Consultas</h2>
-        <p>Los operadores autorizados cuentan con herramientas avanzadas para consultar el padrón de la contienda electoral pasada:</p>
+        <div class="step-box">
+            <div class="step-title">Paso 2: Validación por Algoritmo de Luhn (Mod 10)</div>
+            Cada número de cédula es verificado matemáticamente por el Algoritmo de Luhn dominicano para evitar el ingreso de números falsos o mal digitados.
+        </div>
+
+        <div class="alert-box">
+            <div class="alert-title">⚠️ REGLA DE LIMPIEZA DE DATOS Y DETECCIÓN DE DUPLICADOS</div>
+            Si la cédula ingresada ya pertenece a un simpatizante inscrito previamente por otro coordinador, el sistema despliega de inmediato una alerta roja informando el nombre del coordinador suministrante original para evitar la duplicidad de metas de campo.
+        </div>
+
+        <!-- 4. CAPTACIÓN AUTÓNOMA VÍA BOT DE WHATSAPP -->
+        <h2>4. CAPTACIÓN AUTÓNOMA VÍA BOT DE WHATSAPP</h2>
+        <p>La campaña cuenta con un Bot interactivo de WhatsApp en el número oficial para la captación autónoma de votantes en tiempo real:</p>
+        
+        <div class="step-box">
+            <div class="step-title">Paso 1: Inicio de Conversación del Votante</div>
+            El ciudadano escribe "Hola" o "Inscribirme" al número de WhatsApp de la plataforma. El bot le da la bienvenida y le solicita ingresar su número de cédula (11 dígitos).
+        </div>
+
+        <div class="step-box">
+            <div class="step-title">Paso 2: Validación de Cédula y Consulta en Padrón</div>
+            El bot ejecuta la fórmula matemática del dígito verificador y consulta el Padrón Máster. Si el elector no ha sido inscrito previamente, le muestra su nombre oficial registrado en la Junta Central Electoral para que lo confirme.
+        </div>
+
+        <div class="step-box">
+            <div class="step-title">Paso 3: Registro de Teléfono y Coordinador Referente</div>
+            El bot le solicita confirmar su número de teléfono celular de contacto y el nombre o código del coordinador electoral que lo refirió.
+        </div>
+
+        <div class="step-box">
+            <div class="step-title">Paso 4: Emisión del Comprobante Digital</div>
+            Finalmente, el bot emite una ficha interactiva de confirmación de inscripción completa con su número de lista y recinto correspondiente.
+        </div>
+
+        <!-- 5. MESA DE AYUDA E INCIDENCIAS LOGÍSTICAS (HELPDESK) -->
+        <h2>5. MESA DE AYUDA E INCIDENCIAS LOGÍSTICAS (HELPDESK)</h2>
+        <p>El módulo de Helpdesk centraliza los reportes sobre dificultades logísticas, contingencias de recintos y asistencias del sistema durante las jornadas de campaña:</p>
+
+        <div class="step-box">
+            <div class="step-title">Paso 1: Creación de Ticket de Incidencia</div>
+            Diríjase a la pestaña **Helpdesk** y presione **Reportar Incidencia**. Seleccione la categoría (*'Campaña Electoral'*, *'Anomalía del Sistema'* o *'Soporte Técnico'*) y el nivel de prioridad (*Baja, Media, Alta o Urgente*).
+        </div>
+
+        <div class="step-box">
+            <div class="step-title">Paso 2: Descripción del Problema</div>
+            Detalle la situación de campo (ejemplo: *"Faltan formularios físicos en el recinto Escuela República de Panamá"* o *"La cámara no enfoca en dispositivo móvil"*).
+        </div>
+
+        <div class="step-box">
+            <div class="step-title">Paso 3: Seguimiento y Bitácora de Solución</div>
+            Los ingenieros de Soporte TI de Turno revisarán la solicitud en tiempo real y actualizarán el estado del ticket a *"En Proceso"* y posteriormente a *"Resuelto"*, generando una notificación automática.
+        </div>
+
+        <!-- 6. PADRÓN HISTÓRICO 2024 Y CONSULTAS -->
+        <h2>6. PADRÓN HISTÓRICO 2024 Y CONSULTAS</h2>
+        <p>Los operadores autorizados cuentan con herramientas avanzadas para consultar el padrón de la contienda electoral pasada y el activo 2028:</p>
         <ul>
             <li><strong>Selector de Periodos:</strong> Permite alternar la interfaz en tiempo real entre la consulta de inscritos actuales (2028) y los registrados históricos (2024).</li>
             <li><strong>Descarga en Excel:</strong> Permite exportar a Microsoft Excel la planilla limpia y formateada del padrón según la región y periodo activos.</li>
-            <li><strong>Impresión del Listado:</strong> Genera planillas de firmas oficiales con la estética de la diputada para el trabajo de auditoría en campo.</li>
+            <li><strong>Impresión del Listado:</strong> Genera planillas de firmas oficiales con la estética de la candidata para el trabajo de auditoría en campo.</li>
         </ul>
 
-        <h2>4. Chat en Vivo y Enlace con WhatsApp Web</h2>
+        <!-- 7. CHAT EN VIVO Y ENLACE CON WHATSAPP WEB -->
+        <h2>7. CHAT EN VIVO Y ENLACE CON WHATSAPP WEB</h2>
         <p>Para agilizar la comunicación con los promotores y coordinadores de campo, la plataforma ofrece dos canales integrados:</p>
         <ol>
             <li><strong>Chat Webhook de WhatsApp:</strong> Recibe las solicitudes entrantes del bot interactivo cuando el votante requiere soporte humano ("Humano").</li>

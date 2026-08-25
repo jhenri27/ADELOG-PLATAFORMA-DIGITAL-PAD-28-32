@@ -17,3 +17,5 @@ scratch/test_*.php
 backend/backups/
 backups/
 *.sql
+*.rar
+scratch/

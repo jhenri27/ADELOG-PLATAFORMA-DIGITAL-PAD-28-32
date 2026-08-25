@@ -1,6 +1,6 @@
 <?php
 /**
- * API: Documentación Informativa General
+ * API: Documentación Informativa General y Manual de Operaciones
  * PAD/28-32 - Plataforma Electoral
  */
 
@@ -22,58 +22,86 @@ if ($method !== 'GET') {
     exit;
 }
 
-// Retornar la base de conocimiento estructurada
+// Base de conocimiento estructurada actualizada
 $documentos = [
     [
         "id" => 1,
-        "titulo" => "1. Funcionamiento del Escaneo OCR de Cédulas",
-        "categoria" => "Guías de Uso",
-        "contenido" => "El sistema utiliza Google Cloud Vision API para extraer de forma automática los datos impresos de los documentos de identidad dominicanos (Cédula).\n\n" .
+        "titulo" => "1. Escaneo OCR con Visión Artificial y Validación de Identidad",
+        "categoria" => "Captación Digital",
+        "contenido" => "El sistema integra Google Cloud Vision API para la extracción automatizada de datos impresos en la Cédula de Identidad y Electoral dominicana.\n\n" .
                        "**Instrucciones para un escaneo exitoso:**\n" .
-                       "1. Tome la foto en un ambiente bien iluminado, evitando reflejos y sombras sobre el plástico.\n" .
+                       "1. Tome la fotografía con iluminación uniforme, evitando sombras o reflejos directos en el plástico.\n" .
                        "2. Coloque el documento en posición horizontal y centre el lente.\n" .
-                       "3. El sistema procesa de forma inteligente el frontal de la cédula para extraer el nombre y cédula, y el reverso para extraer el colegio electoral, dirección de residencia, sector y municipio.\n" .
-                       "4. Si hay textos borrosos, el sistema autocompletará lo que reconozca y usted podrá corregir o rellenar el resto de los campos de forma manual.",
+                       "3. El motor OCR analiza la cara frontal (Nombres, Apellidos y Cédula) y el reverso (Colegio Electoral, Municipio, Sector y Dirección Residencial).\n" .
+                       "4. Cada número de cédula es auditado automáticamente mediante el **Algoritmo de Luhn (Mod 10)** para garantizar su validez estructural antes de registrarse.",
         "icon" => "fa-camera"
     ],
     [
         "id" => 2,
-        "titulo" => "2. Instrucciones para Inscripciones Autónomas vía Bot de WhatsApp",
-        "categoria" => "Guías de Uso",
-        "contenido" => "La campaña cuenta con un Bot de WhatsApp en el número oficial para la captación autónoma de votantes.\n\n" .
-                       "**Flujo de inscripción para votantes:**\n" .
-                       "1. El votante escribe 'hola' o 'inscribirme' al WhatsApp.\n" .
-                       "2. El bot le da la bienvenida y le solicita ingresar su número de cédula (11 dígitos).\n" .
-                       "3. El bot ejecuta la fórmula matemática del dígito verificador y busca si ya está registrada. Si está libre, consulta el nombre oficial y le pide al votante confirmar.\n" .
-                       "4. Luego solicita su número telefónico de celular y su dirección.\n" .
-                       "5. Finalmente, solicita el nombre del coordinador que lo refirió y emite una confirmación de inscripción completa con su número de lista.\n\n" .
-                       "Si un *Coordinador* escribe al bot, el sistema detectará su número y lo enrutará al chat con los digitadores del centro de acopio para atención personalizada.",
-        "icon" => "fa-comments"
+        "titulo" => "2. Padrón de Consulta y Validación Territorial (Circunscripción 3)",
+        "categoria" => "Padrón Electoral",
+        "contenido" => "La plataforma cuenta con el **Padrón Máster Integrado de la 3ra. Circunscripción (42,739 Votantes)** abarcando Santo Domingo Este, San Luis, Boca Chica, San José de Mendoza, El Tamarindo, Invivienda, Brisas del Este, Los Frailes y sectores aledaños.\n\n" .
+                       "**Funcionalidades del Padrón:**\n" .
+                       "1. **Autocompletado en Tiempo Real:** Al digitar los 11 números de la cédula en el formulario de inscripción, el sistema consulta el padrón máster y llena de forma instantánea: Nombres, Apellidos, Sector, Municipio, Recinto y Zona.\n" .
+                       "2. **Verificación de Duplicados:** Muestra una alerta visual instantánea indicando si el votante pertenece a la Circunscripción 3 y si ya fue inscrito previamente por otro coordinador.\n" .
+                       "3. **Estadísticas de Penetración:** Monitoreo en tiempo real del nivel de avance por recintos (ej: Inst. Elda Reyes Muñoz, Prof. Manuel B. Troncoso) y sectores de influencia.",
+        "icon" => "fa-database"
     ],
     [
         "id" => 3,
-        "titulo" => "3. Reporte de Incidencias en Helpdesk",
-        "categoria" => "Guías de Uso",
-        "contenido" => "El módulo de Helpdesk centraliza los reportes sobre dificultades logísticas y anomalías del sistema en el transcurso de las campañas.\n\n" .
-                       "**Cómo usar el Helpdesk:**\n" .
-                       "- Vaya a la pestaña de **Helpdesk**.\n" .
-                       "- Presione **Reportar Incidencia**.\n" .
-                       "- Seleccione la categoría ('Campaña Electoral', 'Anomalía del Sistema' o 'Soporte Técnico').\n" .
-                       "- Detalle el problema (ejemplo: 'Faltan formularios físicos en el centro de acopio Sabana Perdida' o 'La cámara no se activa en dispositivos iOS antiguos').\n" .
-                       "- Los ingenieros de Soporte TI de Turno revisarán el caso y actualizarán el estado a 'En Proceso' y luego a 'Resuelto'.",
-        "icon" => "fa-ticket-alt"
+        "titulo" => "3. Administración de Perfiles y Accesos Granulares (RBAC)",
+        "categoria" => "Seguridad y Accesos",
+        "contenido" => "El sistema implementa el estándar **NIST RBAC 2.0 & ISO 27001** para la administración de roles de usuarios y control de accesos atómicos.\n\n" .
+                       "**Componentes del Módulo de Perfiles:**\n" .
+                       "1. **Malla de Permisos Atómica (10 Dimensiones):** Permite activar o desactivar permisos específicos por módulo (*Ejecutar, Ver Datos, Crear, Editar, Eliminar, Reportes, Exportar, Importar, Imprimir y Solo Propios*).\n" .
+                       "2. **Nivel Jerárquico de Seguridad (1-10):** Define la jerarquía de cada perfil (*Administrador, Gerente Electoral, Jefe Electoral, Coordinador Regional, Digitador*).\n" .
+                       "3. **Clonación y Copia de Mallas:** Permite duplicar la malla completa de permisos desde un perfil plantilla hacia nuevos perfiles con 1 clic.\n" .
+                       "4. **Interfaz 100% Responsiva y Dual Theme:** Diseño adaptativo para dispositivos móviles, tablets y computadoras de escritorio, compatible con temas oscuro (Dark) y claro (Light).",
+        "icon" => "fa-user-shield"
     ],
     [
         "id" => 4,
-        "titulo" => "4. Recursos Descargables de la Campaña",
+        "titulo" => "4. Captación Autónoma vía Bot de WhatsApp",
+        "categoria" => "Automatización Bot",
+        "contenido" => "La plataforma cuenta con un Bot de WhatsApp interactivo para la autocaptación de simpatizantes en tiempo real.\n\n" .
+                       "**Flujo conversacional:**\n" .
+                       "1. El ciudadano escribe 'Hola' o 'Inscribirme' al WhatsApp oficial de campaña.\n" .
+                       "2. El bot solicita el número de cédula y verifica su validez y pertenencia al padrón.\n" .
+                       "3. El bot solicita confirmación de datos, número celular y nombre del coordinador referente.\n" .
+                       "4. Se emite un comprobante interactivo de inscripción con su número de folio en la lista oficial.",
+        "icon" => "fa-comments"
+    ],
+    [
+        "id" => 5,
+        "titulo" => "5. Enlaces QR de Campañas Masivas y Atribución",
+        "categoria" => "Marketing Electoral",
+        "contenido" => "Generador de código QR y enlaces personalizados para la captación digital a través de redes sociales (Facebook, Instagram, WhatsApp, Banners).\n\n" .
+                       "**Métricas de seguimiento:**\n" .
+                       "- Conteo automatizado de clics recibidos por enlace de campaña.\n" .
+                       "- Registro de inscripciones efectivas atribuidas a cada coordinador o canal difusor.",
+        "icon" => "fa-qrcode"
+    ],
+    [
+        "id" => 6,
+        "titulo" => "6. Mesa de Ayuda e Incidencias Logísticas (Helpdesk)",
+        "categoria" => "Soporte Técnico",
+        "contenido" => "Centraliza las solicitudes de asistencia técnica, fallas de dispositivos y faltantes de material de campo durante la jornada electoral.\n\n" .
+                       "**Gestión de Tickets:**\n" .
+                       "- Creación de tickets por nivel de prioridad ('Baja', 'Media', 'Alta', 'Urgente').\n" .
+                       "- Actualización en vivo del estado del ticket ('Pendiente', 'En Proceso', 'Resuelto').",
+        "icon" => "fa-ticket-alt"
+    ],
+    [
+        "id" => 7,
+        "titulo" => "7. Recursos Descargables y Formularios Físicos",
         "categoria" => "Descargas",
-        "contenido" => "Descargue los recursos oficiales para el trabajo logístico de campo:\n\n" .
-                       "- **Formulario Físico de Captación (PDF)**: Plantilla oficial para los promotores de campo que recolectan firmas en físico.\n" .
-                       "- **Manual del Promotor Electoral (PDF)**: Guía de bolsillo con las directrices de la candidatura de la Diputada Altagracia De Los Santos.\n" .
-                       "- **Kit de Redes Sociales (ZIP)**: Banners publicitarios, logotipos del PRM y fotos de campaña autorizadas para difusión masiva.",
+        "contenido" => "Descarga de material oficial de trabajo para promotores y digitadores de centro de acopio:\n\n" .
+                       "- **Formulario Físico de Captación (PDF/HTML)**: Plantilla impresa para recolección de simpatizantes en mano.\n" .
+                       "- **Manual del Promotor Electoral (PDF/HTML)**: Guía oficial de lineamientos de campaña de la candidata Pastora Altagracia De Los Santos.\n" .
+                       "- **Kit de Recursos de Marca (ZIP)**: Banners publicitarios y logotipos oficiales.",
         "icon" => "fa-download"
     ]
 ];
 
-echo json_encode(["exito" => true, "documentos" => $documentos]);
+echo json_encode(["exito" => true, "documentos" => $documentos], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 ?>

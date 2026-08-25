@@ -6,6 +6,7 @@
     <title>Panel de Control - PAD/28-32 Plataforma Electoral</title>
     <link rel="shortcut icon" type="image/png" href="../GRAFICOS PARA LA PAGINA WEB/adelog_logo_icon.png">
     <link rel="stylesheet" href="assets/css/styles.css?v=1.7">
+    <link rel="stylesheet" href="assets/css/perfiles_responsive.css?v=1.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js para gráficos dinámicos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -45,7 +46,7 @@
             <a class="tab-link" data-tab="chat" id="tab-chat"><i class="fa fa-comments"></i> Chat Coordinadores</a>
             <a class="tab-link" data-tab="helpdesk" id="tab-helpdesk"><i class="fa fa-ticket-alt"></i> Helpdesk</a>
             <a class="tab-link" data-tab="docs"><i class="fa fa-file-text"></i> Documentos</a>
-            <a class="tab-link" data-tab="permissions" id="tab-permissions"><i class="fa fa-sliders-h"></i> Ajustes / QR</a>
+            <a class="tab-link" data-tab="permissions" id="tab-permissions"><i class="fa fa-user-shield"></i> Perfiles y Permisos</a>
             <a class="tab-link" data-tab="config" id="tab-config" style="display: none;"><i class="fa fa-cogs"></i> Configuración</a>
         </nav>
 
@@ -358,10 +359,131 @@
 
         <!-- 6. TAB: PERMISOS Y AJUSTES -->
         <section id="tab-content-permissions" class="tab-content">
+            <div class="card" style="margin-bottom: 24px; padding: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h3 style="font-family: var(--font-outfit); font-size: 20px; color: var(--secondary); margin: 0 0 4px 0;">
+                            <i class="fa fa-shield-alt"></i> Administración de Perfiles y Accesos Granulares (RBAC)
+                        </h3>
+                        <p style="color: var(--text-gray); font-size: 13px; margin: 0;">
+                            Configuración transaccional de perfiles, niveles jerárquicos y mallas de permisos atómicos por módulo.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Sub-pestañas Navegables -->
+                <div class="rbac-subtabs-nav">
+                    <button class="rbac-subtab-btn active" id="subtab-btn-malla">
+                        <i class="fa fa-th"></i> Malla de Permisos
+                    </button>
+                    <button class="rbac-subtab-btn" id="subtab-btn-mantenimiento">
+                        <i class="fa fa-user-shield"></i> Mantenimiento de Perfiles
+                    </button>
+                </div>
+
+                <!-- VISTA 1: MALLA DE PERMISOS -->
+                <div id="rbac-view-malla">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; background: rgba(0,0,0,0.2); padding: 14px 18px; border-radius: 10px; border: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <label for="select-perfil-malla" class="form-label" style="margin: 0; font-weight: bold; color: var(--text-white);">Perfil a Editar:</label>
+                            <select id="select-perfil-malla" class="form-control" style="width: 280px; margin: 0;">
+                                <!-- Inyectado dinámicamente -->
+                            </select>
+                        </div>
+                        <button id="btn-save-malla" class="btn btn-primary"><i class="fa fa-save"></i> Guardar Cambios de Malla</button>
+                    </div>
+
+                    <!-- Resumen del Perfil Selección -->
+                    <div class="profile-hero-card">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div class="profile-avatar-badge" id="hero-profile-avatar">A</div>
+                            <div>
+                                <h3 id="hero-profile-name" style="margin: 0 0 4px 0; font-size: 18px; color: #ffffff;">Administrador</h3>
+                                <p id="hero-profile-level" style="margin: 0; font-size: 13px; color: var(--text-gray);">Nivel Jerárquico: 1</p>
+                            </div>
+                        </div>
+                        <div>
+                            <span id="hero-profile-status" class="badge badge-success">ACTIVO</span>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Selección Masiva por Columna -->
+                    <div class="malla-actions-bar" id="malla-actions-bar">
+                        <span style="font-size: 11px; font-weight: bold; color: var(--secondary); text-transform: uppercase; margin-right: 6px;">Selección Masiva:</span>
+                        <button type="button" class="btn-malla-toggle" data-col="ejecutar" data-action="check">Ejecutar</button>
+                        <button type="button" class="btn-malla-toggle" data-col="ver_datos" data-action="check">Ver Datos</button>
+                        <button type="button" class="btn-malla-toggle" data-col="crear" data-action="check">Crear</button>
+                        <button type="button" class="btn-malla-toggle" data-col="editar" data-action="check">Editar</button>
+                        <button type="button" class="btn-malla-toggle" data-col="eliminar" data-action="check">Eliminar</button>
+                        <button type="button" class="btn-malla-toggle" data-col="reportes" data-action="check">Reportes</button>
+                        <button type="button" class="btn-malla-toggle" data-col="exportar" data-action="check">Exportar</button>
+                        <button type="button" class="btn-malla-toggle" data-col="importar" data-action="check">Importar</button>
+                        <button type="button" class="btn-malla-toggle" data-col="imprimir" data-action="check">Imprimir</button>
+                    </div>
+
+                    <!-- Tabla de Malla Adaptativa Responsiva -->
+                    <div class="malla-table-responsive">
+                        <table class="malla-table">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 220px;">Módulo / Función</th>
+                                    <th>Ejecutar</th>
+                                    <th>Ver Datos</th>
+                                    <th>Crear</th>
+                                    <th>Editar</th>
+                                    <th>Eliminar</th>
+                                    <th>Reportes</th>
+                                    <th>Exportar</th>
+                                    <th>Importar</th>
+                                    <th>Imprimir</th>
+                                    <th>Solo Propios</th>
+                                </tr>
+                            </thead>
+                            <tbody id="malla-tbody">
+                                <!-- Filas inyectadas por JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- VISTA 2: MANTENIMIENTO DE PERFILES -->
+                <div id="rbac-view-mantenimiento" style="display: none;">
+                    <div class="perfiles-filter-bar">
+                        <div class="perfiles-search-group">
+                            <input type="text" id="search-perfil" class="form-control" placeholder="Buscar perfil por nombre...">
+                            <select id="filter-estado-perfil" class="form-control" style="width: 180px;">
+                                <option value="all">Todos los estados</option>
+                                <option value="1">Activos</option>
+                                <option value="0">Inactivos</option>
+                            </select>
+                        </div>
+                        <button id="btn-open-create-perfil" class="btn btn-primary"><i class="fa fa-plus"></i> Crear Perfil</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 60px;">ID</th>
+                                    <th>Nombre de Perfil</th>
+                                    <th>Descripción</th>
+                                    <th>Nivel Jerárquico</th>
+                                    <th>Estado</th>
+                                    <th style="width: 260px;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="perfiles-table-tbody">
+                                <!-- Inyectado dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección Clásica de Usuarios y Permisos Directos -->
             <div class="grid-2">
-                <!-- User management and permissions -->
                 <div class="card">
-                    <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--secondary);"><i class="fa fa-key"></i> Administración de Permisos</h3>
+                    <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--secondary);"><i class="fa fa-users-cog"></i> Usuarios del Sistema y Perfil Asignado</h3>
                     
                     <form id="user-form" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);">
                         <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--text-white);">Crear Nuevo Usuario</h4>
@@ -381,7 +503,7 @@
                                 <input type="text" id="user-nombre" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="user-role" class="form-label">Rol del Sistema</label>
+                                <label for="user-role" class="form-label">Perfil Asignado</label>
                                 <select id="user-role" class="form-control">
                                     <option value="Digitador">Digitador</option>
                                     <option value="Coordinador">Coordinador</option>
@@ -399,7 +521,7 @@
                                 <tr>
                                     <th>Usuario</th>
                                     <th>Teléfono</th>
-                                    <th>Rol</th>
+                                    <th>Rol / Perfil</th>
                                     <th>Progreso</th>
                                     <th>Permisos Asignados</th>
                                     <th>Estado</th>
@@ -461,6 +583,7 @@
                 <div style="width: 220px; border-right: 1px solid var(--border-color); padding-right: 15px; display: flex; flex-direction: column; gap: 8px;">
                     <h4 style="font-family: var(--font-outfit); font-size: 15px; color: var(--secondary); margin-bottom: 15px;"><i class="fa fa-cogs"></i> Panel de Control</h4>
                     <button class="subtab-link active" data-subtab="marca"><i class="fa fa-paint-brush"></i> Personalización Marca</button>
+                    <button class="subtab-link" data-subtab="perfiles_rbac"><i class="fa fa-user-shield"></i> Perfiles y Permisos (RBAC)</button>
                     <button class="subtab-link" data-subtab="smtp"><i class="fa fa-envelope-open-text"></i> Servidor SMTP (Correo)</button>
                     <button class="subtab-link" data-subtab="notif"><i class="fa fa-bell"></i> Bitácora Envíos</button>
                     <button class="subtab-link" data-subtab="apis"><i class="fa fa-key"></i> Integración APIs</button>
@@ -1235,10 +1358,82 @@
         </div>
     </div>
 
-    <!-- Print Area -->
-    <div id="print-voucher-area" class="print-hidden-container"></div>
+    <!-- ==================== MODAL: CREAR / EDITAR PERFIL ==================== -->
+    <div id="modal-perfil-crud" class="modal">
+        <div class="modal-content" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3 id="modal-perfil-title">Crear Nuevo Perfil de Usuario</h3>
+                <button onclick="closeModal('modal-perfil-crud')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-perfil-modal">
+                    <input type="hidden" id="modal-perfil-id" value="0">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Perfil *</label>
+                        <input type="text" id="modal-perfil-nombre" class="form-control" required placeholder="Ej: Supervisor Regional">
+                    </div>
 
-    <!-- Script Global de la Aplicación -->
-    <script src="assets/js/app.js?v=1.6"></script>
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea id="modal-perfil-desc" class="form-control" rows="3" placeholder="Descripción de funciones y responsabilidades del perfil..."></textarea>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Nivel Jerárquico (1-10) *</label>
+                            <input type="number" id="modal-perfil-nivel" class="form-control" min="1" max="10" value="5" required>
+                        </div>
+                        <div class="form-group" id="group-perfil-origen">
+                            <label class="form-label">Copiar Permisos Desde</label>
+                            <select id="modal-perfil-origen" class="form-control">
+                                <option value="0">-- Matriz Vacía por Defecto --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                        <button type="button" onclick="closeModal('modal-perfil-crud')" class="btn btn-outline">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar Perfil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: COPIAR PERMISOS ==================== -->
+    <div id="modal-copiar-permisos-dialog" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fa fa-copy" style="color: var(--secondary);"></i> Clonar Permisos entre Perfiles</h3>
+                <button onclick="closeModal('modal-copiar-permisos-dialog')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">
+                    Copia la malla completa de permisos desde un perfil existente hacia el perfil destino: <strong id="copy-target-name" style="color: var(--secondary);"></strong>.
+                </p>
+
+                <form id="form-copiar-permisos">
+                    <input type="hidden" id="copy-perfil-destino" value="0">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Perfil de Origen (Plantilla) *</label>
+                        <select id="copy-perfil-origen" class="form-control" required>
+                            <!-- Inyectado por JS -->
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                        <button type="button" onclick="closeModal('modal-copiar-permisos-dialog')" class="btn btn-outline">Cancelar</button>
+                        <button type="submit" class="btn btn-secondary"><i class="fa fa-copy"></i> Ejecutar Clonación</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Global de la Aplicación y Motor RBAC -->
+    <script src="assets/js/app.js?v=1.8"></script>
+    <script src="assets/js/perfiles_engine.js?v=1.2"></script>
 </body>
 </html>
