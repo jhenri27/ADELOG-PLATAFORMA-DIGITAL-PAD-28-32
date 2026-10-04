@@ -165,7 +165,7 @@ try {
             // A veces el apellido puede ocupar dos líneas (ej: HENRIQUEZ y abajo MARTE)
             $val = preg_replace('/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/', '', $linesClean[$i+1]);
             $resultado['apellidos'] = trim($val);
-            if (isset($linesClean[$i+2]) && !preg_match('/(Nacionalidad|Fecha|Estado|Sexo)/i', $linesClean[$i+2]) && strlen($linesClean[$i+2]) > 2) {
+            if (isset($linesClean[$i+2]) && !preg_match('/(Nacionalidad|Fecha|Estado|Sexo|Lugar|Nacimiento|Ocupaci[oó]n|Sangre|Firma|Electoral|Identidad|C[eé]dula|Junta|Central|Rep[uú]blica|Dominicana)/i', $linesClean[$i+2]) && strlen($linesClean[$i+2]) > 2) {
                 $val2 = preg_replace('/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/', '', $linesClean[$i+2]);
                 $resultado['apellidos'] .= ' ' . trim($val2);
             }
@@ -174,6 +174,17 @@ try {
         if (preg_match('/^Nacionalidad$/i', $line) && isset($linesClean[$i+1])) {
             $resultado['nacionalidad'] = trim(preg_replace('/[^a-zA-Z\s]/', '', $linesClean[$i+1]));
         }
+    }
+    
+    // Limpieza de marcas de agua o ruidos de cabecera en apellidos y nombres (Normas PLAD)
+    $noisePattern = '/\b(Y\s+)?(ELECTORAL|IDENTIDAD|CEDULA|CÉDULA|JUNTA|CENTRAL|REPUBLICA|REPÚBLICA|DOMINICANA)\b/i';
+    if (!empty($resultado['apellidos'])) {
+        $resultado['apellidos'] = trim(preg_replace($noisePattern, '', $resultado['apellidos']));
+        $resultado['apellidos'] = trim(preg_replace('/\s+/', ' ', $resultado['apellidos']));
+    }
+    if (!empty($resultado['nombres'])) {
+        $resultado['nombres'] = trim(preg_replace($noisePattern, '', $resultado['nombres']));
+        $resultado['nombres'] = trim(preg_replace('/\s+/', ' ', $resultado['nombres']));
     }
     
     // 4. PARSEO HEURÍSTICO POR ETIQUETAS (REVERSO)
@@ -228,12 +239,38 @@ try {
         }
     }
     
-    // Normalizar si quedan campos vacíos pero se capturó algún texto parcial
-    if (empty($resultado['colegio_electoral'])) {
-        // Buscar código de colegio de 4 dígitos (comúnmente 1xxx, 2xxx, etc.)
-        if (preg_match('/\b(1\d{3}|2\d{3}|0\d{3})\b/', $fullText, $m)) {
+    // 5. DETERMINAR LADO DE LA CÉDULA (FRONTAL VS REVERSO)
+    $esReverso = (!empty($mrzLine3) || !empty($mrzLine1) || 
+                  preg_match('/(Colegio\s+electoral|Ubicaci[oó]n\s+del\s+colegio|Recinto\s+electoral|Direcci[oó]n\s+de\s+residencia|Direccion\s+de\s+residencia|Sector|Municipio)/i', $fullText));
+                  
+    $esFrontal = (!empty($resultado['nombres']) || !empty($resultado['apellidos']) ||
+                  preg_match('/(Nombre\(?s\)?|Apellido\(?s\)?|Nacionalidad|Lugar\s+de\s+nacimiento|Fecha\s+de\s+nacimiento|Sexo|Estado\s+civil|Ocupaci[oó]n)/i', $fullText));
+
+    if ($esFrontal && $esReverso) {
+        $resultado['lado_detectado'] = 'ambos';
+    } elseif ($esReverso) {
+        $resultado['lado_detectado'] = 'reverso';
+    } else {
+        $resultado['lado_detectado'] = 'frontal';
+    }
+
+    // Normalizar colegio electoral ÚNICAMENTE si la imagen corresponde al REVERSO de la cédula
+    // (En el anverso/frontal NO hay colegio electoral; evitar capturar fechas de expiración como 2042)
+    if ($esReverso && empty($resultado['colegio_electoral'])) {
+        if (preg_match('/Colegio.*?(\b\d{4}[A-Z]?\b)/i', $fullText, $m)) {
+            $resultado['colegio_electoral'] = $m[1];
+        } elseif (preg_match('/\b(1\d{3}|2\d{3}|0\d{3})\b/', $fullText, $m)) {
             $resultado['colegio_electoral'] = $m[1];
         }
+    }
+
+    // Si es estrictamente frontal, limpiar cualquier campo territorial para evitar falsos positivos
+    if ($resultado['lado_detectado'] === 'frontal') {
+        $resultado['colegio_electoral'] = '';
+        $resultado['recinto_ubicacion'] = '';
+        $resultado['direccion'] = '';
+        $resultado['sector'] = '';
+        $resultado['municipio'] = '';
     }
     
     // Validar cédula detectada

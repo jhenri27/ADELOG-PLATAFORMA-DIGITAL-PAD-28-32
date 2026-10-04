@@ -46,9 +46,21 @@
                     <div style="background-color: rgba(255,255,255,0.02); border: 1px dashed var(--border-color); padding: 16px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                         <h4 style="margin-bottom: 8px; font-size: 15px;"><i class="fa fa-magic"></i> ¿Desea Auto-completar con su Cédula?</h4>
                         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Suba una foto de su Cédula Dominicana para extraer los datos automáticamente.</p>
-                        <input type="file" id="public-ocr-file" accept="image/*" style="display: none;">
-                        <button type="button" id="btn-public-ocr" class="btn btn-outline btn-sm" onclick="document.getElementById('public-ocr-file').click()"><i class="fa fa-upload"></i> Subir foto frontal de cédula</button>
-                        <span id="public-ocr-loader" style="display: none; margin-left: 10px; font-size: 13px; color: var(--secondary);"><i class="fa fa-spinner fa-spin"></i> Procesando OCR...</span>
+                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                            <input type="file" id="public-ocr-file" accept="image/*" style="display: none;">
+                            <button type="button" id="btn-public-ocr" class="btn btn-outline btn-sm" onclick="document.getElementById('public-ocr-file').click()"><i class="fa fa-upload"></i> Subir foto frontal de cédula</button>
+                            <button type="button" id="btn-public-camera-ocr" class="btn btn-outline btn-sm"><i class="fa fa-camera"></i> Capturar con Webcam</button>
+                            <span id="public-ocr-loader" style="display: none; margin-left: 10px; font-size: 13px; color: var(--secondary); align-items: center; gap: 6px;"><i class="fa fa-spinner fa-spin"></i> Procesando OCR...</span>
+                        </div>
+
+                        <!-- WebCam block Público -->
+                        <div id="public-camera-container">
+                            <video id="public-webcam" autoplay playsinline></video>
+                            <div style="padding: 10px; text-align: center; background: rgba(0,0,0,0.8); display: flex; justify-content: center; gap: 10px;">
+                                <button type="button" id="btn-public-capture-photo" class="btn btn-secondary btn-sm"><i class="fa fa-camera"></i> Tomar Foto</button>
+                                <button type="button" id="btn-public-close-camera" class="btn btn-outline btn-sm"><i class="fa fa-times"></i> Cancelar</button>
+                            </div>
+                        </div>
                     </div>
 
                     <form id="public-voter-form">
@@ -56,7 +68,7 @@
                             <div class="form-group">
                                 <label for="public-cedula" class="form-label">Número de Cédula (OCR/Manual) *</label>
                                 <input type="text" id="public-cedula" class="form-control" placeholder="001-xxxxxxx-x" required>
-                                <small id="public-cedula-validation" style="display: none; font-size: 12px;"></small>
+                                <div id="public-cedula-feedback" style="display: none; font-size: 12px; margin-top: 4px; font-weight: bold;"></div>
                             </div>
                             <div class="form-group">
                                 <label for="public-telefono" class="form-label">Teléfono Celular *</label>
@@ -79,7 +91,7 @@
                         <div class="grid-3">
                             <div class="form-group">
                                 <label for="public-colegio_electoral" class="form-label">Colegio Electoral *</label>
-                                <input type="text" id="public-colegio_electoral" class="form-control" placeholder="1401" required>
+                                <input type="text" id="public-colegio_electoral" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label for="public-sector" class="form-label">Sector *</label>
@@ -143,43 +155,20 @@
 
                 <!-- Live Social Media Feed -->
                 <div class="card" style="align-items: center; text-align: center;">
-                    <h3 style="color: var(--text-white); font-size: 18px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; width: 100%; text-align: left;"><i class="fa-brands fa-instagram"></i> Facebook & Instagram Feed</h3>
+                    <h3 style="color: var(--text-white); font-size: 18px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; width: 100%; text-align: left;"><i class="fa-brands fa-instagram" style="color: var(--secondary);"></i> Facebook & Instagram Feed</h3>
                     
-                    <!-- Custom Synchronized Social Feed (No Blockable Iframes) -->
-                    <div style="width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; text-align: left;">
-                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: #fff;">PA</div>
-                                <div>
-                                    <div style="font-size: 13px; font-weight: 600; color: #fff;">Pastora Altagracia</div>
-                                    <div style="font-size: 11px; color: var(--text-muted);">Hace 2 horas via Instagram</div>
-                                </div>
-                            </div>
-                            <p style="font-size: 12px; color: var(--text-white); line-height: 1.4; margin-bottom: 8px;">Agradecida del inmenso apoyo de nuestra comunidad en Santo Domingo Este Circ. 3 durante nuestro recorrido de hoy. ¡El cambio sigue! 🇩🇴💪</p>
-                            <div style="display: flex; gap: 6px; font-size: 11px; color: var(--secondary);">
-                                <span>#PastoraDiputada</span> <span>#SDECir3</span> <span>#PRM</span>
-                            </div>
-                        </div>
-
-                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: #fff;">PA</div>
-                                <div>
-                                    <div style="font-size: 13px; font-weight: 600; color: #fff;">Pastora Altagracia</div>
-                                    <div style="font-size: 11px; color: var(--text-muted);">Ayer via Facebook</div>
-                                </div>
-                            </div>
-                            <p style="font-size: 12px; color: var(--text-white); line-height: 1.4; margin-bottom: 8px;">Reunión de planificación con nuestro equipo de coordinadores de centros de acopio. Afinando los detalles logísticos para asegurar la victoria en cada colegio electoral. 🗳️✨</p>
-                            <div style="display: flex; gap: 6px; font-size: 11px; color: var(--secondary);">
-                                <span>#LogisticaElectoral</span> <span>#VictoriaAsegurada</span>
-                            </div>
+                    <!-- Custom Synchronized Social Feed (Dynamic from Backend) -->
+                    <div id="public-social-feed-container" style="width: 100%; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; text-align: left;">
+                        <div style="text-align: center; color: var(--text-muted); padding: 15px; font-size: 13px;">
+                            <i class="fa fa-spinner fa-spin"></i> Cargando publicaciones recientes...
                         </div>
                     </div>
                     
                     <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Siga nuestras actividades diarias directamente en redes sociales:</p>
-                    <div style="display: flex; gap: 8px; width: 100%; justify-content: center;">
-                        <a href="https://www.instagram.com/" target="_blank" class="btn btn-outline btn-sm" style="flex: 1; padding: 8px;"><i class="fa-brands fa-instagram"></i> Instagram</a>
-                        <a href="https://www.facebook.com/" target="_blank" class="btn btn-outline btn-sm" style="flex: 1; padding: 8px;"><i class="fa-brands fa-facebook"></i> Facebook</a>
+                    <div style="display: flex; gap: 8px; width: 100%; justify-content: center; flex-wrap: wrap;">
+                        <a id="btn-social-instagram" href="https://www.instagram.com/pastoraaltagraciard/" target="_blank" class="btn btn-outline btn-sm" style="flex: 1; min-width: 120px; padding: 8px;"><i class="fa-brands fa-instagram" style="color: #E1306C;"></i> Instagram</a>
+                        <a id="btn-social-facebook" href="https://www.facebook.com/Apostolaltagraciard" target="_blank" class="btn btn-outline btn-sm" style="flex: 1; min-width: 120px; padding: 8px;"><i class="fa-brands fa-facebook" style="color: #1877F2;"></i> Facebook</a>
+                        <a id="btn-social-tiktok" href="https://www.tiktok.com/@pastoraaltagraciard" target="_blank" class="btn btn-outline btn-sm" style="flex: 1; min-width: 120px; padding: 8px; display: none;"><i class="fa-brands fa-tiktok"></i> TikTok</a>
                     </div>
                 </div>
             </div>
@@ -194,69 +183,99 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="assets/js/app.js?v=1.4"></script>
+    <script src="assets/js/app.js?v=2.8"></script>
     <script>
-        // Cargar configuración de marca
-        fetch('../backend/api/settings.php?action=get')
+        // Cargar configuración de marca y feed dinámico de redes sociales
+        fetch('../backend/api/social_feed.php?action=get_feed')
             .then(res => res.json())
             .then(data => {
                 if (data.exito) {
-                    const c = data.configuraciones;
-                    if (c.plataforma_nombre) {
-                        document.title = `${c.plataforma_nombre} - Inscripción Padronal`;
+                    const m = data.marca || {};
+                    const perfiles = data.perfiles || {};
+                    
+                    // Actualizar Título y Cabecera sin duplicidad de nombres (Normas PLAD)
+                    if (m.plataforma) {
+                        document.title = `${m.plataforma} - Inscripción Padronal`;
                         const titleEl = document.querySelector('span[style*="font-family: var(--font-outfit)"]');
                         if (titleEl) {
-                            titleEl.innerHTML = `${c.plataforma_nombre} <span style="color: var(--secondary); font-size: 12px;">\${c.candidato_nombre || ''}</span>`;
+                            const candName = m.candidato || '';
+                            const cargoText = m.cargo || '';
+                            // Si el nombre de la plataforma ya incluye el nombre de la candidata, mostrar el cargo en vez de duplicar el nombre
+                            const yaTieneNombre = candName && m.plataforma.toLowerCase().includes('pastora');
+                            const badgeText = yaTieneNombre ? (cargoText ? cargoText.toUpperCase() : '') : candName.toUpperCase();
+                            
+                            titleEl.innerHTML = `${m.plataforma}${badgeText ? ` <span style="color: var(--secondary); font-size: 12px; font-weight: 600; margin-left: 6px;">${badgeText}</span>` : ''}`;
                         }
                     }
-                    const bannerUrl = c.candidato_logo_url || '../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png';
+                    
+                    // Actualizar Banner
+                    const bannerUrl = m.logo_url || '../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832-02.png';
                     const bannerImg = document.getElementById('public-header-banner');
                     if (bannerImg) {
                         bannerImg.src = bannerUrl;
                     }
-                }
-            })
-            .catch(err => console.error("Error al cargar marca:", err));
 
-        // Lógica de Validación Algorítmica en Caliente para Frontend
-        document.getElementById('public-cedula').addEventListener('input', function(e) {
-            const val = e.target.value;
-            const clean = val.replace(/\D/g, '');
-            const checkAlert = document.getElementById('public-cedula-validation');
-            
-            if (clean.length === 11) {
-                // Ejecutar Luhn dominicano
-                const pesos = [1, 2, 1, 2, 1, 2, 1, 2, 1, 2];
-                let suma = 0;
-                for (let i = 0; i < 10; i++) {
-                    let mult = parseInt(clean[i]) * pesos[i];
-                    if (mult >= 10) {
-                        suma += Math.floor(mult / 10) + (mult % 10);
-                    } else {
-                        suma += mult;
+                    // Actualizar Botones de Perfiles Oficiales
+                    const btnIg = document.getElementById('btn-social-instagram');
+                    if (btnIg && perfiles.instagram) btnIg.href = perfiles.instagram;
+
+                    const btnFb = document.getElementById('btn-social-facebook');
+                    if (btnFb && perfiles.facebook) btnFb.href = perfiles.facebook;
+
+                    const btnTt = document.getElementById('btn-social-tiktok');
+                    if (btnTt && perfiles.tiktok && perfiles.tiktok.trim() !== '') {
+                        btnTt.href = perfiles.tiktok;
+                        btnTt.style.display = 'inline-flex';
+                    }
+
+                    // Renderizar Tarjetas de Publicaciones del Feed
+                    const feedContainer = document.getElementById('public-social-feed-container');
+                    if (feedContainer && data.publicaciones) {
+                        feedContainer.innerHTML = '';
+                        if (data.publicaciones.length === 0) {
+                            feedContainer.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:10px; font-size:12px;">No hay publicaciones recientes.</div>';
+                        } else {
+                            data.publicaciones.forEach(post => {
+                                let redIcon = 'fa-brands fa-instagram';
+                                let redColor = '#E1306C';
+                                if (post.red_social === 'Facebook') { redIcon = 'fa-brands fa-facebook'; redColor = '#1877F2'; }
+                                else if (post.red_social === 'TikTok') { redIcon = 'fa-brands fa-tiktok'; redColor = '#00f2fe'; }
+                                else if (post.red_social === 'X') { redIcon = 'fa-brands fa-x-twitter'; redColor = '#1DA1F2'; }
+
+                                const card = document.createElement('div');
+                                card.style.cssText = 'background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; transition: transform 0.2s ease, border-color 0.2s ease;';
+                                
+                                const linkBtn = post.enlace_publicacion ? `<a href="${post.enlace_publicacion}" target="_blank" style="color: var(--secondary); font-size: 11px; text-decoration: none; margin-left: auto;"><i class="fa fa-external-link-alt"></i> Ver post</a>` : '';
+
+                                card.innerHTML = `
+                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                        <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: #fff;">PA</div>
+                                        <div>
+                                            <div style="font-size: 13px; font-weight: 600; color: #fff;">${post.autor || 'Pastora Altagracia'}</div>
+                                            <div style="font-size: 11px; color: var(--text-muted);"><i class="${redIcon}" style="color:${redColor};"></i> ${post.tiempo_publicacion} via ${post.red_social}</div>
+                                        </div>
+                                        ${linkBtn}
+                                    </div>
+                                    <p style="font-size: 12px; color: var(--text-white); line-height: 1.4; margin-bottom: 8px; white-space: pre-wrap;">${post.contenido}</p>
+                                    <div style="display: flex; gap: 6px; font-size: 11px; color: var(--secondary); flex-wrap: wrap;">
+                                        <span>${post.hashtags || ''}</span>
+                                    </div>
+                                `;
+                                feedContainer.appendChild(card);
+                            });
+                        }
                     }
                 }
-                const digitoCalculado = (10 - (suma % 10)) % 10;
-                const digitoReal = parseInt(clean[10]);
-                
-                if (digitoCalculado === digitoReal) {
-                    checkAlert.style.display = 'block';
-                    checkAlert.style.color = 'var(--success)';
-                    checkAlert.innerHTML = '<i class="fa fa-check-circle"></i> Cédula válida en padrón';
-                } else {
-                    checkAlert.style.display = 'block';
-                    checkAlert.style.color = 'var(--danger)';
-                    checkAlert.innerHTML = '<i class="fa fa-times-circle"></i> Cédula con dígito verificador inválido';
+            })
+            .catch(err => {
+                console.error("Error al cargar marca y feed:", err);
+                const feedContainer = document.getElementById('public-social-feed-container');
+                if (feedContainer) {
+                    feedContainer.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:10px; font-size:12px;">Siga las redes oficiales para más detalles.</div>';
                 }
-            } else if (clean.length > 0) {
-                checkAlert.style.display = 'block';
-                checkAlert.style.color = 'var(--warning)';
-                checkAlert.innerHTML = 'Ingrese los 11 dígitos de su cédula';
-            } else {
-                checkAlert.style.display = 'none';
-            }
-        });
+            });
 
+        // Validación de Teléfono Celular Dominicano en Caliente
         document.getElementById('public-telefono').addEventListener('input', function(e) {
             const val = e.target.value.replace(/\D/g, '');
             const phoneAlert = document.getElementById('public-phone-validation');

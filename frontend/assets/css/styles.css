@@ -162,6 +162,10 @@ h1, h2, h3, h4 {
     border-color: var(--text-white);
 }
 
+body.light-theme .btn-outline:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
 /* Forms styling */
 .form-group {
     margin-bottom: 20px;
@@ -196,7 +200,8 @@ h1, h2, h3, h4 {
 }
 
 /* Camera Live Container */
-#camera-container {
+#camera-container,
+#public-camera-container {
     width: 100%;
     max-width: 480px;
     margin: 20px auto;
@@ -208,7 +213,8 @@ h1, h2, h3, h4 {
     background: #000;
 }
 
-#webcam {
+#webcam,
+#public-webcam {
     width: 100%;
     height: auto;
     transform: scaleX(1); /* mirror */
@@ -549,20 +555,43 @@ tr:hover td {
     .modal {
         display: none !important;
     }
-    .print-hidden-container, .print-hidden-container * {
-        display: block !important;
-        visibility: visible !important;
-    }
     .print-hidden-container {
         position: absolute !important;
         left: 0 !important;
         top: 0 !important;
         width: 100% !important;
         height: auto !important;
-        overflow: visible !important;
+        max-height: 100vh !important;
+        overflow: hidden !important;
         background-color: #ffffff !important;
         color: #000000 !important;
         display: block !important;
+        visibility: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+    .print-hidden-container * {
+        visibility: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .print-hidden-container table {
+        border-collapse: collapse !important;
+    }
+    .print-hidden-container canvas {
+        display: inline-block !important;
+    }
+    .print-hidden-container img[style*="display: none"],
+    .print-hidden-container img[style*="display:none"] {
+        display: none !important;
+    }
+    @page {
+        size: portrait;
+        margin: 6mm 8mm;
     }
 }
 

@@ -9,10 +9,10 @@ session_start();
 
 require_once __DIR__ . '/../db.php';
 
-// Validar que el usuario esté logueado y sea Administrador, Digitador o Gerente
-if (!isset($_SESSION['usuario_id']) || !in_array($_SESSION['role'], ['Administrador', 'Digitador', 'Gerente'])) {
+// Validar que el usuario esté logueado y tenga rol de gestión
+if (!isset($_SESSION['usuario_id']) || !in_array($_SESSION['role'], ['Administrador', 'Coordinador General', 'Coordinador', 'Sub-coordinador', 'ML - Militante Líder', 'Digitador', 'Gerente'])) {
     http_response_code(403);
-    echo json_encode(["exito" => false, "mensaje" => "Acceso denegado. Se requiere rol de Administrador, Digitador o Gerente."]);
+    echo json_encode(["exito" => false, "mensaje" => "Acceso denegado. Se requiere perfil autorizado."]);
     exit;
 }
 
@@ -100,8 +100,8 @@ if ($method === 'POST') {
             $newUserId = $conn->insert_id;
             
             // Permisos por defecto según el rol
-            $canC = ($role === 'Administrador' || $role === 'Digitador') ? 1 : 0;
-            $canE = ($role === 'Administrador' || $role === 'Digitador') ? 1 : 0;
+            $canC = in_array($role, ['Administrador', 'Coordinador General', 'Coordinador', 'Sub-coordinador', 'ML - Militante Líder', 'Digitador']) ? 1 : 0;
+            $canE = in_array($role, ['Administrador', 'Coordinador General', 'Coordinador', 'Sub-coordinador', 'ML - Militante Líder', 'Digitador']) ? 1 : 0;
             $canV = 1; // Todos pueden consultar
             $canP = 1; // Todos pueden imprimir
             $canS = 1; // Todos pueden enviar

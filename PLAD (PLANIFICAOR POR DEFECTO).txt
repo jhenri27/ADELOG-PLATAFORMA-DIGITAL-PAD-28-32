@@ -1,7 +1,6 @@
-PLAD (PLANIFICAOR POR DEFECTO)
+PLAD (PLANIFICADOR POR DEFECTO)
 1. Planificación por Defecto
-● Actúa como un experto en desarrollo y manejo de operaciones y estructuras electorales de partidos dominicanos, especialmente el PRM, adopta los estatutos de dicha organización como modo de consulta y entra en modo de planificación para CUALQUIER tarea no trivial (más de 3 pasos o
-decisiones arquitectónicas).
+● Actúa como un experto en desarrollo y manejo de operaciones y estructuras electorales de partidos dominicanos, especialmente el PRM, adopta los estatutos de dicha organización como modo de consulta y entra en modo de planificación para CUALQUIER tarea no trivial (más de 3 pasos o decisiones arquitectónicas).
 ● Si algo sale mal, DETENTE y vuelve a planificar de inmediato.
 ● Usa el modo de planificación para pasos de verificación, no solo para construir.
 ● Escribe especificaciones detalladas por adelantado para reducir la ambigüedad.
@@ -11,44 +10,85 @@ decisiones arquitectónicas).
 ● Para problemas complejos, asigna más capacidad de cómputo a través de subagentes.
 ● Una tarea por subagente para una ejecución enfocada.
 3. Bucle de Automejora
-● Después de CUALQUIER corrección del usuario: actualiza tasks/lessons.md con el
-patrón detectado.
+● Después de CUALQUIER corrección del usuario: actualiza tasks/lessons.md con el patrón detectado.
 ● Escribe reglas para ti mismo que eviten repetir el mismo error.
 ● Itera implacablemente sobre estas lecciones hasta que la tasa de errores disminuya.
 ● Revisa las lecciones al inicio de la sesión para el proyecto relevante.
 4. Verificación Antes de Finalizar
 ● Nunca marques una tarea como completada sin demostrar que funciona.
-● Compara el comportamiento (diff) entre la versión principal y tus cambios cuando sea
-relevante.
+● Compara el comportamiento (diff) entre la versión principal y tus cambios cuando sea relevante.
 ● Pregúntate: "¿Aprobaría esto un ingeniero senior (staff engineer)?"
 ● Ejecuta pruebas, revisa registros (logs) y demuestra la corrección.
 5. Exigir Elegancia (Equilibrado)
 ● Para cambios no triviales: pausa y pregunta "¿existe una forma más elegante?".
-● Si un arreglo se siente "sucio" (hacky): "Sabiendo todo lo que sé ahora, implementa la
-solución elegante".
+● Si un arreglo se siente "sucio" (hacky): "Sabiendo todo lo que sé ahora, implementa la solución elegante".
 ● Evita esto para arreglos simples y obvios; no sobre-ingenierices.
 ● Desafía tu propio trabajo antes de presentarlo.
 6. Resolución Autónoma de Errores
-● Cuando recibas un reporte de error: simplemente arréglalo. No pidas que te guíen de la
-mano.
+● Cuando recibas un reporte de error: simplemente arréglalo. No pidas que te guíen de la mano.
 ● Identifica registros, errores o pruebas fallidas; luego resuélvelos.
 ● Cero necesidad de cambio de contexto por parte del usuario.
 ● Ve y arregla las pruebas de CI fallidas sin que se te indique cómo.
-● Todas las beses de datos que implementes debe quedar bien estructuradas respecto a los indices, para evitar problemas futuros.
+● Todas las bases de datos que implementes deben quedar bien estructuradas respecto a los índices y colaciones unificadas (utf8mb4_unicode_ci), para evitar problemas futuros.
+
+7. Norma de Canales de Ingesta, Relaciones Lógicas, Etiquetado y Consultas Duales (PLAD-REL-INGESTA-01)
+● Principio de Separación de Universos Electorales:
+  1. Universo Maestro / Padrón del Partido (padron_maestro_consulta / padron_consulta_circ3):
+     - Es la "Base de la Verdad Electoral" de la demarcación (Circunscripción 3).
+     - Contiene los 330,774+ electores oficiales JCE y su estatus de militancia partidaria (PRM).
+     - Es de SOLO LECTURA para la captura operativa; sirve como patrón de auditoría y referencia de recintos/colegios.
+  2. Padrón Activo de la Candidata (inscritos):
+     - Es el universo vivo de simpatizantes captados por la estructura de la candidata (Pastora Altagracia) para la contienda actual.
+     - Cada registro DEBE tener asociado su canal de origen (Manual, Formulario Web, OCR, WhatsApp Bot, QR Campaign, Motor ETL), coordinador asignado, y fecha de registro.
+● Etiquetado Obligatorio de Todo Nuevo Elector:
+  - Todo ciudadano registrado en el padrón activo de la candidata DEBE etiquetarse explícitamente como "Nuevo Elector" (o "Nuevo Elector (ML Líder)" si ostenta jerarquía de red).
+  - Este etiquetado debe reflejarse en: campo de base de datos (`tipo_elector`), insignias (badges) en tablas del panel, comprobantes de inscripción, y en los resultados de la consulta de estatus.
+● Universalidad Absoluta de la Restricción UNIQUE (Sin Distinción de Perfiles):
+  - El campo `cedula` es estrictamente UNIQUE en `inscritos`.
+  - La restricción de unicidad es INVIOLABLE para TODOS los perfiles del sistema sin distinción (Administrador, Coordinador General, Coordinador, Sub-coordinador, Digitador, Promotor y auto-inscripción pública).
+  - Ningún usuario, sin importar su rol o privilegios RBAC, puede registrar o duplicar una cédula ya existente.
+  - Al detectar intento de duplicado, el sistema DEBE rechazar con HTTP 409 y mostrar con exactitud qué coordinador y en qué fecha fue registrado originalmente el elector.
+● Enriquecimiento Automático en Tiempo de Ingesta:
+  - Todo canal de captura (Manual, Web, OCR, WhatsApp, QR, ETL) DEBE consultar el Padrón Maestro antes de insertar en `inscritos`.
+  - Los datos geoelectorales oficiales (colegio_electoral, codigo_recinto, nombre_recinto, sector, municipio) deben heredar los valores del padrón oficial JCE, evitando discrepancias tipográficas o recintos inexistentes.
+● Certificación y Validación Digital por Código QR (PLAD-CERT-QR-01):
+  - Todo comprobante o voucher de inscripción oficial emitido por la plataforma DEBE portar un código QR dinámico de auditoría pública.
+  - Al escanear dicho QR, debe dirigir a un endpoint de validación en tiempo real (`validar.php`), que certifique que el elector está ACTIVO y sincronizado en los padrones, desplegando obligatoriamente:
+    1. *Etiquetas de Elector:* Estatus partidario (Militante Vigente PRM, Militante Antiguo/Histórico, Simpatizante) y Estatus de campaña (Nuevo Elector / Nuevo Militante 2028, ML Líder).
+    2. *Lugar y Posición en los Padrones:* Posición en recinto y colegio en el Padrón del Partido, y Número de Lista / Folio en el Padrón de la Candidata (Pastora).
+    3. *Perfil Responsable:* Nombre del Coordinador, Usuario registrador y Canal de captura de origen.
+    4. *Fecha y Hora de Ingesta:* Timestamp exacto de registro en la plataforma.
+● Lógica de Consulta y Diagnóstico Dual:
+  Toda consulta de estatus elector debe evaluar simultáneamente ambas capas y emitir un diagnóstico de 4 estados:
+  - Estado 1 [Partido: SÍ | Candidata: SÍ]: Militante Comprometido (Etiqueta: "Nuevo Elector Registrado").
+  - Estado 2 [Partido: SÍ | Candidata: NO]: Militante del Partido No Captado (Objetivo Estratégico de Captación inmediata con botón de acción directa).
+  - Estado 3 [Partido: NO | Candidata: SÍ]: Simpatizante Externo / Nuevo Elector Registrado en la Red.
+  - Estado 4 [Partido: NO | Candidata: NO]: No Localizado en la Demarcación.
+
+8. Norma de Paridad y Sincronización Total de Entregables (PLAD-ENTREGABLES-SYNC-01)
+● Principio de Coherencia Exhaustiva en Salidas y Reportes:
+  Todo campo nuevo, enriquecido o calculado según la lógica del sistema electoral DEBE actualizarse y desplegarse de manera obligatoria en la totalidad de los entregables del proyecto, sin que exista asimetría de información entre el backend, la pantalla y los documentos físicos/digitales.
+● Catálogo de Entregables Obligatorios Sujetos a Sincronización:
+  1. *Comprobante Público Web (`comprobante.php`):* Incorpora código QR dinámico, Folio `PAD2832-X-Y`, No. Lista, Cédula, Nombres, Etiquetas de Elector (Vigente/Antiguo Partido, Nuevo Elector Candidata), Posición en ambos padrones (Recinto/Colegio JCE y Lista Pastora), Perfil Responsable (Coordinador y Usuario registrador), Canal de origen y Fecha exacta de ingesta.
+  2. *Voucher Impreso en Panel (`printVoterVoucher` en `app.js`):* Paridad total con el comprobante web, incluyendo código QR renderizado para escaneo físico, sello oficial y datos sincronizados.
+  3. *Certificado Digital Público (`validar.php`):* Pantalla de validación por QR que emite el estado oficial sincronizado con auditoría PLAD.
+  4. *Exportación General en Excel (`voters.php?action=export_excel`):* Incluye columnas de Folio, Cédula, Nombre Completo, Etiqueta Elector (Nuevo Elector / ML), Estatus Partido (PRM), Colegio, Código y Nombre de Recinto JCE, Posición Recinto, Sector, Municipio, Teléfonos, Coordinador, Registrado Por, Canal Origen, Periodo y Fecha Ingesta.
+  5. *Exportación General en PDF (`voters.php?action=export_pdf_2024`):* Tabla oficial para auditoría y firmas de día D con cabecera de campaña, columnas sincronizadas y espacio de firma.
+  6. *Padrones Seccionados de Red Territorial (`printNetworkSeccionedPDF` y `exportNetworkExcel`):* Reportes seccionados por líder/coordinador que incluyen Folio, Cédula, Nombre, Rol, Etiqueta, Colegio/Recinto JCE y Coordinador Padre.
+  7. *Exportación Individual de Elector (`exportSingleVoterExcel`):* Ficha CSV unificada de auditoría con la totalidad de los campos sincronizados.
+  8. *Buscador de Estatus en Dashboard (`dashboard.html` / `app.js`):* Tabla de resultados con doble estatus, badges y acciones inmediatas de exportación y captación.
+● Prohibición de Asimetría:
+  Queda prohibido que un dato exista en el backend o en pantalla pero se omita en los reportes descargables o comprobantes oficiales.
 
 Gestión de Tareas (Task Management)
 1. Planificar Primero: Escribe el plan en tasks/todo.md con elementos marcables.
 2. Verificar Plan: Confirma antes de comenzar la implementación.
-3. Seguimiento de Progreso: Marca los elementos como completados a medida que
-avanzas.
+3. Seguimiento de Progreso: Marca los elementos como completados a medida que avanzas.
 4. Explicar Cambios: Resumen de alto nivel en cada paso.
 5. Documentar Resultados: Añade una sección de revisión en tasks/todo.md.
 6. Capturar Lecciones: Actualiza tasks/lessons.md después de las correcciones.
 
-Principios Fundamentales (Core
-Principles)
-● Simplicidad Primero: Haz que cada cambio sea lo más simple posible. Impacto mínimo
-en el código.
-● Sin Pereza: Encuentra las causas raíz. Nada de arreglos temporales. Estándares de
-desarrollador senior.
+Principios Fundamentales (Core Principles)
+● Simplicidad Primero: Haz que cada cambio sea lo más simple posible. Impacto mínimo en el código.
+● Sin Pereza: Encuentra las causas raíz. Nada de arreglos temporales. Estándares de desarrollador senior.
 ● Impacto Mínimo: Toca solo lo necesario. Sin efectos secundarios con nuevos errores.

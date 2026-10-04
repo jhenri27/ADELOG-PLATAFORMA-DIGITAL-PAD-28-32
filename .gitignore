@@ -18,4 +18,5 @@ backend/backups/
 backups/
 *.sql
 *.rar
+*.zip
 scratch/

@@ -61,6 +61,116 @@ function checkCircunscripcion($municipio, $sector, $recinto) {
     }
 }
 
+function getCoordinatorsStats($conn, $nivelFiltro = 'all') {
+    $usuariosSql = "SELECT u.id, u.nombre, u.role, u.perfil_id, p.nombre as perfil_nombre, p.nivel_jerarquico, u.telefono, u.email 
+                    FROM usuarios u 
+                    LEFT JOIN perfiles p ON u.perfil_id = p.id 
+                    WHERE u.estado = 1";
+    $resU = $conn->query($usuariosSql);
+    $coords = [];
+
+    if ($resU) {
+        while ($u = $resU->fetch_assoc()) {
+            $rol = $u['perfil_nombre'] ?: $u['role'];
+            $coords[$u['nombre']] = [
+                'id' => 'u_' . $u['id'],
+                'nombre' => $u['nombre'],
+                'tipo' => 'Líder / Coordinador',
+                'rol' => $rol,
+                'nivel_jerarquico' => intval($u['nivel_jerarquico'] ?: 2),
+                'telefono' => $u['telefono'] ?: '',
+                'email' => $u['email'] ?: '',
+                'total_directos' => 0,
+                'total_ml' => 0,
+                'total_red' => 0,
+                'meta' => 200
+            ];
+        }
+    }
+
+    $mlSql = "SELECT id, nombres, apellidos, cedula, telefono, email, coordinador, nivel_estructura, numero_lista 
+              FROM inscritos 
+              WHERE es_militante_lider = 1";
+    $resML = $conn->query($mlSql);
+    if ($resML) {
+        while ($ml = $resML->fetch_assoc()) {
+            $nombreCompleto = trim($ml['nombres'] . ' ' . $ml['apellidos']);
+            $coords[$nombreCompleto] = [
+                'id' => 'i_' . $ml['id'],
+                'nombre' => $nombreCompleto,
+                'cedula' => $ml['cedula'],
+                'tipo' => 'ML - Militante Líder',
+                'rol' => 'ML - Militante Líder',
+                'coordinador_padre' => $ml['coordinador'],
+                'nivel_jerarquico' => 4,
+                'telefono' => $ml['telefono'] ?: '',
+                'email' => $ml['email'] ?: '',
+                'total_directos' => 0,
+                'total_ml' => 0,
+                'total_red' => 0,
+                'meta' => 25
+            ];
+        }
+    }
+
+    $countsRes = $conn->query("SELECT coordinador, es_militante_lider, COUNT(*) as cant FROM inscritos GROUP BY coordinador, es_militante_lider");
+    if ($countsRes) {
+        while ($cRow = $countsRes->fetch_assoc()) {
+            $cName = $cRow['coordinador'];
+            $isML = intval($cRow['es_militante_lider']);
+            $cant = intval($cRow['cant']);
+            
+            if (!isset($coords[$cName])) {
+                $coords[$cName] = [
+                    'id' => 'c_' . md5($cName),
+                    'nombre' => $cName,
+                    'tipo' => 'Coordinador',
+                    'rol' => 'Coordinador',
+                    'nivel_jerarquico' => 2,
+                    'telefono' => '',
+                    'email' => '',
+                    'total_directos' => 0,
+                    'total_ml' => 0,
+                    'total_red' => 0,
+                    'meta' => 150
+                ];
+            }
+            
+            if ($isML === 1) {
+                $coords[$cName]['total_ml'] += $cant;
+            } else {
+                $coords[$cName]['total_directos'] += $cant;
+            }
+            $coords[$cName]['total_red'] += $cant;
+        }
+    }
+
+    $listaFinal = array_values($coords);
+    
+    foreach ($listaFinal as &$item) {
+        if ($item['rol'] === 'Coordinador General' || $item['nivel_jerarquico'] === 1) $item['meta'] = 500;
+        elseif ($item['rol'] === 'Coordinador' || $item['nivel_jerarquico'] === 2) $item['meta'] = 200;
+        elseif ($item['rol'] === 'Sub-coordinador' || $item['nivel_jerarquico'] === 3) $item['meta'] = 100;
+        elseif ($item['rol'] === 'ML - Militante Líder' || $item['nivel_jerarquico'] === 4) $item['meta'] = 25;
+        else $item['meta'] = 50;
+        
+        $item['porcentaje_meta'] = $item['meta'] > 0 ? round(($item['total_red'] / $item['meta']) * 100, 1) : 0;
+    }
+    unset($item);
+
+    if ($nivelFiltro !== 'all' && !empty($nivelFiltro)) {
+        $listaFinal = array_values(array_filter($listaFinal, function($c) use ($nivelFiltro) {
+            return stripos($c['rol'], $nivelFiltro) !== false || stripos($c['tipo'], $nivelFiltro) !== false;
+        }));
+    }
+
+    usort($listaFinal, function($a, $b) {
+        return $b['total_red'] <=> $a['total_red'];
+    });
+
+    return $listaFinal;
+}
+
 // Permitir registros públicos si vienen de la campaña masiva QR o solicitud de comprobantes
 $isPublicRegistration = ($method === 'POST' && $action === 'public_register') || ($method === 'GET' && $action === 'email_voucher');
 
@@ -93,11 +203,6 @@ if ($method === 'GET') {
         }
         $v = $res->fetch_assoc();
         
-        $candidato_nombre = "Pastora Altagracia De Los Santos";
-        $candidato_cargo = "Diputada Santo Domingo Circ. 3";
-        
-        $tableCheck = $conn->query("SHOW TABLES LIKE 'configuraciones'");
-        if ($tableCheck && $tableCheck->num_rows > 0) {
             $resConfig = $conn->query("SELECT * FROM configuraciones");
             if ($resConfig) {
                 $configs = [];
@@ -107,7 +212,6 @@ if ($method === 'GET') {
                 if (!empty($configs['candidato_nombre'])) $candidato_nombre = $configs['candidato_nombre'];
                 if (!empty($configs['candidato_cargo'])) $candidato_cargo = $configs['candidato_cargo'];
             }
-        }
         
         $uri = $_SERVER['REQUEST_URI'] ?? '';
         $folder = "PLATAFORMA DIGITAL-PAD-28-32";
@@ -238,6 +342,44 @@ if ($method === 'GET') {
     }
 
     checkPerm('can_view');
+
+    if ($action === 'coordinators_stats') {
+        $nivel = trim($_GET['nivel'] ?? 'all');
+        $stats = getCoordinatorsStats($conn, $nivel);
+        echo json_encode(["exito" => true, "coordinadores" => $stats]);
+        exit;
+    }
+
+    if ($action === 'network_voters') {
+        $coordName = trim($_GET['coordinador'] ?? '');
+        $nivelFiltro = trim($_GET['nivel'] ?? 'all');
+        
+        $whereNet = ["periodo = '2028'"];
+        if (!empty($coordName)) {
+            $cEsc = $conn->real_escape_string($coordName);
+            $whereNet[] = "(coordinador = '$cEsc' OR nombres LIKE '%$cEsc%' OR apellidos LIKE '%$cEsc%')";
+        }
+        if ($nivelFiltro === 'ML' || $nivelFiltro === 'ML - Militante Líder') {
+            $whereNet[] = "es_militante_lider = 1";
+        } elseif ($nivelFiltro === 'Votante') {
+            $whereNet[] = "es_militante_lider = 0";
+        }
+        
+        $whereSqlNet = "WHERE " . implode(" AND ", $whereNet);
+        $resNet = $conn->query("SELECT id, numero_lista, cedula, nombres, apellidos, colegio_electoral, recinto_ubicacion, sector, municipio, telefono, email, coordinador, centro_acopio, canal_origen, fecha_registro, es_militante_lider, nivel_estructura 
+                                FROM inscritos 
+                                $whereSqlNet 
+                                ORDER BY numero_lista DESC LIMIT 200");
+        $votersNet = [];
+        if ($resNet) {
+            while ($r = $resNet->fetch_assoc()) {
+                $r['codigo_comprobante'] = "PAD2832-" . $r['numero_lista'] . "-" . $r['cedula'];
+                $votersNet[] = $r;
+            }
+        }
+        echo json_encode(["exito" => true, "total" => count($votersNet), "votantes" => $votersNet]);
+        exit;
+    }
     
     if ($action === 'list') {
         // Padrón en tiempo real: búsqueda y filtros
@@ -246,6 +388,8 @@ if ($method === 'GET') {
         $coordinador = trim($_GET['coordinador'] ?? '');
         $centro_acopio = trim($_GET['centro_acopio'] ?? '');
         $periodo = trim($_GET['periodo'] ?? '2028');
+        $nivel_estructura = trim($_GET['nivel_estructura'] ?? '');
+        $tipo_elector = trim($_GET['tipo_elector'] ?? '');
         
         if ($periodo === '2024') {
             checkPerm('can_view_historical');
@@ -269,6 +413,15 @@ if ($method === 'GET') {
             $caEsc = $conn->real_escape_string($centro_acopio);
             $whereClauses[] = "centro_acopio = '$caEsc'";
         }
+        if ($tipo_elector === 'ML' || $tipo_elector === '1') {
+            $whereClauses[] = "es_militante_lider = 1";
+        } elseif ($tipo_elector === 'Votante' || $tipo_elector === '0') {
+            $whereClauses[] = "es_militante_lider = 0";
+        }
+        if (!empty($nivel_estructura) && $nivel_estructura !== 'all') {
+            $neEsc = $conn->real_escape_string($nivel_estructura);
+            $whereClauses[] = "nivel_estructura = '$neEsc'";
+        }
         
         $whereSql = "";
         if (count($whereClauses) > 0) {
@@ -285,7 +438,7 @@ if ($method === 'GET') {
         $limit = 100; // Máximo 100 registros por página
         $offset = ($page - 1) * $limit;
         
-        $sql = "SELECT id, numero_lista, cedula, nombres, apellidos, nacionalidad, colegio_electoral, recinto_ubicacion, direccion, sector, municipio, telefono, email, coordinador, centro_acopio, canal_origen, fecha_registro 
+        $sql = "SELECT id, numero_lista, cedula, nombres, apellidos, nacionalidad, colegio_electoral, recinto_ubicacion, direccion, sector, municipio, telefono, telefono_fijo, email, coordinador, centro_acopio, canal_origen, fecha_registro, es_militante_lider, nivel_estructura 
                 FROM inscritos 
                 $whereSql 
                 ORDER BY numero_lista DESC 
@@ -296,6 +449,7 @@ if ($method === 'GET') {
         
         if ($res) {
             while ($row = $res->fetch_assoc()) {
+                $row['codigo_comprobante'] = "PAD2832-" . $row['numero_lista'] . "-" . $row['cedula'];
                 $voters[] = $row;
             }
         }
@@ -321,9 +475,81 @@ if ($method === 'GET') {
     
     if ($action === 'detail') {
         $id = intval($_GET['id'] ?? 0);
-        $res = $conn->query("SELECT * FROM inscritos WHERE id = $id LIMIT 1");
+        $sqlDetail = "
+            SELECT i.*, u.nombre as registrado_por_nombre, p.nombre as perfil_registrador
+            FROM inscritos i
+            LEFT JOIN usuarios u ON i.registrado_por = u.id
+            LEFT JOIN perfiles p ON u.perfil_id = p.id
+            WHERE i.id = $id LIMIT 1
+        ";
+        $res = $conn->query($sqlDetail);
         if ($res && $res->num_rows > 0) {
-            echo json_encode(["exito" => true, "votante" => $res->fetch_assoc()]);
+            $v = $res->fetch_assoc();
+            $v['codigo_comprobante'] = "PAD2832-" . $v['numero_lista'] . "-" . $v['cedula'];
+            if (empty($v['tipo_elector'])) {
+                $v['tipo_elector'] = !empty($v['es_militante_lider']) ? 'Nuevo Elector (ML)' : 'Nuevo Elector';
+            }
+            
+            // Cruce con Padrón Maestro de Partido
+            $cleanCed = preg_replace('/[^0-9]/', '', $v['cedula']);
+            $cedEsc = $conn->real_escape_string($v['cedula']);
+            $resPm = $conn->query("SELECT * FROM padron_maestro_consulta WHERE cedula = '$cedEsc' OR REPLACE(cedula, '-', '') = '$cleanCed' LIMIT 1");
+            if ($resPm && $resPm->num_rows > 0) {
+                $pm = $resPm->fetch_assoc();
+                $v['en_padron_partido'] = true;
+                $v['militancia_partido_label'] = (!empty($pm['militancia_prm']) && $pm['militancia_prm'] == 1) ? 'Militante Vigente (PRM)' : 'Militante Histórico';
+                if (!empty($pm['militancia_historica']) && trim($pm['militancia_historica']) !== '') {
+                    $v['militancia_partido_label'] .= ' [' . trim($pm['militancia_historica']) . ']';
+                }
+                $v['codigo_recinto'] = $pm['codigo_recinto'] ?? '';
+                $v['posicion_recinto'] = $pm['posicion_recinto'] ?? '';
+            } else {
+                // Fallback padron_consulta_circ3
+                $resC3 = $conn->query("SELECT * FROM padron_consulta_circ3 WHERE cedula = '$cedEsc' OR REPLACE(cedula, '-', '') = '$cleanCed' LIMIT 1");
+                if ($resC3 && $resC3->num_rows > 0) {
+                    $c3 = $resC3->fetch_assoc();
+                    $v['en_padron_partido'] = true;
+                    $v['militancia_partido_label'] = 'Militante Circunscripción 3 (PRM)';
+                    $v['codigo_recinto'] = '';
+                    $v['posicion_recinto'] = $c3['zona'] ?? '';
+                } else {
+                    $v['en_padron_partido'] = false;
+                    $v['militancia_partido_label'] = 'No figura en Padrón Partido (Independiente / Externo)';
+                }
+            }
+            
+            // Detección precisa de circunscripción electoral
+            $circunscripcionElector = 'Circunscripción 3 (SDE)';
+            $secUp = strtoupper($v['sector'] ?? '');
+            $recUp = strtoupper($v['recinto_ubicacion'] ?? '');
+            $munUp = strtoupper($v['municipio'] ?? '');
+            $colNum = trim($v['colegio_electoral'] ?? '');
+            
+            if ($secUp === 'ISABELITA' || strpos($recUp, 'ISABELITA') !== false || $colNum === '1823') {
+                $circunscripcionElector = 'Circunscripción 1 (Santo Domingo Este)';
+            } elseif (in_array($secUp, ['ENSANCHE OZAMA', 'ALMA ROSA', 'VILLA DUARTE', 'LOS MAMEYES', 'LOS TRES OJOS', 'CALERO', 'MAQUITERIA'])) {
+                $circunscripcionElector = 'Circunscripción 1 (Santo Domingo Este)';
+            } elseif (in_array($secUp, ['LOS MINA', 'CANCINO', 'KATANGA', 'PUERTO RICO', 'VIETNAM', 'LUCERNA'])) {
+                $circunscripcionElector = 'Circunscripción 2 (Santo Domingo Este)';
+            } elseif ($munUp === 'SANTO DOMINGO NORTE' || strpos($secUp, 'SABANA PERDIDA') !== false || strpos($secUp, 'VILLA MELLA') !== false) {
+                $circunscripcionElector = 'Santo Domingo Norte (Circ. 6)';
+            } elseif ($munUp === 'DISTRITO NACIONAL') {
+                $circunscripcionElector = 'Distrito Nacional';
+            } elseif ($munUp === 'SAN ANTONIO DE GUERRA') {
+                $circunscripcionElector = 'Guerra (Circ. 3)';
+            } elseif ($munUp === 'BOCA CHICA') {
+                $circunscripcionElector = 'Boca Chica (Circ. 3)';
+            }
+            
+            $esFueraDeCirc3 = ($circunscripcionElector !== 'Circunscripción 3 (SDE)' && $circunscripcionElector !== 'Guerra (Circ. 3)' && $circunscripcionElector !== 'Boca Chica (Circ. 3)');
+            $v['circunscripcion_elector'] = $circunscripcionElector;
+            $v['es_fuera_circ3'] = $esFueraDeCirc3;
+            if ($esFueraDeCirc3 && !$v['en_padron_partido']) {
+                $v['militancia_partido_label'] = 'No figura en Padrón Circ. 3 (Elector ' . $circunscripcionElector . ')';
+                $v['tipo_elector'] = 'Nuevo Elector (Simpatizante Externo)';
+            }
+            
+            echo json_encode(["exito" => true, "votante" => $v]);
         } else {
             http_response_code(404);
             echo json_encode(["exito" => false, "mensaje" => "Votante no encontrado."]);
@@ -339,22 +565,319 @@ if ($method === 'GET') {
             exit;
         }
         
+        $searchCleanDigits = preg_replace('/\D/', '', $search);
         $searchEsc = $conn->real_escape_string($search);
-        // Buscar por cedula, nombres o apellidos en el periodo 2024
-        $sql = "SELECT * FROM inscritos 
-                WHERE periodo = '2024' AND (
-                    cedula LIKE '%$searchEsc%' OR 
-                    nombres LIKE '%$searchEsc%' OR 
-                    apellidos LIKE '%$searchEsc%'
-                ) LIMIT 15";
-        $res = $conn->query($sql);
+        
         $voters = [];
-        if ($res) {
-            while ($row = $res->fetch_assoc()) {
-                $voters[] = $row;
+        $cedulasVistas = [];
+        
+        // 1. Si el término de búsqueda parece una cédula (o fragmento numérico de 9+ dígitos)
+        $isCedulaLookup = (strlen($searchCleanDigits) >= 9);
+        
+        if ($isCedulaLookup) {
+            $cedFormatted = $search;
+            if (strlen($searchCleanDigits) === 11) {
+                $cedFormatted = substr($searchCleanDigits, 0, 3) . '-' . substr($searchCleanDigits, 3, 7) . '-' . substr($searchCleanDigits, 10, 1);
+            }
+            $cedEsc = $conn->real_escape_string($cedFormatted);
+            $cleanEsc = $conn->real_escape_string($searchCleanDigits);
+            
+            // Buscar en Padrón Maestro Oficial JCE / PRM
+            $sqlPm = "
+                SELECT pm.*, cr.direccion_recinto as dir_recinto_oficial, cr.es_nuevo as recinto_es_nuevo
+                FROM padron_maestro_consulta pm
+                LEFT JOIN catalogo_recintos_jce cr ON pm.codigo_recinto = cr.codigo_recinto
+                WHERE pm.cedula = '$cedEsc' OR REPLACE(pm.cedula, '-', '') = '$cleanEsc'
+                LIMIT 1
+            ";
+            $resPm = $conn->query($sqlPm);
+            
+            // Buscar en Padrón Activo de la Candidata (inscritos)
+            $sqlIns = "
+                SELECT i.*, u.nombre as nombre_registrador, p.nombre as perfil_registrador 
+                FROM inscritos i
+                LEFT JOIN usuarios u ON i.registrado_por = u.id
+                LEFT JOIN perfiles p ON u.perfil_id = p.id
+                WHERE i.cedula = '$cedEsc' OR REPLACE(i.cedula, '-', '') = '$cleanEsc'
+                LIMIT 1
+            ";
+            $resIns = $conn->query($sqlIns);
+            
+            $enPartido = ($resPm && $resPm->num_rows > 0);
+            $enCandidata = ($resIns && $resIns->num_rows > 0);
+            
+            $pmData = $enPartido ? $resPm->fetch_assoc() : null;
+            $insData = $enCandidata ? $resIns->fetch_assoc() : null;
+            
+            // Si no estuvo en padron_maestro_consulta, verificar contingencia en padron_consulta_circ3
+            if (!$enPartido) {
+                $sqlC3 = "SELECT * FROM padron_consulta_circ3 WHERE cedula = '$cedEsc' OR REPLACE(cedula, '-', '') = '$cleanEsc' LIMIT 1";
+                $resC3 = $conn->query($sqlC3);
+                if ($resC3 && $resC3->num_rows > 0) {
+                    $enPartido = true;
+                    $c3Data = $resC3->fetch_assoc();
+                    $pmData = [
+                        'cedula' => $c3Data['cedula'],
+                        'nombres' => $c3Data['nombres'],
+                        'apellidos' => trim($c3Data['apellido1'] . ' ' . $c3Data['apellido2']),
+                        'colegio_electoral' => $c3Data['colegio_electoral'] ?? '',
+                        'codigo_recinto' => '',
+                        'nombre_recinto' => $c3Data['recinto'],
+                        'sector' => $c3Data['sector'],
+                        'municipio' => $c3Data['municipio'],
+                        'posicion_recinto' => $c3Data['zona'] ?? '',
+                        'militancia_prm' => 1,
+                        'militancia_historica' => 'Circunscripción 3'
+                    ];
+                }
+            }
+            
+            if ($enPartido || $enCandidata) {
+                $cedulaFinal = $insData['cedula'] ?? $pmData['cedula'] ?? $cedFormatted;
+                $nombresFinal = $insData['nombres'] ?? $pmData['nombres'] ?? '';
+                $apellidosFinal = $insData['apellidos'] ?? $pmData['apellidos'] ?? '';
+                $colegioFinal = $insData['colegio_electoral'] ?? $pmData['colegio_electoral'] ?? '';
+                $recintoFinal = $insData['recinto_ubicacion'] ?? $pmData['nombre_recinto'] ?? '';
+                $sectorFinal = $insData['sector'] ?? $pmData['sector'] ?? '';
+                $municipioFinal = $insData['municipio'] ?? $pmData['municipio'] ?? 'SANTO DOMINGO ESTE';
+                
+                $estadoDiag = 'NO_LOCALIZADO';
+                if ($enPartido && $enCandidata) {
+                    $estadoDiag = 'COMPROMETIDO'; // Estado 1: Militante Comprometido (Nuevo Elector Registrado)
+                } elseif ($enPartido && !$enCandidata) {
+                    $estadoDiag = 'NO_CAPTADO';   // Estado 2: Militante Partido No Captado (Objetivo Estratégico)
+                } elseif (!$enPartido && $enCandidata) {
+                    $estadoDiag = 'EXTERNO';      // Estado 3: Simpatizante Externo / Nuevo Elector Independiente
+                }
+                
+                $militanciaLabel = 'No figura en Padrón Partido';
+                if ($enPartido) {
+                    $militanciaLabel = (!empty($pmData['militancia_prm']) && $pmData['militancia_prm'] == 1) ? 'Militante Vigente (PRM)' : 'Militante Histórico';
+                    if (!empty($pmData['militancia_historica']) && trim($pmData['militancia_historica']) !== '') {
+                        $militanciaLabel .= ' [' . trim($pmData['militancia_historica']) . ']';
+                    }
+                }
+                
+                $tipoElectorLabel = $enCandidata ? ($insData['tipo_elector'] ?: 'Nuevo Elector') : 'Pendiente de Captar';
+                
+                $circunscripcionElector = 'Circunscripción 3 (SDE)';
+                $secUp = strtoupper($sectorFinal);
+                $recUp = strtoupper($recintoFinal);
+                $munUp = strtoupper($municipioFinal);
+                $colNum = trim($colegioFinal);
+
+                if ($secUp === 'ISABELITA' || strpos($recUp, 'ISABELITA') !== false || $colNum === '1823') {
+                    $circunscripcionElector = 'Circunscripción 1 (Santo Domingo Este)';
+                } elseif (in_array($secUp, ['ENSANCHE OZAMA', 'ALMA ROSA', 'VILLA DUARTE', 'LOS MAMEYES', 'LOS TRES OJOS', 'CALERO', 'MAQUITERIA'])) {
+                    $circunscripcionElector = 'Circunscripción 1 (Santo Domingo Este)';
+                } elseif (in_array($secUp, ['LOS MINA', 'CANCINO', 'KATANGA', 'PUERTO RICO', 'VIETNAM', 'LUCERNA'])) {
+                    $circunscripcionElector = 'Circunscripción 2 (Santo Domingo Este)';
+                } elseif ($munUp === 'SANTO DOMINGO NORTE' || strpos($secUp, 'SABANA PERDIDA') !== false || strpos($secUp, 'VILLA MELLA') !== false) {
+                    $circunscripcionElector = 'Santo Domingo Norte (Circ. 6)';
+                } elseif ($munUp === 'DISTRITO NACIONAL') {
+                    $circunscripcionElector = 'Distrito Nacional';
+                } elseif ($munUp === 'SAN ANTONIO DE GUERRA') {
+                    $circunscripcionElector = 'Guerra (Circ. 3)';
+                } elseif ($munUp === 'BOCA CHICA') {
+                    $circunscripcionElector = 'Boca Chica (Circ. 3)';
+                }
+
+                $esFueraDeCirc3 = ($circunscripcionElector !== 'Circunscripción 3 (SDE)' && $circunscripcionElector !== 'Guerra (Circ. 3)' && $circunscripcionElector !== 'Boca Chica (Circ. 3)');
+                
+                if ($esFueraDeCirc3 && $enCandidata && !$enPartido) {
+                    $estadoDiag = 'EXTERNO';
+                    $militanciaLabel = 'No figura en Padrón Circ. 3 (Elector ' . $circunscripcionElector . ')';
+                    $tipoElectorLabel = 'Nuevo Elector (Simpatizante Externo)';
+                }
+                
+                $voters[] = [
+                    'id' => $insData['id'] ?? null,
+                    'cedula' => $cedulaFinal,
+                    'nombres' => $nombresFinal,
+                    'apellidos' => $apellidosFinal,
+                    'nombre_completo' => trim($nombresFinal . ' ' . $apellidosFinal),
+                    'colegio_electoral' => $colegioFinal,
+                    'codigo_recinto' => $pmData['codigo_recinto'] ?? '',
+                    'recinto_ubicacion' => $recintoFinal,
+                    'posicion_recinto' => $pmData['posicion_recinto'] ?? '',
+                    'numero_orden' => $pmData['numero_orden'] ?? '',
+                    'sector' => $sectorFinal,
+                    'municipio' => $municipioFinal,
+                    'circunscripcion_elector' => $circunscripcionElector,
+                    'es_fuera_circ3' => $esFueraDeCirc3,
+                    'direccion' => $insData['direccion'] ?? '',
+                    'telefono' => $insData['telefono'] ?? $pmData['celular'] ?? $pmData['telefono_fijo'] ?? '',
+                    'email' => $insData['email'] ?? '',
+                    'coordinador' => $insData['coordinador'] ?? 'No Asignado',
+                    'registrado_por' => $insData['nombre_registrador'] ?? ($insData['registrado_por'] ? 'Usuario #' . $insData['registrado_por'] : 'N/A'),
+                    'perfil_registrador' => $insData['perfil_registrador'] ?? 'N/A',
+                    'canal_origen' => $insData['canal_origen'] ?? 'Padrón Maestro',
+                    'fecha_registro' => $insData['fecha_registro'] ?? $pmData['fecha_ingesta'] ?? null,
+                    'periodo' => $insData['periodo'] ?? '2028',
+                    'numero_lista' => $insData['numero_lista'] ?? null,
+                    'codigo_comprobante' => !empty($insData['numero_lista']) ? ("PAD2832-" . $insData['numero_lista'] . "-" . $insData['cedula']) : null,
+                    'en_padron_partido' => $enPartido,
+                    'en_padron_candidata' => $enCandidata,
+                    'estado_diagnostico' => $estadoDiag,
+                    'militancia_partido_label' => $militanciaLabel,
+                    'tipo_elector_label' => $tipoElectorLabel,
+                    'es_militante_lider' => intval($insData['es_militante_lider'] ?? 0)
+                ];
+            }
+        } else {
+            // Búsqueda por Nombre / Apellidos / Texto en ambas bases
+            $sqlText = "
+                SELECT pm.*, cr.direccion_recinto as dir_recinto_oficial
+                FROM padron_maestro_consulta pm
+                LEFT JOIN catalogo_recintos_jce cr ON pm.codigo_recinto = cr.codigo_recinto
+                WHERE pm.nombres LIKE '%$searchEsc%' 
+                   OR pm.apellidos LIKE '%$searchEsc%'
+                   OR CONCAT(pm.nombres, ' ', pm.apellidos) LIKE '%$searchEsc%'
+                   OR pm.colegio_electoral = '$searchEsc'
+                LIMIT 25
+            ";
+            $resText = $conn->query($sqlText);
+            
+            if ($resText) {
+                while ($pmRow = $resText->fetch_assoc()) {
+                    $cEsc = $conn->real_escape_string($pmRow['cedula']);
+                    $cleanC = preg_replace('/\D/', '', $pmRow['cedula']);
+                    $cedulasVistas[$pmRow['cedula']] = true;
+                    
+                    $sqlCheckIns = "
+                        SELECT i.*, u.nombre as nombre_registrador, p.nombre as perfil_registrador 
+                        FROM inscritos i
+                        LEFT JOIN usuarios u ON i.registrado_por = u.id
+                        LEFT JOIN perfiles p ON u.perfil_id = p.id
+                        WHERE i.cedula = '$cEsc' OR REPLACE(i.cedula, '-', '') = '$cleanC'
+                        LIMIT 1
+                    ";
+                    $resCheckIns = $conn->query($sqlCheckIns);
+                    $enCandidata = ($resCheckIns && $resCheckIns->num_rows > 0);
+                    $insRow = $enCandidata ? $resCheckIns->fetch_assoc() : null;
+                    
+                    $militanciaLabel = (!empty($pmRow['militancia_prm']) && $pmRow['militancia_prm'] == 1) ? 'Militante Vigente (PRM)' : 'Militante Histórico';
+                    if (!empty($pmRow['militancia_historica']) && trim($pmRow['militancia_historica']) !== '') {
+                        $militanciaLabel .= ' [' . trim($pmRow['militancia_historica']) . ']';
+                    }
+                    
+                    $voters[] = [
+                        'id' => $insRow['id'] ?? null,
+                        'cedula' => $pmRow['cedula'],
+                        'nombres' => $pmRow['nombres'],
+                        'apellidos' => $pmRow['apellidos'],
+                        'nombre_completo' => trim($pmRow['nombres'] . ' ' . $pmRow['apellidos']),
+                        'colegio_electoral' => $pmRow['colegio_electoral'],
+                        'codigo_recinto' => $pmRow['codigo_recinto'] ?? '',
+                        'recinto_ubicacion' => $pmRow['nombre_recinto'] ?? '',
+                        'posicion_recinto' => $pmRow['posicion_recinto'] ?? '',
+                        'numero_orden' => $pmRow['numero_orden'] ?? '',
+                        'sector' => $pmRow['sector'] ?? '',
+                        'municipio' => $pmRow['municipio'] ?? 'SANTO DOMINGO ESTE',
+                        'telefono' => $insRow['telefono'] ?? $pmRow['celular'] ?? $pmRow['telefono_fijo'] ?? '',
+                        'email' => $insRow['email'] ?? '',
+                        'coordinador' => $insRow['coordinador'] ?? 'No Asignado',
+                        'registrado_por' => $insRow['nombre_registrador'] ?? 'N/A',
+                        'perfil_registrador' => $insRow['perfil_registrador'] ?? 'N/A',
+                        'canal_origen' => $insRow['canal_origen'] ?? 'Padrón Maestro',
+                        'fecha_registro' => $insRow['fecha_registro'] ?? $pmRow['fecha_ingesta'] ?? null,
+                        'periodo' => $insRow['periodo'] ?? '2028',
+                        'numero_lista' => $insRow['numero_lista'] ?? null,
+                        'codigo_comprobante' => !empty($insRow['numero_lista']) ? ("PAD2832-" . $insRow['numero_lista'] . "-" . $insRow['cedula']) : null,
+                        'en_padron_partido' => true,
+                        'en_padron_candidata' => $enCandidata,
+                        'estado_diagnostico' => $enCandidata ? 'COMPROMETIDO' : 'NO_CAPTADO',
+                        'militancia_partido_label' => $militanciaLabel,
+                        'tipo_elector_label' => $enCandidata ? ($insRow['tipo_elector'] ?: 'Nuevo Elector') : 'Pendiente de Captar',
+                        'es_militante_lider' => intval($insRow['es_militante_lider'] ?? 0)
+                    ];
+                }
+            }
+            
+            // Buscar también en inscritos por si hay simpatizantes independientes
+            $sqlInsText = "
+                SELECT i.*, u.nombre as nombre_registrador, p.nombre as perfil_registrador 
+                FROM inscritos i
+                LEFT JOIN usuarios u ON i.registrado_por = u.id
+                LEFT JOIN perfiles p ON u.perfil_id = p.id
+                WHERE i.nombres LIKE '%$searchEsc%' 
+                   OR i.apellidos LIKE '%$searchEsc%'
+                   OR CONCAT(i.nombres, ' ', i.apellidos) LIKE '%$searchEsc%'
+                LIMIT 15
+            ";
+            $resInsText = $conn->query($sqlInsText);
+            if ($resInsText) {
+                while ($insRow = $resInsText->fetch_assoc()) {
+                    if (isset($cedulasVistas[$insRow['cedula']])) continue;
+                    
+                    $circunscripcionElector = 'Circunscripción 3 (SDE)';
+                    $secUp = strtoupper($insRow['sector'] ?? '');
+                    $recUp = strtoupper($insRow['recinto_ubicacion'] ?? '');
+                    $munUp = strtoupper($insRow['municipio'] ?? '');
+                    $colNum = trim($insRow['colegio_electoral'] ?? '');
+
+                    if ($secUp === 'ISABELITA' || strpos($recUp, 'ISABELITA') !== false || $colNum === '1823') {
+                        $circunscripcionElector = 'Circunscripción 1 (Santo Domingo Este)';
+                    } elseif (in_array($secUp, ['ENSANCHE OZAMA', 'ALMA ROSA', 'VILLA DUARTE', 'LOS MAMEYES', 'LOS TRES OJOS', 'CALERO', 'MAQUITERIA'])) {
+                        $circunscripcionElector = 'Circunscripción 1 (Santo Domingo Este)';
+                    } elseif (in_array($secUp, ['LOS MINA', 'CANCINO', 'KATANGA', 'PUERTO RICO', 'VIETNAM', 'LUCERNA'])) {
+                        $circunscripcionElector = 'Circunscripción 2 (Santo Domingo Este)';
+                    } elseif ($munUp === 'SANTO DOMINGO NORTE' || strpos($secUp, 'SABANA PERDIDA') !== false || strpos($secUp, 'VILLA MELLA') !== false) {
+                        $circunscripcionElector = 'Santo Domingo Norte (Circ. 6)';
+                    } elseif ($munUp === 'DISTRITO NACIONAL') {
+                        $circunscripcionElector = 'Distrito Nacional';
+                    } elseif ($munUp === 'SAN ANTONIO DE GUERRA') {
+                        $circunscripcionElector = 'Guerra (Circ. 3)';
+                    } elseif ($munUp === 'BOCA CHICA') {
+                        $circunscripcionElector = 'Boca Chica (Circ. 3)';
+                    }
+
+                    $esFueraDeCirc3 = ($circunscripcionElector !== 'Circunscripción 3 (SDE)' && $circunscripcionElector !== 'Guerra (Circ. 3)' && $circunscripcionElector !== 'Boca Chica (Circ. 3)');
+                    $militanciaPartLabel = $esFueraDeCirc3 ? ('No figura en Padrón Circ. 3 (Elector ' . $circunscripcionElector . ')') : 'No figura en Padrón Partido';
+                    $tagElectorLabel = $esFueraDeCirc3 ? 'Nuevo Elector (Simpatizante Externo)' : ($insRow['tipo_elector'] ?: 'Nuevo Elector Independiente');
+
+                    $voters[] = [
+                        'id' => $insRow['id'],
+                        'cedula' => $insRow['cedula'],
+                        'nombres' => $insRow['nombres'],
+                        'apellidos' => $insRow['apellidos'],
+                        'nombre_completo' => trim($insRow['nombres'] . ' ' . $insRow['apellidos']),
+                        'colegio_electoral' => $insRow['colegio_electoral'],
+                        'codigo_recinto' => '',
+                        'recinto_ubicacion' => $insRow['recinto_ubicacion'],
+                        'posicion_recinto' => '',
+                        'numero_orden' => '',
+                        'sector' => $insRow['sector'],
+                        'municipio' => $insRow['municipio'],
+                        'circunscripcion_elector' => $circunscripcionElector,
+                        'es_fuera_circ3' => $esFueraDeCirc3,
+                        'direccion' => $insRow['direccion'] ?? '',
+                        'telefono' => $insRow['telefono'],
+                        'email' => $insRow['email'],
+                        'coordinador' => $insRow['coordinador'],
+                        'registrado_por' => $insRow['nombre_registrador'] ?? 'N/A',
+                        'perfil_registrador' => $insRow['perfil_registrador'] ?? 'N/A',
+                        'canal_origen' => $insRow['canal_origen'],
+                        'fecha_registro' => $insRow['fecha_registro'],
+                        'periodo' => $insRow['periodo'],
+                        'numero_lista' => $insRow['numero_lista'],
+                        'codigo_comprobante' => "PAD2832-" . $insRow['numero_lista'] . "-" . $insRow['cedula'],
+                        'en_padron_partido' => false,
+                        'en_padron_candidata' => true,
+                        'estado_diagnostico' => 'EXTERNO',
+                        'militancia_partido_label' => $militanciaPartLabel,
+                        'tipo_elector_label' => $tagElectorLabel,
+                        'es_militante_lider' => intval($insRow['es_militante_lider'] ?? 0)
+                    ];
+                }
             }
         }
-        echo json_encode(["exito" => true, "votantes" => $voters]);
+        
+        echo json_encode([
+            "exito" => true,
+            "total" => count($voters),
+            "votantes" => $voters
+        ]);
         exit;
     }
 
@@ -362,15 +885,20 @@ if ($method === 'GET') {
         checkPerm('can_view_historical');
         header('Content-Type: text/html; charset=utf-8');
         
-        // Obtener todos los inscritos del 2024
         $region = trim($_GET['region'] ?? '');
         $regionFilter = "";
         if (!empty($region)) {
             $regEsc = $conn->real_escape_string($region);
-            $regionFilter = " AND sector = '$regEsc'";
+            $regionFilter = " WHERE i.sector LIKE '%$regEsc%' OR i.municipio LIKE '%$regEsc%'";
         }
         
-        $sql = "SELECT * FROM inscritos WHERE periodo = '2024' $regionFilter ORDER BY numero_lista ASC";
+        $sql = "
+            SELECT i.*, pm.militancia_prm, pm.posicion_recinto, pm.codigo_recinto, pm.nombre_recinto as nombre_recinto_oficial
+            FROM inscritos i
+            LEFT JOIN padron_maestro_consulta pm ON i.cedula = pm.cedula
+            $regionFilter 
+            ORDER BY i.numero_lista ASC
+        ";
         $res = $conn->query($sql);
         $voters = [];
         if ($res) {
@@ -378,14 +906,12 @@ if ($method === 'GET') {
                 $voters[] = $row;
             }
         }
-        
-        // Renderizar página HTML imprimible adaptada a la estética oficial
         ?>
         <!DOCTYPE html>
         <html lang="es">
         <head>
             <meta charset="UTF-8">
-            <title>Padrón Histórico 2024 - Pastora Altagracia</title>
+            <title>Padrón Electoral Sincronizado - Pastora Altagracia</title>
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
                 body {
@@ -401,7 +927,8 @@ if ($method === 'GET') {
                 }
                 .header-banner img {
                     width: 100%;
-                    height: auto;
+                    max-height: 120px;
+                    object-fit: contain;
                     border-bottom: 4px solid #E3A113;
                     border-radius: 8px;
                 }
@@ -409,46 +936,63 @@ if ($method === 'GET') {
                     font-family: 'Outfit', sans-serif;
                     color: #0054A6;
                     text-align: center;
-                    margin: 10px 0 25px 0;
-                    font-size: 22px;
+                    margin: 10px 0 5px 0;
+                    font-size: 20px;
                     text-transform: uppercase;
                     font-weight: 800;
                 }
+                .subtitle {
+                    text-align: center;
+                    font-size: 12px;
+                    color: #64748b;
+                    margin-bottom: 15px;
+                }
                 .region-badge {
                     text-align: center;
-                    font-size: 14px;
+                    font-size: 13px;
                     font-weight: 700;
-                    color: #475569;
+                    color: #0f172a;
                     margin-bottom: 15px;
+                    background: #f1f5f9;
+                    padding: 6px 14px;
+                    border-radius: 6px;
+                    display: inline-block;
                 }
                 .voter-table {
                     width: 100%;
                     border-collapse: collapse;
                 }
                 .voter-table th, .voter-table td {
-                    border: 1px solid #94a3b8;
-                    padding: 8px 10px;
+                    border: 1px solid #cbd5e1;
+                    padding: 6px 8px;
                     text-align: left;
-                    font-size: 12px;
+                    font-size: 11px;
                 }
                 .voter-table th {
                     background-color: #0f172a;
                     color: #ffffff;
                     text-transform: uppercase;
-                    font-size: 11px;
+                    font-size: 10px;
+                }
+                .badge-pill {
+                    display: inline-block;
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-size: 9px;
+                    font-weight: bold;
+                    text-transform: uppercase;
                 }
                 .footer-note {
                     text-align: center;
-                    font-size: 11px;
+                    font-size: 10px;
                     color: #64748b;
-                    margin-top: 30px;
+                    margin-top: 25px;
                     border-top: 1px solid #e2e8f0;
-                    padding-top: 15px;
+                    padding-top: 12px;
                 }
                 @media print {
-                    body {
-                        padding: 0;
-                    }
+                    body { padding: 0; }
+                    .no-print { display: none; }
                 }
             </style>
         </head>
@@ -456,37 +1000,52 @@ if ($method === 'GET') {
             <div class="header-banner">
                 <img src="../../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="Pastora Altagracia">
             </div>
-            <div class="title">Padrón Electoral Histórico - Contienda 2024</div>
-            <div class="region-badge">
-                Región/Sector: <?php echo empty($region) ? 'TODAS LAS REGIONES' : htmlspecialchars(strtoupper($region)); ?>
+            <div class="title">Padrón Electoral Oficial Sincronizado</div>
+            <div class="subtitle">Conforme a Normas PLAD-REL-INGESTA-01 y PLAD-ENTREGABLES-SYNC-01 • Certificación Día D</div>
+            <div style="text-align: center;">
+                <div class="region-badge">
+                    Demarcación: <?php echo empty($region) ? 'TODAS LAS REGIONES (Circ. 3 SDE)' : htmlspecialchars(strtoupper($region)); ?>
+                </div>
             </div>
             
             <table class="voter-table">
                 <thead>
                     <tr>
-                        <th style="width: 5%;">No.</th>
-                        <th style="width: 15%;">Cédula</th>
-                        <th style="width: 30%;">Nombre Completo</th>
-                        <th style="width: 10%;">Colegio</th>
-                        <th style="width: 15%;">Región / Sector</th>
-                        <th style="width: 15%;">Recinto</th>
-                        <th style="width: 10%;">Firma</th>
+                        <th style="width: 4%;">No.</th>
+                        <th style="width: 11%;">Folio</th>
+                        <th style="width: 11%;">Cédula</th>
+                        <th style="width: 20%;">Nombre Completo</th>
+                        <th style="width: 10%;">Etiqueta</th>
+                        <th style="width: 10%;">Padrón PRM</th>
+                        <th style="width: 6%;">Colegio</th>
+                        <th style="width: 14%;">Recinto Oficial</th>
+                        <th style="width: 10%;">Coordinador</th>
+                        <th style="width: 4%;">Firma</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($voters)): ?>
                         <tr>
-                            <td colspan="7" style="text-align: center;">No hay electores inscritos para este filtro en el Padrón Histórico 2024.</td>
+                            <td colspan="10" style="text-align: center; padding: 20px;">No hay electores registrados en el corte del padrón.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($voters as $index => $v): ?>
+                            <?php 
+                            $folio = "PAD2832-" . $v['numero_lista'] . "-" . $v['cedula'];
+                            $etiqueta = !empty($v['tipo_elector']) ? $v['tipo_elector'] : ($v['es_militante_lider'] ? 'Nuevo Elector (ML)' : 'Nuevo Elector');
+                            $prmEstatus = (!empty($v['militancia_prm']) && $v['militancia_prm'] == 1) ? 'Militante' : 'Simpatizante';
+                            $recintoTxt = !empty($v['nombre_recinto_oficial']) ? $v['nombre_recinto_oficial'] : $v['recinto_ubicacion'];
+                            ?>
                             <tr>
-                                <td><?php echo $index + 1; ?></td>
-                                <td><?php echo htmlspecialchars($v['cedula']); ?></td>
-                                <td><?php echo htmlspecialchars($v['nombres'] . ' ' . $v['apellidos']); ?></td>
-                                <td><?php echo htmlspecialchars($v['colegio_electoral']); ?></td>
-                                <td><?php echo htmlspecialchars($v['sector']); ?></td>
-                                <td><?php echo htmlspecialchars($v['recinto_ubicacion']); ?></td>
+                                <td><?php echo $v['numero_lista']; ?></td>
+                                <td style="font-family: monospace; font-size: 10px;"><?php echo htmlspecialchars($folio); ?></td>
+                                <td style="font-weight: 600;"><?php echo htmlspecialchars($v['cedula']); ?></td>
+                                <td style="text-transform: uppercase; font-weight: 500;"><?php echo htmlspecialchars($v['nombres'] . ' ' . $v['apellidos']); ?></td>
+                                <td><span class="badge-pill" style="background:#fef3c7; color:#92400e;"><?php echo htmlspecialchars($etiqueta); ?></span></td>
+                                <td><span class="badge-pill" style="<?php echo ($prmEstatus === 'Militante') ? 'background:#d1fae5; color:#065f46;' : 'background:#e2e8f0; color:#475569;'; ?>"><?php echo $prmEstatus; ?></span></td>
+                                <td style="text-align: center; font-weight: bold;"><?php echo htmlspecialchars($v['colegio_electoral']); ?></td>
+                                <td style="text-transform: uppercase; font-size: 10px;"><?php echo htmlspecialchars($recintoTxt); ?></td>
+                                <td style="text-transform: uppercase; font-size: 10px;"><?php echo htmlspecialchars($v['coordinador']); ?></td>
                                 <td></td>
                             </tr>
                         <?php endforeach; ?>
@@ -495,7 +1054,7 @@ if ($method === 'GET') {
             </table>
             
             <div class="footer-note">
-                Documento de Auditoría Electoral Interna - Campaña Pastora Altagracia 2024/2028.
+                Documento de Auditoría Electoral y Certificación Oficial • Campaña Pastora Altagracia 2028 • Santo Domingo Circ. 3.
             </div>
         </body>
         </html>
@@ -510,78 +1069,111 @@ if ($method === 'GET') {
         }
         
         $region = trim($_GET['region'] ?? '');
+        $whereClauses = [];
         
-        $whereClauses = ["periodo = '" . $conn->real_escape_string($periodo) . "'"];
-        if (!empty($region)) {
-            $rEsc = $conn->real_escape_string($region);
-            $whereClauses[] = "(sector LIKE '%$rEsc%' OR recinto_ubicacion LIKE '%$rEsc%' OR municipio LIKE '%$rEsc%')";
+        if (!empty($periodo)) {
+            $whereClauses[] = "i.periodo = '" . $conn->real_escape_string($periodo) . "'";
         }
         
-        $whereSql = "WHERE " . implode(" AND ", $whereClauses);
+        if (!empty($region)) {
+            $rEsc = $conn->real_escape_string($region);
+            $whereClauses[] = "(i.sector LIKE '%$rEsc%' OR i.recinto_ubicacion LIKE '%$rEsc%' OR i.municipio LIKE '%$rEsc%')";
+        }
         
-        $sql = "SELECT numero_lista, cedula, nombres, apellidos, nacionalidad, colegio_electoral, recinto_ubicacion, direccion, sector, municipio, telefono, email, coordinador, centro_acopio, canal_origen, fecha_registro, periodo 
-                FROM inscritos 
-                $whereSql 
-                ORDER BY numero_lista DESC";
+        $whereSql = !empty($whereClauses) ? ("WHERE " . implode(" AND ", $whereClauses)) : "";
+        
+        $sql = "
+            SELECT i.*, 
+                   u.nombre as nombre_registrador, 
+                   p.nombre as perfil_registrador,
+                   pm.militancia_prm, 
+                   pm.militancia_historica, 
+                   pm.posicion_recinto, 
+                   pm.codigo_recinto, 
+                   pm.nombre_recinto as nombre_recinto_oficial
+            FROM inscritos i 
+            LEFT JOIN usuarios u ON i.registrado_por = u.id 
+            LEFT JOIN perfiles p ON u.perfil_id = p.id
+            LEFT JOIN padron_maestro_consulta pm ON i.cedula = pm.cedula
+            $whereSql 
+            ORDER BY i.numero_lista ASC
+        ";
                 
         $res = $conn->query($sql);
         
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename="padron_' . $periodo . (!empty($region) ? '_' . str_replace(' ', '_', $region) : '') . '.csv"');
+        header('Content-Disposition: attachment; filename="padron_sincronizado_' . $periodo . (!empty($region) ? '_' . str_replace(' ', '_', $region) : '') . '.csv"');
         
         echo "\xEF\xBB\xBF";
         
         $output = fopen('php://output', 'w');
         
+        // Cabecera sincronizada según Norma 8 (PLAD-ENTREGABLES-SYNC-01)
         fputcsv($output, [
             'Número Lista',
+            'Folio Comprobante',
             'Cédula',
             'Nombres',
             'Apellidos',
-            'Nacionalidad',
+            'Etiqueta Elector (Campaña)',
+            'Estatus Partido (PRM Circ. 3)',
+            'Militancia Histórica',
             'Colegio Electoral',
-            'Recinto',
-            'Dirección',
+            'Código Recinto',
+            'Nombre Recinto JCE',
+            'Posición en Recinto',
             'Sector',
             'Municipio',
-            'Teléfono',
+            'Teléfono Celular',
+            'Teléfono Fijo',
             'Email',
-            'Coordinador',
-            'Centro de Acopio',
-            'Canal de Origen',
-            'Fecha de Registro',
-            'Periodo'
+            'Coordinador Responsable',
+            'Registrado Por (Perfil)',
+            'Canal de Ingesta',
+            'Periodo',
+            'Fecha y Hora de Ingesta'
         ]);
         
         if ($res) {
             while ($row = $res->fetch_assoc()) {
+                $folio = "PAD2832-" . $row['numero_lista'] . "-" . $row['cedula'];
+                $etiqueta = !empty($row['tipo_elector']) ? $row['tipo_elector'] : ($row['es_militante_lider'] ? 'Nuevo Elector (ML)' : 'Nuevo Elector');
+                $prmEstatus = (!empty($row['militancia_prm']) && $row['militancia_prm'] == 1) ? 'Militante Vigente (PRM)' : 'Simpatizante Circ. 3';
+                $recintoNombre = !empty($row['nombre_recinto_oficial']) ? $row['nombre_recinto_oficial'] : $row['recinto_ubicacion'];
+                $registradorTxt = $row['nombre_registrador'] ? ($row['nombre_registrador'] . ' (' . ($row['perfil_registrador'] ?: 'Usuario') . ')') : 'Sistema Central';
+                
                 fputcsv($output, [
                     $row['numero_lista'],
+                    $folio,
                     $row['cedula'],
                     $row['nombres'],
                     $row['apellidos'],
-                    $row['nacionalidad'],
+                    $etiqueta,
+                    $prmEstatus,
+                    $row['militancia_historica'] ?? '',
                     $row['colegio_electoral'],
-                    $row['recinto_ubicacion'],
-                    $row['direccion'],
+                    $row['codigo_recinto'] ?? '',
+                    $recintoNombre,
+                    $row['posicion_recinto'] ?? '',
                     $row['sector'],
                     $row['municipio'],
                     $row['telefono'],
+                    $row['telefono_fijo'] ?? '',
                     $row['email'],
                     $row['coordinador'],
-                    $row['centro_acopio'],
+                    $registradorTxt,
                     $row['canal_origen'],
-                    $row['fecha_registro'],
-                    $row['periodo']
+                    $row['periodo'],
+                    $row['fecha_registro']
                 ]);
             }
         }
         
         fclose($output);
         
-        $userId = intval($_SESSION['usuario_id']);
+        $userId = intval($_SESSION['usuario_id'] ?? 0);
         $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
-        $detalles = "Exportó padrón a Excel (Periodo: $periodo, Región: $region)";
+        $detalles = "Exportó padrón sincronizado a Excel (Periodo: $periodo, Región: $region)";
         $stmtAudit = $conn->prepare("INSERT INTO logs_auditoria (usuario_id, accion, detalles, ip_address) VALUES (?, 'EXPORT_EXCEL', ?, ?)");
         $stmtAudit->bind_param("iss", $userId, $detalles, $ip);
         $stmtAudit->execute();
@@ -609,6 +1201,7 @@ if ($method === 'POST') {
         $sector = trim($input['sector'] ?? '');
         $municipio = trim($input['municipio'] ?? '');
         $telefono = trim($input['telefono'] ?? '');
+        $telefono_fijo = trim($input['telefono_fijo'] ?? '');
         $email = trim($input['email'] ?? '');
         $coordinador = trim($input['coordinador'] ?? '');
         $centro_acopio = trim($input['centro_acopio'] ?? '');
@@ -671,19 +1264,21 @@ if ($method === 'POST') {
         $cedulaClean = preg_replace('/\D/', '', $cedula);
         $cedulaFormateada = substr($cedulaClean, 0, 3) . '-' . substr($cedulaClean, 3, 7) . '-' . substr($cedulaClean, 10, 1);
         
-        // 3. Verificación de Duplicidad estricta y regla de coordinador
+        // 3. Verificación de Duplicidad estricta y regla de coordinador (Norma PLAD-REL-INGESTA-01: Universal sin distinción de perfiles)
         $cedulaEsc = $conn->real_escape_string($cedulaFormateada);
-        $checkDup = $conn->query("SELECT cedula, coordinador FROM inscritos WHERE cedula = '$cedulaEsc' LIMIT 1");
+        $cleanCedEsc = $conn->real_escape_string($cedulaClean);
+        $checkDup = $conn->query("SELECT cedula, coordinador, fecha_registro FROM inscritos WHERE cedula = '$cedulaEsc' OR REPLACE(cedula, '-', '') = '$cleanCedEsc' LIMIT 1");
         
         if ($checkDup && $checkDup->num_rows > 0) {
             $dupRow = $checkDup->fetch_assoc();
             $coordinadorReg = $dupRow['coordinador'];
+            $fechaReg = !empty($dupRow['fecha_registro']) ? date('d/m/Y H:i', strtotime($dupRow['fecha_registro'])) : 'Fecha no especificada';
             
             http_response_code(409);
             echo json_encode([
                 "exito" => false,
                 "duplicado" => true,
-                "mensaje" => "La cédula $cedulaFormateada ya está registrada en la plataforma y fue suministrada por el coordinador \"$coordinadorReg\"."
+                "mensaje" => "RESTRICCIÓN UNIVERSAL UNIQUE: La cédula $cedulaFormateada ya está registrada como elector en la plataforma (suministrada por: \"$coordinadorReg\", fecha: $fechaReg). Esta restricción de unicidad aplica de manera uniforme e inviolable para TODOS los perfiles (Administrador, Coordinador, Promotor, Digitador) sin excepción."
             ]);
             exit;
         }
@@ -705,16 +1300,24 @@ if ($method === 'POST') {
         $sectorEsc = $conn->real_escape_string($sector);
         $municipioEsc = $conn->real_escape_string($municipio);
         $telefonoEsc = $conn->real_escape_string($telefono);
+        $telefonoFijoEsc = $conn->real_escape_string($telefono_fijo);
         $emailEsc = $conn->real_escape_string($email);
         $coordinadorEsc = $conn->real_escape_string($coordinador);
         $centroEsc = $conn->real_escape_string($centro_acopio);
         $canalEsc = $conn->real_escape_string($canal_origen);
         
         $registradoPor = isset($_SESSION['usuario_id']) ? intval($_SESSION['usuario_id']) : "NULL";
+        $esML = !empty($input['es_militante_lider']) ? 1 : 0;
+        $nivelEstructura = trim($input['nivel_estructura'] ?? ($esML ? 'ML - Militante Líder' : 'Votante'));
+        $nivelEstructuraEsc = $conn->real_escape_string($nivelEstructura);
+        $coordPadreId = !empty($input['coordinador_padre_id']) ? intval($input['coordinador_padre_id']) : "NULL";
+        
+        $tipoElector = $esML ? 'Nuevo Elector (ML)' : 'Nuevo Elector';
+        $tipoElectorEsc = $conn->real_escape_string($tipoElector);
         
         $estadoDatos = $esIrregular ? 'pendiente-reg-data' : 'validado';
-        $sqlInsert = "INSERT INTO inscritos (numero_lista, cedula, nombres, apellidos, nacionalidad, colegio_electoral, recinto_ubicacion, direccion, sector, municipio, telefono, email, coordinador, centro_acopio, registrado_por, canal_origen, estado_datos) 
-                      VALUES ($numero_lista, '$cedulaEsc', '$nombresEsc', '$apellidosEsc', '$nacionalidadEsc', '$colegioEsc', '$recintoEsc', '$direccionEsc', '$sectorEsc', '$municipioEsc', '$telefonoEsc', '$emailEsc', '$coordinadorEsc', '$centroEsc', $registradoPor, '$canalEsc', '$estadoDatos')";
+        $sqlInsert = "INSERT INTO inscritos (numero_lista, cedula, nombres, apellidos, nacionalidad, colegio_electoral, recinto_ubicacion, direccion, sector, municipio, telefono, telefono_fijo, email, coordinador, centro_acopio, registrado_por, canal_origen, estado_datos, tipo_elector, es_militante_lider, nivel_estructura, coordinador_padre_id) 
+                      VALUES ($numero_lista, '$cedulaEsc', '$nombresEsc', '$apellidosEsc', '$nacionalidadEsc', '$colegioEsc', '$recintoEsc', '$direccionEsc', '$sectorEsc', '$municipioEsc', '$telefonoEsc', '$telefonoFijoEsc', '$emailEsc', '$coordinadorEsc', '$centroEsc', $registradoPor, '$canalEsc', '$estadoDatos', '$tipoElectorEsc', $esML, '$nivelEstructuraEsc', $coordPadreId)";
                       
         if ($conn->query($sqlInsert)) {
             $newVoterId = $conn->insert_id;
@@ -837,9 +1440,11 @@ if ($method === 'POST') {
                 }
                 
                 // Reemplazar placeholders en la plantilla
+                $codigoComprobante = "PAD2832-" . $numero_lista . "-" . $cedulaFormateada;
                 $placeholders = [
                     '{numero_lista}' => $numero_lista,
                     '{cedula}' => $cedulaFormateada,
+                    '{codigo_comprobante}' => $codigoComprobante,
                     '{nombre_completo}' => "$nombres $apellidos",
                     '{colegio}' => $colegio,
                     '{recinto}' => $recinto,
@@ -850,7 +1455,15 @@ if ($method === 'POST') {
                 ];
                 
                 $emailBody = str_replace(array_keys($placeholders), array_values($placeholders), $bodyTemplate);
-                $emailSubject = str_replace(array_keys($placeholders), array_values($placeholders), $subjectTemplate);
+                $emailSubject = "[$codigoComprobante] Tu Constancia Oficial de Inscripción - PAD/28-32";
+                if (!empty($subjectTemplate)) {
+                    $customSubj = str_replace(array_keys($placeholders), array_values($placeholders), $subjectTemplate);
+                    if (stripos($customSubj, 'PAD2832') === false) {
+                        $emailSubject = "[$codigoComprobante] " . $customSubj;
+                    } else {
+                        $emailSubject = $customSubj;
+                    }
+                }
                 
                 if ($esIrregular) {
                     $emailBodyIrregular = "
@@ -868,6 +1481,10 @@ if ($method === 'POST') {
             <div style=\"background-color: #f9fafb; border: 1px solid #e5e7eb; border-left: 5px solid #ef4444; border-radius: 8px; padding: 20px; margin-bottom: 25px;\">
                 <h4 style=\"margin-top: 0; margin-bottom: 15px; color: #991b1b; font-size: 15px; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px;\">Detalles del Elector</h4>
                 <table style=\"width: 100%; border-collapse: collapse; font-size: 13px; color: #374151;\">
+                    <tr>
+                        <td style=\"padding: 8px 0; font-weight: bold; width: 40%;\">Folio / ID:</td>
+                        <td style=\"padding: 8px 0; text-align: right; font-weight: bold; font-family: monospace;\">$codigoComprobante</td>
+                    </tr>
                     <tr>
                         <td style=\"padding: 8px 0; font-weight: bold; width: 40%;\">Cédula:</td>
                         <td style=\"padding: 8px 0; text-align: right;\">$cedulaFormateada</td>
@@ -896,7 +1513,7 @@ if ($method === 'POST') {
         </div>
     </div>
 </div>";
-                    $subjectIrregular = "PENDIENTE REGULARIZACIÓN: Elector $nombres $apellidos";
+                    $subjectIrregular = "[$codigoComprobante] PENDIENTE REGULARIZACIÓN: Elector $nombres $apellidos";
 
                     if (!empty($email)) {
                         Mailer::enviar($email, $subjectIrregular, $emailBodyIrregular, true, $newVoterId);
@@ -911,13 +1528,13 @@ if ($method === 'POST') {
                         }
                     }
 
-                    Mailer::enviar(MAIL_FROM, "Alerta Regularización No. Lista: $numero_lista ($cedulaFormateada)", $emailBodyIrregular, true, $newVoterId);
+                    Mailer::enviar(MAIL_FROM, "[$codigoComprobante] Alerta Regularización No. Lista: $numero_lista ($cedulaFormateada)", $emailBodyIrregular, true, $newVoterId);
                 } else {
                     if (!empty($email)) {
                         Mailer::enviar($email, $emailSubject, $emailBody, true, $newVoterId);
                     }
                     
-                    Mailer::enviar(MAIL_FROM, "Auditoría Registro No. Lista: $numero_lista ($cedulaFormateada)", $emailBody, true, $newVoterId);
+                    Mailer::enviar(MAIL_FROM, "[$codigoComprobante] Auditoría Registro No. Lista: $numero_lista ($cedulaFormateada)", $emailBody, true, $newVoterId);
                 }
             }
             
@@ -928,8 +1545,11 @@ if ($method === 'POST') {
                     "id" => $newVoterId,
                     "numero_lista" => $numero_lista,
                     "cedula" => $cedulaFormateada,
+                    "codigo_comprobante" => $codigoComprobante,
                     "nombres" => $nombres,
-                    "apellidos" => $apellidos
+                    "apellidos" => $apellidos,
+                    "es_militante_lider" => $esML,
+                    "nivel_estructura" => $nivelEstructura
                 ]
             ]);
             exit;
@@ -961,6 +1581,7 @@ if ($method === 'POST') {
         $sector = trim($input['sector'] ?? '');
         $municipio = trim($input['municipio'] ?? '');
         $telefono = trim($input['telefono'] ?? '');
+        $telefono_fijo = trim($input['telefono_fijo'] ?? '');
         $email = trim($input['email'] ?? '');
         $coordinador = trim($input['coordinador'] ?? '');
         $centro_acopio = trim($input['centro_acopio'] ?? '');
@@ -988,6 +1609,7 @@ if ($method === 'POST') {
         $sectorEsc = $conn->real_escape_string($sector);
         $municipioEsc = $conn->real_escape_string($municipio);
         $telefonoEsc = $conn->real_escape_string($telefono);
+        $telefonoFijoEsc = $conn->real_escape_string($telefono_fijo);
         $emailEsc = $conn->real_escape_string($email);
         $coordinadorEsc = $conn->real_escape_string($coordinador);
         $centroEsc = $conn->real_escape_string($centro_acopio);
@@ -995,6 +1617,12 @@ if ($method === 'POST') {
         // Obtener datos antiguos para comparar en logs
         $oldRes = $conn->query("SELECT * FROM inscritos WHERE id = $voterId LIMIT 1");
         $oldVoter = $oldRes->fetch_assoc();
+        
+        $esML = isset($input['es_militante_lider']) ? intval($input['es_militante_lider']) : intval($oldVoter['es_militante_lider'] ?? 0);
+        $nivelEstructura = trim($input['nivel_estructura'] ?? ($esML ? 'ML - Militante Líder' : ($oldVoter['nivel_estructura'] ?? 'Votante')));
+        $nivelEstructuraEsc = $conn->real_escape_string($nivelEstructura);
+        $coordPadreId = !empty($input['coordinador_padre_id']) ? intval($input['coordinador_padre_id']) : 'NULL';
+        $coordPadreVal = ($coordPadreId === 'NULL') ? "NULL" : intval($coordPadreId);
         
         $sqlUpdate = "UPDATE inscritos SET 
                       nombres = '$nombresEsc', 
@@ -1005,9 +1633,13 @@ if ($method === 'POST') {
                       sector = '$sectorEsc', 
                       municipio = '$municipioEsc', 
                       telefono = '$telefonoEsc', 
+                      telefono_fijo = '$telefonoFijoEsc', 
                       email = '$emailEsc', 
                       coordinador = '$coordinadorEsc', 
-                      centro_acopio = '$centroEsc' 
+                      centro_acopio = '$centroEsc',
+                      es_militante_lider = $esML,
+                      nivel_estructura = '$nivelEstructuraEsc',
+                      coordinador_padre_id = $coordPadreVal 
                       WHERE id = $voterId";
                       
         if ($conn->query($sqlUpdate)) {

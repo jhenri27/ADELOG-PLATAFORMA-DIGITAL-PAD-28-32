@@ -184,6 +184,18 @@ if ($method === 'GET') {
         ]);
         exit;
     }
+
+    if ($action === 'get_social_feed') {
+        $resPosts = $conn->query("SELECT * FROM redes_sociales_feed ORDER BY id DESC");
+        $posts = [];
+        if ($resPosts) {
+            while ($row = $resPosts->fetch_assoc()) {
+                $posts[] = $row;
+            }
+        }
+        echo json_encode(["exito" => true, "publicaciones" => $posts]);
+        exit;
+    }
 }
 
 if ($method === 'POST') {
@@ -207,7 +219,11 @@ if ($method === 'POST') {
             'flow_email_body',
             'flow_whatsapp_body',
             'flow_helpdesk_subject',
-            'flow_helpdesk_body'
+            'flow_helpdesk_body',
+            'social_instagram_url',
+            'social_facebook_url',
+            'social_tiktok_url',
+            'social_x_url'
         ];
         
         $conn->begin_transaction();
@@ -664,6 +680,69 @@ if ($method === 'POST') {
             "mensaje" => "Sincronización con GitHub ejecutada.",
             "console" => $logOutput
         ]);
+        exit;
+    }
+
+    if ($action === 'save_social_post') {
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = intval($input['id'] ?? 0);
+        $red = trim($input['red_social'] ?? 'Instagram');
+        if (!in_array($red, ['Instagram', 'Facebook', 'TikTok', 'X'])) $red = 'Instagram';
+        
+        $autor = trim($input['autor'] ?? 'Pastora Altagracia');
+        $tiempo = trim($input['tiempo_publicacion'] ?? 'Reciente');
+        $contenido = trim($input['contenido'] ?? '');
+        $hashtags = trim($input['hashtags'] ?? '#PastoraDiputada #SDECir3 #PRM');
+        $enlace = trim($input['enlace_publicacion'] ?? '');
+        $activo = isset($input['activo']) ? intval($input['activo']) : 1;
+
+        if (empty($contenido)) {
+            http_response_code(400);
+            echo json_encode(["exito" => false, "mensaje" => "El contenido de la publicación no puede estar vacío."]);
+            exit;
+        }
+
+        if ($id > 0) {
+            $stmt = $conn->prepare("UPDATE redes_sociales_feed SET red_social = ?, autor = ?, tiempo_publicacion = ?, contenido = ?, hashtags = ?, enlace_publicacion = ?, activo = ? WHERE id = ?");
+            $stmt->bind_param("ssssssii", $red, $autor, $tiempo, $contenido, $hashtags, $enlace, $activo, $id);
+            $stmt->execute();
+            $stmt->close();
+            echo json_encode(["exito" => true, "mensaje" => "Publicación actualizada correctamente."]);
+        } else {
+            $stmt = $conn->prepare("INSERT INTO redes_sociales_feed (red_social, autor, tiempo_publicacion, contenido, hashtags, enlace_publicacion, activo) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssi", $red, $autor, $tiempo, $contenido, $hashtags, $enlace, $activo);
+            $stmt->execute();
+            $newId = $conn->insert_id;
+            $stmt->close();
+            echo json_encode(["exito" => true, "mensaje" => "Publicación agregada al feed de redes.", "id" => $newId]);
+        }
+        exit;
+    }
+
+    if ($action === 'delete_social_post') {
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = intval($input['id'] ?? 0);
+        if ($id > 0) {
+            $conn->query("DELETE FROM redes_sociales_feed WHERE id = $id");
+            echo json_encode(["exito" => true, "mensaje" => "Publicación eliminada del feed."]);
+        } else {
+            http_response_code(400);
+            echo json_encode(["exito" => false, "mensaje" => "ID inválido."]);
+        }
+        exit;
+    }
+
+    if ($action === 'toggle_social_post') {
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id = intval($input['id'] ?? 0);
+        $activo = intval($input['activo'] ?? 1);
+        if ($id > 0) {
+            $conn->query("UPDATE redes_sociales_feed SET activo = $activo WHERE id = $id");
+            echo json_encode(["exito" => true, "mensaje" => "Estado de la publicación actualizado."]);
+        } else {
+            http_response_code(400);
+            echo json_encode(["exito" => false, "mensaje" => "ID inválido."]);
+        }
         exit;
     }
 }

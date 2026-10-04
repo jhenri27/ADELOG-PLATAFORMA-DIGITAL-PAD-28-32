@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control - PAD/28-32 Plataforma Electoral</title>
     <link rel="shortcut icon" type="image/png" href="../GRAFICOS PARA LA PAGINA WEB/adelog_logo_icon.png">
-    <link rel="stylesheet" href="assets/css/styles.css?v=1.7">
-    <link rel="stylesheet" href="assets/css/perfiles_responsive.css?v=1.1">
+    <link rel="stylesheet" href="assets/css/styles.css?v=2.2">
+    <link rel="stylesheet" href="assets/css/perfiles_responsive.css?v=2.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js para gráficos dinámicos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- QRCode.js para generación de códigos de validación y comprobantes -->
+    <script src="assets/lib/qrcode.min.js"></script>
 </head>
 <body id="dashboard-view">
 
@@ -43,6 +45,7 @@
         <nav class="nav-tabs">
             <a class="tab-link active" data-tab="dashboard"><i class="fa fa-chart-line"></i> Dashboard</a>
             <a class="tab-link" data-tab="padron"><i class="fa fa-address-book"></i> Padrón Real-Time</a>
+            <a class="tab-link" data-tab="red_territorial" id="tab-red_territorial"><i class="fa fa-sitemap"></i> Red Territorial y Coordinadores</a>
             <a class="tab-link" data-tab="chat" id="tab-chat"><i class="fa fa-comments"></i> Chat Coordinadores</a>
             <a class="tab-link" data-tab="helpdesk" id="tab-helpdesk"><i class="fa fa-ticket-alt"></i> Helpdesk</a>
             <a class="tab-link" data-tab="docs"><i class="fa fa-file-text"></i> Documentos</a>
@@ -55,7 +58,8 @@
             <!-- Quick Actions Header -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
                 <h3 style="font-family: var(--font-outfit); font-size: 18px; margin: 0; color: var(--text-white);">PROYECTO POLÍTICO PASTORA ALTAGRACIA</h3>
-                <div style="display: flex; gap: 10px;">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <a href="../reporte_distribucion_pdf.php" target="_blank" class="btn btn-outline btn-sm" style="padding: 10px 16px; font-size: 14px; border-color: var(--secondary); color: var(--text-white);"><i class="fa fa-chart-pie" style="color: var(--secondary); margin-right: 6px;"></i> Reporte Cobertura Circ. 3 (PDF)</a>
                     <button id="btn-dashboard-register-collaborator" class="btn btn-secondary btn-sm" style="display: none; padding: 10px 16px; font-size: 14px;"><i class="fa fa-user-plus"></i> Registrar Nuevo Colaborador</button>
                     <button id="btn-dashboard-register-voter" class="btn btn-primary btn-sm" style="padding: 10px 16px; font-size: 14px;"><i class="fa fa-user-check"></i> Registrar Nuevo Votante</button>
                 </div>
@@ -113,22 +117,24 @@
                 <div style="height: 350px; position: relative; width: 100%;">
                     <canvas id="growthChart"></canvas>
                 </div>
-            <!-- Buscador Padrón Histórico 2024 -->
+            </div>
+
+            <!-- Buscador Padrón Histórico 2024 / Cruce Maestro con Candidata -->
             <div id="historical-lookup-card" class="card" style="margin-bottom: 24px; display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
                     <div>
-                        <h3 style="font-size: 18px; color: var(--text-white);"><i class="fa fa-history"></i> Consulta de Estatus Elector - Padrón Histórico 2024</h3>
-                        <p style="color: var(--text-muted); font-size: 13px; margin-top: 2px;">Consulte electores registrados en la contienda del 2024, imprima sus constancias o descargue el padrón histórico completo.</p>
+                        <h3 style="font-size: 18px; color: var(--text-white);"><i class="fa fa-history"></i> Consulta de Estatus Elector - Padrón del Partido vs Padrón Candidata</h3>
+                        <p style="color: var(--text-muted); font-size: 13px; margin-top: 2px;">Cruce oficial en tiempo real entre el Padrón Maestro del Partido (Circ. 3) y el Padrón Activo de la Candidata Pastora Altagracia (2028).</p>
                     </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button id="btn-export-excel-2024" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;"><i class="fa fa-file-excel"></i> Descargar Padrón 2024 (Excel)</button>
-                        <button id="btn-export-pdf-2024" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;"><i class="fa fa-file-pdf"></i> Imprimir Padrón 2024 (PDF)</button>
+                        <button id="btn-export-excel-2024" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;"><i class="fa fa-file-excel"></i> Descargar Padrón Partido (Excel)</button>
+                        <button id="btn-export-pdf-2024" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;"><i class="fa fa-file-pdf"></i> Imprimir Padrón Partido (PDF)</button>
                     </div>
                 </div>
                 
                 <!-- Search bar -->
                 <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-                    <input type="text" id="input-query-2024" class="form-control" placeholder="Escriba Cédula, Nombres o Apellidos a consultar..." style="flex: 1; min-width: 250px;">
+                    <input type="text" id="input-query-2024" class="form-control" placeholder="Escriba Cédula (con o sin guiones), Nombres o Apellidos a consultar..." style="flex: 1; min-width: 250px;">
                     <button id="btn-submit-query-2024" class="btn btn-primary" style="padding: 10px 24px;"><i class="fa fa-search"></i> Consultar</button>
                 </div>
                 
@@ -143,9 +149,10 @@
                                 <tr>
                                     <th>Cédula</th>
                                     <th>Nombre Completo</th>
-                                    <th>Colegio</th>
-                                    <th>Sector / Región</th>
-                                    <th>Recinto</th>
+                                    <th>Colegio / Recinto JCE</th>
+                                    <th>Sector / Ubicación</th>
+                                    <th>Estatus Partido (PRM)</th>
+                                    <th>Estatus Candidata (Pastora)</th>
                                     <th style="text-align: right;">Acciones</th>
                                 </tr>
                             </thead>
@@ -181,6 +188,11 @@
                             <option value="REGION 3-F">Región 3-F</option>
                             <option value="GUERRA">Guerra</option>
                         </select>
+                        <select id="filter-padron-tipo" class="form-control" style="max-width: 180px;">
+                            <option value="">Todos los Tipos</option>
+                            <option value="Votante">Votantes Regulares</option>
+                            <option value="ML">ML - Militantes Líderes</option>
+                        </select>
                     </div>
                     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                         <select id="filter-periodo" class="form-control" style="max-width: 180px; display: none;">
@@ -209,6 +221,136 @@
                         </thead>
                         <tbody id="padron-tbody">
                             <!-- Inyectado dinámicamente por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. TAB: RED TERRITORIAL Y TRABAJO DE COORDINADORES -->
+        <section id="tab-content-red_territorial" class="tab-content">
+            <!-- Header Section -->
+            <div class="card" style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <h3 style="font-size: 20px; color: var(--text-white); margin: 0 0 4px 0;">
+                            <i class="fa fa-sitemap" style="color: var(--secondary); margin-right: 8px;"></i> Red Territorial y Trabajo de Coordinadores
+                        </h3>
+                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">
+                            Audite el desempeño jerárquico, gestione redes multinivel (Coordinador General ➔ Coordinador ➔ Sub-coordinador ➔ ML Militante Líder ➔ Digitador) e imprima padrones seccionados por red.
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <a href="../reporte_distribucion_pdf.php" target="_blank" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; font-size: 13px;">
+                            <i class="fa fa-chart-pie"></i> Reporte Cobertura Circ. 3 (PDF)
+                        </a>
+                        <button id="btn-print-network-pdf" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; font-size: 13px;">
+                            <i class="fa fa-print"></i> Imprimir Padrón de Red (PDF)
+                        </button>
+                        <button id="btn-print-general-pdf" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; font-size: 13px;">
+                            <i class="fa fa-file-invoice"></i> Resumen General Consolidado
+                        </button>
+                        <button id="btn-export-network-excel" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; font-size: 13px;">
+                            <i class="fa fa-file-excel"></i> Exportar a Excel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters & Controls Bar -->
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 15px; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                    <div>
+                        <label class="form-label" style="font-size: 12px; margin-bottom: 4px;"><i class="fa fa-layer-group"></i> Filtrar por Nivel de Estructura:</label>
+                        <select id="filter-network-level" class="form-control">
+                            <option value="all">-- Todos los Niveles y Redes --</option>
+                            <option value="Coordinador General">1er Nivel: Coordinador General</option>
+                            <option value="Coordinador">2do Nivel: Coordinador</option>
+                            <option value="Sub-coordinador">3er Nivel: Sub-coordinador</option>
+                            <option value="ML - Militante Líder">4to Nivel: ML - Militante Líder</option>
+                            <option value="Digitador">Operativo: Digitador</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size: 12px; margin-bottom: 4px;"><i class="fa fa-user-tie"></i> Seleccionar Líder / Coordinador:</label>
+                        <select id="filter-network-coord" class="form-control">
+                            <option value="">Cargando lista de líderes y coordinadores...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label" style="font-size: 12px; margin-bottom: 4px;"><i class="fa fa-search"></i> Buscar en la Red:</label>
+                        <input type="text" id="filter-network-search" class="form-control" placeholder="Cédula, nombre, colegio...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Metrics Dashboard Cards -->
+            <div class="grid-4" style="margin-bottom: 20px;">
+                <div class="card" style="display: flex; align-items: center; gap: 14px; padding: 18px;">
+                    <div style="background: rgba(0, 84, 166, 0.15); color: #0054A6; padding: 14px; border-radius: 10px; font-size: 22px;">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Total Votantes en Red</div>
+                        <h2 id="net-stat-total" style="font-size: 24px; margin: 4px 0 0 0; color: var(--text-white);">0</h2>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 14px; padding: 18px;">
+                    <div style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 14px; border-radius: 10px; font-size: 22px;">
+                        <i class="fa fa-user-check"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Inscripciones Directas</div>
+                        <h2 id="net-stat-directos" style="font-size: 24px; margin: 4px 0 0 0; color: #10b981;">0</h2>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 14px; padding: 18px;">
+                    <div style="background: rgba(227, 161, 19, 0.15); color: var(--secondary); padding: 14px; border-radius: 10px; font-size: 22px;">
+                        <i class="fa fa-user-tag"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Militantes Líderes (ML)</div>
+                        <h2 id="net-stat-ml" style="font-size: 24px; margin: 4px 0 0 0; color: var(--secondary);">0</h2>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 14px; padding: 18px;">
+                    <div style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6; padding: 14px; border-radius: 10px; font-size: 22px;">
+                        <i class="fa fa-bullseye"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Meta / Cumplimiento</div>
+                        <h2 id="net-stat-meta" style="font-size: 24px; margin: 4px 0 0 0; color: #8b5cf6;">0%</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content: Active Coordinator Overview & Voters Table -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <h4 id="net-active-title" style="color: var(--text-white); margin: 0; font-size: 16px;">
+                            <i class="fa fa-network-wired" style="color: var(--secondary); margin-right: 6px;"></i> Padrón Seccionado de la Red Territorial
+                        </h4>
+                        <span id="net-active-subtitle" style="color: var(--text-muted); font-size: 12px;">Visualizando todos los electores registrados en la estructura activa.</span>
+                    </div>
+                    <span id="net-active-count" class="badge badge-info" style="font-size: 12px; padding: 6px 12px;">0 Votantes en esta sección</span>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No. Lista</th>
+                                <th>Folio Oficial</th>
+                                <th>Cédula</th>
+                                <th>Nombre Completo</th>
+                                <th>Rol / Perfil</th>
+                                <th>Colegio</th>
+                                <th>Ubicación / Sector</th>
+                                <th>Coordinador Padre</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="net-voters-tbody">
+                            <!-- Inyectado por JS -->
                         </tbody>
                     </table>
                 </div>
@@ -505,9 +647,11 @@
                             <div class="form-group">
                                 <label for="user-role" class="form-label">Perfil Asignado</label>
                                 <select id="user-role" class="form-control">
-                                    <option value="Digitador">Digitador</option>
-                                    <option value="Coordinador">Coordinador</option>
-                                    <option value="Jefe Electoral">Jefe Electoral</option>
+                                    <option value="Coordinador General">Coordinador General (1er Nivel)</option>
+                                    <option value="Coordinador">Coordinador (2do Nivel)</option>
+                                    <option value="Sub-coordinador">Sub-coordinador (3er Nivel)</option>
+                                    <option value="ML - Militante Líder">ML - Militante Líder (4to Nivel)</option>
+                                    <option value="Digitador">Digitador (Operativo)</option>
                                     <option value="Administrador">Administrador</option>
                                 </select>
                             </div>
@@ -626,6 +770,28 @@
                                 </div>
                             </div>
                             
+                            <h4 style="color: var(--text-white); margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;"><i class="fa fa-share-alt" style="color: var(--secondary);"></i> Perfiles Oficiales de Redes Sociales</h4>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label class="form-label"><i class="fab fa-instagram" style="color:#E1306C;"></i> Enlace Perfil de Instagram</label>
+                                    <input type="url" id="config-social-instagram" class="form-control" placeholder="https://www.instagram.com/pastoraaltagraciard/">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label"><i class="fab fa-facebook" style="color:#1877F2;"></i> Enlace Página de Facebook</label>
+                                    <input type="url" id="config-social-facebook" class="form-control" placeholder="https://www.facebook.com/Apostolaltagraciard">
+                                </div>
+                            </div>
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label class="form-label"><i class="fab fa-tiktok" style="color:#00f2fe;"></i> Enlace Perfil de TikTok</label>
+                                    <input type="url" id="config-social-tiktok" class="form-control" placeholder="https://www.tiktok.com/@pastoraaltagraciard">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label"><i class="fab fa-twitter" style="color:#1DA1F2;"></i> Enlace Perfil de X (Twitter)</label>
+                                    <input type="url" id="config-social-x" class="form-control" placeholder="https://x.com/pastoraaltard">
+                                </div>
+                            </div>
+
                             <h4 style="color: var(--text-white); margin-top: 20px;">Políticas de Seguridad de Acceso</h4>
                             <div class="grid-3">
                                 <div class="form-group">
@@ -644,6 +810,35 @@
                             
                             <button type="submit" class="btn btn-primary" style="margin-top: 15px;"><i class="fa fa-save"></i> Guardar y Compilar Recursos</button>
                         </form>
+
+                        <!-- Gestor de Publicaciones del Feed -->
+                        <div style="margin-top: 35px; border-top: 1px solid var(--border-color); padding-top: 25px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                                <div>
+                                    <h4 style="color: var(--text-white); margin: 0; font-size: 16px;"><i class="fa fa-rss" style="color: var(--secondary);"></i> Gestor del Feed de Redes Sociales (Facebook & Instagram)</h4>
+                                    <p style="color: var(--text-muted); font-size: 12px; margin: 3px 0 0 0;">Administre las actividades y noticias que se visualizan en vivo en la página web pública de inscripción.</p>
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" id="btn-open-modal-social"><i class="fa fa-plus"></i> Nueva Publicación</button>
+                            </div>
+
+                            <div class="table-container" style="background: rgba(0,0,0,0.15); border-radius: 8px; border: 1px solid var(--border-color);">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 110px;">Red Social</th>
+                                            <th style="width: 120px;">Tiempo / Fecha</th>
+                                            <th>Contenido de la Publicación</th>
+                                            <th style="width: 150px;">Hashtags</th>
+                                            <th style="width: 90px;">Estado</th>
+                                            <th style="width: 120px; text-align: center;">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="social-feed-tbody">
+                                        <!-- Inyectado dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- B. SUBTAB: SERVIDOR SMTP -->
@@ -1046,8 +1241,9 @@
                     <!-- WebCam block -->
                     <div id="camera-container">
                         <video id="webcam" autoplay playsinline></video>
-                        <div style="padding: 10px; text-align: center; background: rgba(0,0,0,0.8);">
+                        <div style="padding: 10px; text-align: center; background: rgba(0,0,0,0.8); display: flex; justify-content: center; gap: 10px;">
                             <button type="button" id="btn-capture-photo" class="btn btn-secondary btn-sm"><i class="fa fa-camera"></i> Tomar Foto</button>
+                            <button type="button" id="btn-close-camera" class="btn btn-outline btn-sm"><i class="fa fa-times"></i> Cancelar</button>
                         </div>
                     </div>
                 </div>
@@ -1055,14 +1251,18 @@
                 <form id="voter-form">
                     <input type="hidden" id="voter-id">
                     
-                    <div class="grid-2">
+                    <div class="grid-3">
                         <div class="form-group">
                             <label for="cedula" class="form-label">Número de Cédula (Luhn) *</label>
                             <input type="text" id="cedula" class="form-control" required placeholder="001-xxxxxxx-x">
                         </div>
                         <div class="form-group">
                             <label for="telefono" class="form-label">Teléfono Celular (Dominicano) *</label>
-                            <input type="text" id="telefono" class="form-control" required placeholder="809-xxx-xxxx">
+                            <input type="text" id="telefono" class="form-control" required placeholder="829-xxx-xxxx">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono_fijo" class="form-label">Teléfono Fijo / Residencial</label>
+                            <input type="text" id="telefono_fijo" class="form-control" placeholder="809-xxx-xxxx">
                         </div>
                     </div>
 
@@ -1080,7 +1280,7 @@
                     <div class="grid-3">
                         <div class="form-group">
                             <label for="colegio_electoral" class="form-label">Colegio Electoral *</label>
-                            <input type="text" id="colegio_electoral" class="form-control" required placeholder="1401">
+                            <input type="text" id="colegio_electoral" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label for="sector" class="form-label">Sector *</label>
@@ -1121,6 +1321,34 @@
                         <div class="form-group">
                             <label for="nacionalidad" class="form-label">Nacionalidad</label>
                             <input type="text" id="nacionalidad" class="form-control" value="DOMINICANA">
+                        </div>
+                    </div>
+
+                    <!-- ML - Militante Líder & Jerarquía -->
+                    <div style="background: rgba(227, 161, 19, 0.06); border: 1px solid rgba(227, 161, 19, 0.2); padding: 12px 16px; border-radius: 8px; margin-top: 15px; margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-white); font-weight: 600; font-size: 14px; margin-bottom: 8px;">
+                            <input type="checkbox" id="voter-es-ml" style="width: 18px; height: 18px; accent-color: var(--secondary);">
+                            <span><i class="fa fa-user-tag" style="color: var(--secondary);"></i> Asignar perfil como <strong>ML (Militante Líder)</strong></span>
+                        </label>
+                        <p style="margin: 0 0 10px 28px; font-size: 12px; color: var(--text-muted);">Al habilitar esta opción, este elector podrá captar votantes y construir su propia red territorial bajo la supervisión de su coordinador.</p>
+                        
+                        <div id="voter-ml-details" style="display: none; margin-left: 28px;">
+                            <div class="grid-2">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label for="voter-nivel-estructura" class="form-label" style="font-size: 12px;">Nivel en Estructura</label>
+                                    <select id="voter-nivel-estructura" class="form-control" style="font-size: 13px;">
+                                        <option value="ML - Militante Líder">ML - Militante Líder (Nivel 4)</option>
+                                        <option value="Sub-coordinador">Sub-coordinador (Nivel 3)</option>
+                                        <option value="Coordinador">Coordinador (Nivel 2)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label for="voter-coordinador-padre" class="form-label" style="font-size: 12px;">Líder / Coordinador Superior</label>
+                                    <select id="voter-coordinador-padre" class="form-control" style="font-size: 13px;">
+                                        <option value="">Seleccione coordinador superior...</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1208,9 +1436,11 @@
                         <div class="form-group">
                             <label for="colab-role" class="form-label">Rol del Sistema *</label>
                             <select id="colab-role" class="form-control" required>
-                                <option value="Coordinador">Coordinador</option>
-                                <option value="Digitador">Digitador</option>
-                                <option value="Jefe Electoral">Jefe Electoral</option>
+                                <option value="Coordinador General">Coordinador General (1er Nivel)</option>
+                                <option value="Coordinador">Coordinador (2do Nivel)</option>
+                                <option value="Sub-coordinador">Sub-coordinador (3er Nivel)</option>
+                                <option value="ML - Militante Líder">ML - Militante Líder (4to Nivel)</option>
+                                <option value="Digitador">Digitador (Operativo)</option>
                                 <option value="Administrador">Administrador</option>
                             </select>
                         </div>
@@ -1432,8 +1662,66 @@
         </div>
     </div>
 
+    <!-- ==================== MODAL: CREAR / EDITAR PUBLICACIÓN DE RED SOCIAL ==================== -->
+    <div id="modal-social-post" class="modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3 id="modal-social-title"><i class="fa fa-rss" style="color: var(--secondary);"></i> Nueva Publicación de Red Social</h3>
+                <button type="button" onclick="closeModal('modal-social-post')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-social-post">
+                    <input type="hidden" id="social-post-id" value="0">
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Red Social *</label>
+                            <select id="social-post-red" class="form-control" required>
+                                <option value="Instagram">Instagram</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="TikTok">TikTok</option>
+                                <option value="X">X (Twitter)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tiempo / Fecha a Mostrar *</label>
+                            <input type="text" id="social-post-tiempo" class="form-control" placeholder="Ej: Hace 2 horas, Ayer, Hoy" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contenido / Mensaje de la Publicación *</label>
+                        <textarea id="social-post-contenido" class="form-control" rows="4" placeholder="Escriba el texto de la actividad, recorrido o mensaje de campaña..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Hashtags de Campaña</label>
+                        <input type="text" id="social-post-hashtags" class="form-control" placeholder="#PastoraDiputada #SDECir3 #PRM">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Enlace Directo a la Publicación (Opcional)</label>
+                        <input type="url" id="social-post-enlace" class="form-control" placeholder="https://www.instagram.com/p/...">
+                    </div>
+
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-white);">
+                            <input type="checkbox" id="social-post-activo" checked style="width: 18px; height: 18px; accent-color: var(--secondary);">
+                            <span>Publicación Activa (Visible en el portal público)</span>
+                        </label>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                        <button type="button" onclick="closeModal('modal-social-post')" class="btn btn-outline">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar Publicación</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Script Global de la Aplicación y Motor RBAC -->
-    <script src="assets/js/app.js?v=1.8"></script>
-    <script src="assets/js/perfiles_engine.js?v=1.2"></script>
+    <script src="assets/js/app.js?v=2.8"></script>
+    <script src="assets/js/perfiles_engine.js?v=2.1"></script>
 </body>
 </html>

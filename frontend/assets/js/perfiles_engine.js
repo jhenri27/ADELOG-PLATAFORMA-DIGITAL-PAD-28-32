@@ -141,15 +141,25 @@
         const selectMalla = document.getElementById('select-perfil-malla');
         const selectOrigenCopy = document.getElementById('copy-perfil-origen');
         const selectOrigenModal = document.getElementById('modal-perfil-origen');
+        const selectColabRole = document.getElementById('colab-role');
+        const selectUserRole = document.getElementById('user-role');
+        const selectVoterNivel = document.getElementById('voter-nivel-estructura');
 
         let optionsHtml = '';
+        let optionsNameHtml = '';
         perfilesLista.forEach(p => {
             optionsHtml += `<option value="${p.id}">${p.nombre} (Nivel ${p.nivel_jerarquico})</option>`;
+            optionsNameHtml += `<option value="${p.nombre}">${p.nombre} (Nivel ${p.nivel_jerarquico})</option>`;
         });
 
         if (selectMalla) selectMalla.innerHTML = optionsHtml;
         if (selectOrigenCopy) selectOrigenCopy.innerHTML = '<option value="">-- Seleccionar Perfil Origen --</option>' + optionsHtml;
         if (selectOrigenModal) selectOrigenModal.innerHTML = '<option value="0">-- Matriz Vacía por Defecto --</option>' + optionsHtml;
+        if (selectColabRole) selectColabRole.innerHTML = optionsNameHtml;
+        if (selectUserRole) selectUserRole.innerHTML = optionsNameHtml;
+        if (selectVoterNivel && perfilesLista.length > 0) {
+            selectVoterNivel.innerHTML = optionsNameHtml;
+        }
     }
 
     // ─── CARGAR Y RENDERIZAR MALLA DE PERMISOS ──────────────────────────────

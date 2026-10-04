@@ -2,6 +2,10 @@
  * SPA Controller: Lógica de la Plataforma Electoral PAD/28-32
  */
 
+// Variable global para referencia de stream de cámara web (Anti-TDZ Normas PLAD)
+var streamRef = null;
+window.streamRef = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- DIÁLOGOS Y ALERTAS ESTILIZADOS PERSONALIZADOS ---
     const originalAlert = window.alert;
@@ -60,6 +64,14 @@ document.addEventListener('DOMContentLoaded', () => {
         chatsInterval: null,
         dashboardInterval: null,
         campanaCodigo: null // Para trackeo de campañas masivas
+    };
+
+    // --- OCR Y WEBCAM ESTADO GLOBAL ---
+    window.streamRef = null;
+    streamRef = null;
+    const ocrState = {
+        admin: { front: false, dorsal: false },
+        public: { front: false, dorsal: false }
     };
 
     // --- GESTIÓN DE TEMA CLARO/OSCURO ---
@@ -122,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     applyUserPermissions();
                     loadDashboardData();
+                    poblarRolesSelects();
                     startDashboardPolling();
                 } else {
                     window.location.href = 'login.html';
@@ -189,6 +202,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Autocompletado y Validación en Padrón Circunscripción 3 (Compartido Admin y Público)
+    function setupCedulaPadronListener(inputId, targetPrefix) {
+        const inputEl = document.getElementById(inputId);
+        if (!inputEl) return;
+
+        inputEl.addEventListener('input', (e) => {
+            const val = e.target.value.replace(/\D/g, '');
+            if (val.length === 11) {
+                buscarEnPadronCirc3(e.target.value, targetPrefix);
+            } else if (val.length > 0) {
+                let feedbackEl = document.getElementById(targetPrefix + 'cedula-feedback') || document.getElementById(targetPrefix + 'cedula-validation');
+                if (feedbackEl) {
+                    feedbackEl.style.display = 'block';
+                    feedbackEl.innerHTML = '<span style="color:#f59e0b; font-size:12px;"><i class="fa fa-info-circle"></i> Ingrese los 11 dígitos de su cédula</span>';
+                }
+            } else {
+                let feedbackEl = document.getElementById(targetPrefix + 'cedula-feedback') || document.getElementById(targetPrefix + 'cedula-validation');
+                if (feedbackEl) {
+                    feedbackEl.style.display = 'none';
+                    feedbackEl.innerHTML = '';
+                }
+            }
+        });
+
+        inputEl.addEventListener('blur', (e) => {
+            const val = e.target.value.replace(/\D/g, '');
+            if (val.length === 11) {
+                buscarEnPadronCirc3(e.target.value, targetPrefix);
+            }
+        });
+    }
+
     // ─── EVENT LISTENERS DEL DASHBOARD ──────────────────────────────────────
     function setupDashboardEventListeners() {
         // Tab switching
@@ -220,12 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('voter-form-title').textContent = "Nueva Inscripción de Votante";
                 document.getElementById('voter-id').value = "";
                 document.getElementById('voter-form').reset();
-                
-                const adminOcrBtn = document.getElementById('btn-admin-ocr');
-                if (adminOcrBtn) {
-                    adminOcrBtn.innerHTML = '<i class="fa fa-upload"></i> Cargar foto frontal de cédula';
-                }
-                
+                resetOcrButtonState(false);
                 openModal('voter-modal');
             });
         }
@@ -238,39 +278,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (file) {
                     processOcrImage(file);
                 }
+                e.target.value = '';
             });
         }
 
-        // Inicializar Cámara web
+        // Inicializar Cámara web (Dashboard)
         const btnCamera = document.getElementById('btn-camera-ocr');
         if (btnCamera) {
             btnCamera.addEventListener('click', () => {
-                initWebcam();
+                initWebcam(false);
             });
         }
 
         const btnCapture = document.getElementById('btn-capture-photo');
         if (btnCapture) {
             btnCapture.addEventListener('click', () => {
-                capturePhoto();
+                capturePhoto(false);
             });
         }
 
-        // Autocompletado y Validación en Padrón Circunscripción 3
-        const inputCedula = document.getElementById('cedula');
-        if (inputCedula) {
-            inputCedula.addEventListener('input', (e) => {
-                const val = e.target.value.replace(/\D/g, '');
-                if (val.length === 11) {
-                    buscarEnPadronCirc3(e.target.value, '');
-                }
-            });
-            inputCedula.addEventListener('blur', (e) => {
-                if (e.target.value.trim() !== '') {
-                    buscarEnPadronCirc3(e.target.value, '');
-                }
+        const btnCloseCam = document.getElementById('btn-close-camera');
+        if (btnCloseCam) {
+            btnCloseCam.addEventListener('click', () => {
+                stopWebcam(false);
             });
         }
+
+        // Autocompletado y Validación en Padrón Circunscripción 3 (Admin)
+        setupCedulaPadronListener('cedula', '');
 
         // Formulario Guardar Votante
         const voterForm = document.getElementById('voter-form');
@@ -405,6 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (btnDashboardRegColab) {
             btnDashboardRegColab.addEventListener('click', () => {
                 document.getElementById('collaborator-form').reset();
+                poblarRolesSelects();
                 openModal('collaborator-modal');
             });
         }
@@ -416,10 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('voter-form-title').textContent = "Nueva Inscripción de Votante";
                 document.getElementById('voter-id').value = "";
                 document.getElementById('voter-form').reset();
-                const adminOcrBtn = document.getElementById('btn-admin-ocr');
-                if (adminOcrBtn) {
-                    adminOcrBtn.innerHTML = '<i class="fa fa-upload"></i> Cargar foto frontal de cédula';
-                }
+                resetOcrButtonState(false);
                 openModal('voter-modal');
             });
         }
@@ -439,6 +472,75 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filterPeriodo) {
             filterPeriodo.addEventListener('change', () => {
                 loadPadron();
+            });
+        }
+
+        // filter-padron-tipo dropdown change listener
+        const filterPadronTipo = document.getElementById('filter-padron-tipo');
+        if (filterPadronTipo) {
+            filterPadronTipo.addEventListener('change', () => {
+                loadPadron();
+            });
+        }
+
+        // --- LISTENERS DE RED TERRITORIAL Y COORDINADORES ---
+        const filterNetLevel = document.getElementById('filter-network-level');
+        if (filterNetLevel) {
+            filterNetLevel.addEventListener('change', () => {
+                loadRedTerritorial(true);
+            });
+        }
+
+        const filterNetCoord = document.getElementById('filter-network-coord');
+        if (filterNetCoord) {
+            filterNetCoord.addEventListener('change', () => {
+                const selectedCoord = filterNetCoord.value;
+                const level = filterNetLevel ? filterNetLevel.value : 'all';
+                const search = document.getElementById('filter-network-search') ? document.getElementById('filter-network-search').value : '';
+                loadNetworkVoters(selectedCoord, level, search);
+            });
+        }
+
+        const filterNetSearch = document.getElementById('filter-network-search');
+        if (filterNetSearch) {
+            filterNetSearch.addEventListener('input', () => {
+                const selectedCoord = filterNetCoord ? filterNetCoord.value : '';
+                const level = filterNetLevel ? filterNetLevel.value : 'all';
+                const search = filterNetSearch.value;
+                loadNetworkVoters(selectedCoord, level, search);
+            });
+        }
+
+        // Botones de impresión y exportación de Red Territorial
+        const btnPrintNetPdf = document.getElementById('btn-print-network-pdf');
+        if (btnPrintNetPdf) {
+            btnPrintNetPdf.addEventListener('click', () => {
+                printNetworkSeccionedPDF();
+            });
+        }
+
+        const btnPrintGenPdf = document.getElementById('btn-print-general-pdf');
+        if (btnPrintGenPdf) {
+            btnPrintGenPdf.addEventListener('click', () => {
+                printNetworkGeneralPDF();
+            });
+        }
+
+        const btnExportNetExcel = document.getElementById('btn-export-network-excel');
+        if (btnExportNetExcel) {
+            btnExportNetExcel.addEventListener('click', () => {
+                exportNetworkExcel();
+            });
+        }
+
+        // Toggle ML Checkbox in voter registration modal
+        const chkEsML = document.getElementById('voter-es-ml');
+        if (chkEsML) {
+            chkEsML.addEventListener('change', () => {
+                const detailsBox = document.getElementById('voter-ml-details');
+                if (detailsBox) {
+                    detailsBox.style.display = chkEsML.checked ? 'block' : 'none';
+                }
             });
         }
 
@@ -541,6 +643,22 @@ document.addEventListener('DOMContentLoaded', () => {
             formMarca.addEventListener('submit', (e) => {
                 e.preventDefault();
                 saveMarcaConfig();
+            });
+        }
+
+        // 2b. Gestor de Feed de Redes Sociales
+        const btnOpenModalSocial = document.getElementById('btn-open-modal-social');
+        if (btnOpenModalSocial) {
+            btnOpenModalSocial.addEventListener('click', () => {
+                openSocialPostModal(null);
+            });
+        }
+
+        const formSocialPost = document.getElementById('form-social-post');
+        if (formSocialPost) {
+            formSocialPost.addEventListener('submit', (e) => {
+                e.preventDefault();
+                saveSocialPost();
             });
         }
 
@@ -736,6 +854,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Disparar cargas dinámicas según pestaña
         if (tabId === 'padron') {
             loadPadron();
+        } else if (tabId === 'red_territorial') {
+            loadRedTerritorial();
         } else if (tabId === 'chat') {
             loadChats();
             startChatPolling();
@@ -765,7 +885,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // OCR en público
+        // OCR en público (Carga de archivo)
         const publicOcrFile = document.getElementById('public-ocr-file');
         if (publicOcrFile) {
             publicOcrFile.addEventListener('change', (e) => {
@@ -773,7 +893,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (file) {
                     processOcrImage(file, true);
                 }
+                e.target.value = '';
             });
+        }
+
+        // Inicializar Cámara web en público
+        const btnPublicCamera = document.getElementById('btn-public-camera-ocr');
+        if (btnPublicCamera) {
+            btnPublicCamera.addEventListener('click', () => {
+                initWebcam(true);
+            });
+        }
+
+        const btnPublicCapture = document.getElementById('btn-public-capture-photo');
+        if (btnPublicCapture) {
+            btnPublicCapture.addEventListener('click', () => {
+                capturePhoto(true);
+            });
+        }
+
+        const btnPublicCloseCam = document.getElementById('btn-public-close-camera');
+        if (btnPublicCloseCam) {
+            btnPublicCloseCam.addEventListener('click', () => {
+                stopWebcam(true);
+            });
+        }
+
+        // Autocompletado y Validación en Padrón Circunscripción 3 (Público)
+        setupCedulaPadronListener('public-cedula', 'public-');
+
+        // Si al cargar o refrescar la página el input ya contiene una cédula válida (ej: 11 dígitos), consultarla de inmediato
+        const pubCedInput = document.getElementById('public-cedula');
+        if (pubCedInput && pubCedInput.value.replace(/\D/g, '').length === 11) {
+            buscarEnPadronCirc3(pubCedInput.value, 'public-');
         }
     }
 
@@ -879,18 +1031,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ─── OCR Y WEBCAM ───────────────────────────────────────────────────────
-    let streamRef = null;
+    function resetOcrButtonState(isPublic = false) {
+        const mode = isPublic ? 'public' : 'admin';
+        ocrState[mode].front = false;
+        ocrState[mode].dorsal = false;
+        const ocrBtnId = isPublic ? 'btn-public-ocr' : 'btn-admin-ocr';
+        const ocrBtn = document.getElementById(ocrBtnId);
+        if (ocrBtn) {
+            ocrBtn.innerHTML = `<i class="fa fa-upload"></i> ${isPublic ? 'Subir foto frontal de cédula' : 'Cargar foto frontal de cédula'}`;
+        }
+        const prefix = isPublic ? 'public-' : '';
+        const feedbackEl = document.getElementById(prefix + 'cedula-feedback') || document.getElementById(prefix + 'cedula-validation');
+        if (feedbackEl) {
+            feedbackEl.style.display = 'none';
+            feedbackEl.innerHTML = '';
+        }
+    }
 
-    function initWebcam() {
-        const camContainer = document.getElementById('camera-container');
-        const video = document.getElementById('webcam');
+    function initWebcam(isPublic = false) {
+        const containerId = isPublic ? 'public-camera-container' : 'camera-container';
+        const videoId = isPublic ? 'public-webcam' : 'webcam';
+        const camContainer = document.getElementById(containerId);
+        const video = document.getElementById(videoId);
         if (!video || !camContainer) return;
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            alert("No se pudo iniciar la cámara: El navegador o el contexto no permite acceso a la cámara (requiere localhost o conexión segura HTTPS).");
+            camContainer.style.display = 'none';
+            return;
+        }
 
         camContainer.style.display = 'block';
 
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
             .then(stream => {
                 streamRef = stream;
+                window.streamRef = stream;
                 video.srcObject = stream;
                 video.play();
             })
@@ -900,24 +1076,41 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    function capturePhoto() {
-        const video = document.getElementById('webcam');
-        if (!video || !streamRef) return;
+    function capturePhoto(isPublic = false) {
+        const videoId = isPublic ? 'public-webcam' : 'webcam';
+        const video = document.getElementById(videoId);
+        const activeStream = streamRef || window.streamRef;
+        if (!video || !activeStream) return;
 
         const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         canvas.toBlob(blob => {
             const file = new File([blob], "captured_ocr.jpg", { type: "image/jpeg" });
-            processOcrImage(file);
+            processOcrImage(file, isPublic);
             
             // Detener cámara
-            streamRef.getTracks().forEach(track => track.stop());
-            document.getElementById('camera-container').style.display = 'none';
+            stopWebcam(isPublic);
         }, 'image/jpeg');
+    }
+
+    function stopWebcam(isPublic = false) {
+        const activeStream = streamRef || window.streamRef;
+        if (activeStream) {
+            try {
+                activeStream.getTracks().forEach(track => track.stop());
+            } catch(e) {
+                console.warn("Error stopping stream tracks:", e);
+            }
+            streamRef = null;
+            window.streamRef = null;
+        }
+        const containerId = isPublic ? 'public-camera-container' : 'camera-container';
+        const camContainer = document.getElementById(containerId);
+        if (camContainer) camContainer.style.display = 'none';
     }
 
     function processOcrImage(file, isPublic = false) {
@@ -937,13 +1130,41 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (loader) loader.style.display = 'none';
                 if (data.exito) {
+                    const mode = isPublic ? 'public' : 'admin';
+                    const lado = (data.datos && data.datos.lado_detectado) ? data.datos.lado_detectado : 'frontal';
+
+                    // Actualizar formulario preservando datos existentes
                     fillVoterForm(data.datos, isPublic);
-                    showNotification("✓ OCR procesado con éxito. Revise y complete los campos.", "success", isPublic);
-                    
+
+                    // Registrar avance secuencial según el lado detectado por el OCR
+                    if (lado === 'ambos') {
+                        ocrState[mode].front = true;
+                        ocrState[mode].dorsal = true;
+                    } else if (lado === 'reverso') {
+                        ocrState[mode].dorsal = true;
+                    } else {
+                        // Es frontal
+                        ocrState[mode].front = true;
+                    }
+
                     const ocrBtnId = isPublic ? 'btn-public-ocr' : 'btn-admin-ocr';
                     const ocrBtn = document.getElementById(ocrBtnId);
-                    if (ocrBtn) {
-                        ocrBtn.innerHTML = `<i class="fa fa-upload"></i> ${isPublic ? 'Subir foto dorsal de cédula' : 'Cargar foto dorsal de cédula'}`;
+
+                    if (ocrState[mode].front && ocrState[mode].dorsal) {
+                        if (ocrBtn) {
+                            ocrBtn.innerHTML = `<i class="fa fa-check-circle" style="color:#10b981;"></i> ${isPublic ? '✓ Frente y Reverso cargados' : '✓ Cédula Completa (Frente y Reverso)'}`;
+                        }
+                        showNotification("✓ Cédula completa (frente y reverso) procesada con éxito.", "success", isPublic);
+                    } else if (ocrState[mode].front) {
+                        if (ocrBtn) {
+                            ocrBtn.innerHTML = `<i class="fa fa-upload"></i> ${isPublic ? 'Subir foto dorsal de cédula' : 'Cargar foto dorsal de cédula'}`;
+                        }
+                        showNotification("✓ Datos frontales extraídos con éxito. Ahora suba la foto dorsal (reverso) de la cédula.", "info", isPublic);
+                    } else if (ocrState[mode].dorsal) {
+                        if (ocrBtn) {
+                            ocrBtn.innerHTML = `<i class="fa fa-upload"></i> ${isPublic ? 'Subir foto frontal de cédula' : 'Cargar foto frontal de cédula'}`;
+                        }
+                        showNotification("✓ Datos de votación del reverso extraídos. Ahora suba la foto frontal de la cédula.", "info", isPublic);
                     }
                 } else {
                     showNotification("✗ Error OCR: " + data.mensaje, "danger", isPublic);
@@ -955,11 +1176,29 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
+    function validarCedulaLuhn(cedula) {
+        if (!cedula) return false;
+        const clean = String(cedula).replace(/\D/g, '');
+        if (clean.length !== 11) return false;
+        const weights = [1, 2, 1, 2, 1, 2, 1, 2, 1, 2];
+        let sum = 0;
+        for (let i = 0; i < 10; i++) {
+            let mult = parseInt(clean[i], 10) * weights[i];
+            if (mult >= 10) {
+                sum += Math.floor(mult / 10) + (mult % 10);
+            } else {
+                sum += mult;
+            }
+        }
+        const checkDigit = (10 - (sum % 10)) % 10;
+        return checkDigit === parseInt(clean[10], 10);
+    }
+
     function buscarEnPadronCirc3(cedulaInput, targetFormPrefix = '') {
         const cleanCed = cedulaInput.replace(/\D/g, '');
-        if (cleanCed.length !== 11) return;
+        if (cleanCed.length === 0) return;
 
-        let feedbackEl = document.getElementById(targetFormPrefix + 'cedula-feedback');
+        let feedbackEl = document.getElementById(targetFormPrefix + 'cedula-feedback') || document.getElementById(targetFormPrefix + 'cedula-validation');
         if (!feedbackEl) {
             feedbackEl = document.createElement('div');
             feedbackEl.id = targetFormPrefix + 'cedula-feedback';
@@ -971,14 +1210,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 cedInputEl.parentNode.appendChild(feedbackEl);
             }
         }
-        
-        feedbackEl.innerHTML = '<span style="color:var(--secondary);"><i class="fa fa-spinner fa-spin"></i> Consultado Padrón Máster Circunscripción 3...</span>';
+        feedbackEl.style.display = 'block';
 
-        fetch(`../backend/api/padron_consulta.php?action=buscar&cedula=${encodeURIComponent(cedulaInput)}`)
+        if (cleanCed.length < 11) {
+            feedbackEl.innerHTML = '<span style="color:#f59e0b; font-size:12px;"><i class="fa fa-info-circle"></i> Ingrese los 11 dígitos de su cédula</span>';
+            return;
+        }
+
+        if (!validarCedulaLuhn(cleanCed)) {
+            feedbackEl.innerHTML = '<span style="color:var(--danger); font-size:12px;"><i class="fa fa-times-circle"></i> Cédula con dígito verificador inválido</span>';
+            return;
+        }
+
+        feedbackEl.innerHTML = '<span style="color:var(--secondary); font-size:12px;"><i class="fa fa-spinner fa-spin"></i> Consultado Padrón Máster Circunscripción 3...</span>';
+
+        fetch(`../backend/api/padron_lookup.php?cedula=${encodeURIComponent(cedulaInput)}`)
             .then(res => res.json())
             .then(data => {
-                if (data.exito && data.encontrado && data.votante) {
-                    const v = data.votante;
+                if (data.exito && data.encontrado && data.elector) {
+                    const v = data.elector;
                     
                     const elemNombres = document.getElementById(targetFormPrefix + 'nombres');
                     if (elemNombres) elemNombres.value = v.nombres;
@@ -986,55 +1236,106 @@ document.addEventListener('DOMContentLoaded', () => {
                     const elemApellidos = document.getElementById(targetFormPrefix + 'apellidos');
                     if (elemApellidos) elemApellidos.value = v.apellidos;
 
+                    const elemColegio = document.getElementById(targetFormPrefix + 'colegio_electoral');
+                    if (elemColegio) elemColegio.value = v.colegio_electoral;
+
                     const elemSector = document.getElementById(targetFormPrefix + 'sector');
-                    if (elemSector) elemSector.value = v.sector;
+                    if (elemSector && v.sector) elemSector.value = v.sector;
 
                     const elemMunicipio = document.getElementById(targetFormPrefix + 'municipio');
-                    if (elemMunicipio) elemMunicipio.value = v.municipio;
+                    if (elemMunicipio && v.municipio) elemMunicipio.value = v.municipio;
 
                     const elemRecinto = document.getElementById(targetFormPrefix + 'recinto_ubicacion');
-                    if (elemRecinto) elemRecinto.value = v.recinto;
+                    if (elemRecinto && v.recinto) elemRecinto.value = v.recinto;
 
                     const elemDireccion = document.getElementById(targetFormPrefix + 'direccion');
-                    if (elemDireccion && !elemDireccion.value) elemDireccion.value = v.sector;
+                    if (elemDireccion && v.direccion && !elemDireccion.value) elemDireccion.value = v.direccion;
 
-                    let htmlFeedback = `<span style="color:#10b981;"><i class="fa fa-check-circle"></i> Verificado en Padrón Circ. 3 (Zona ${v.zona})</span>`;
+                    const elemTelefono = document.getElementById(targetFormPrefix + 'telefono');
+                    if (elemTelefono) {
+                        if (v.celular) {
+                            elemTelefono.value = v.celular;
+                        } else if (v.telefono_sugerido && !elemTelefono.value) {
+                            elemTelefono.value = v.telefono_sugerido;
+                        }
+                        elemTelefono.dispatchEvent(new Event('input'));
+                    }
+
+                    const elemTelFijo = document.getElementById(targetFormPrefix + 'telefono_fijo');
+                    if (elemTelFijo && v.telefono_fijo) {
+                        elemTelFijo.value = v.telefono_fijo;
+                    }
+
+                    const fuenteBadge = v.region ? ` (${v.region})` : '';
+                    const posBadge = v.posicion_recinto ? ` [Posición: ${v.posicion_recinto}]` : (v.numero_orden ? ` [Posición: ${v.numero_orden}]` : '');
+                    const mesaBadge = v.colegio_electoral ? ` [Mesa: ${v.colegio_electoral}]` : '';
                     
-                    if (data.esta_inscrito && data.detalles_inscripcion) {
-                        htmlFeedback += `<br><span style="color:#ef4444;"><i class="fa fa-exclamation-triangle"></i> ¡Ya registrado por: ${data.detalles_inscripcion.coordinador}!</span>`;
+                    let htmlFeedback = `<span style="color:#10b981;"><i class="fa fa-check-circle"></i> Verificado en Padrón Oficial JCE / Circ. 3${fuenteBadge}${mesaBadge}${posBadge}</span>`;
+                    
+                    if (v.telefono_sugerido) {
+                        htmlFeedback += ` <small style="color:#E3A113; font-weight:bold;">[Tel. Sugerido: ${v.telefono_sugerido}]</small>`;
+                    }
+                    if (v.militancia_historica && v.militancia_historica.includes('RATIFICADO')) {
+                        htmlFeedback += ` <span class="badge badge-success" style="font-size:10px; margin-left:4px;">RATIFICADO</span>`;
                     }
 
                     feedbackEl.innerHTML = htmlFeedback;
+                } else if (data.exito && !data.encontrado) {
+                    feedbackEl.innerHTML = `<span style="color:#f59e0b; font-size:12px;"><i class="fa fa-info-circle"></i> ${data.mensaje || 'Cédula no localizada en Padrón Circ. 3 (Registro manual activo).'}</span>`;
                 } else {
-                    feedbackEl.innerHTML = `<span style="color:#f59e0b;"><i class="fa fa-info-circle"></i> Cédula no registrada en Circunscripción 3 (Edición manual activa).</span>`;
+                    feedbackEl.innerHTML = `<span style="color:var(--danger); font-size:12px;"><i class="fa fa-times-circle"></i> ${data.mensaje || 'Error al validar cédula en padrón.'}</span>`;
                 }
             })
             .catch(err => {
                 console.error("Error al consultar padrón:", err);
-                if (feedbackEl) feedbackEl.innerHTML = '';
+                if (feedbackEl) feedbackEl.innerHTML = '<span style="color:var(--danger); font-size:12px;"><i class="fa fa-times-circle"></i> Error de conexión con el servicio del padrón.</span>';
             });
     }
 
     function fillVoterForm(datos, isPublic = false) {
         const prefix = isPublic ? 'public-' : '';
         
-        document.getElementById(prefix + 'cedula').value = datos.cedula || '';
-        document.getElementById(prefix + 'nombres').value = datos.nombres || '';
-        document.getElementById(prefix + 'apellidos').value = datos.apellidos || '';
-        document.getElementById(prefix + 'colegio_electoral').value = datos.colegio_electoral || '';
-        document.getElementById(prefix + 'recinto_ubicacion').value = datos.recinto_ubicacion || '';
-        document.getElementById(prefix + 'direccion').value = datos.direccion || '';
-        document.getElementById(prefix + 'sector').value = datos.sector || '';
-        document.getElementById(prefix + 'municipio').value = datos.municipio || '';
+        // Actualización inteligente no destructiva (Normas PLAD):
+        // Solo actualiza los campos cuando el valor entrante del OCR no esté vacío,
+        // preservando los datos ya cargados previamente (ej: al pasar de frontal a dorsal).
+        const updateField = (id, val) => {
+            if (val !== undefined && val !== null) {
+                const strVal = String(val).trim();
+                if (strVal !== '') {
+                    const el = document.getElementById(prefix + id);
+                    if (el) el.value = strVal;
+                }
+            }
+        };
+
+        updateField('cedula', datos.cedula);
+        updateField('nombres', datos.nombres);
+        updateField('apellidos', datos.apellidos);
+        updateField('colegio_electoral', datos.colegio_electoral);
+        updateField('recinto_ubicacion', datos.recinto_ubicacion);
+        updateField('direccion', datos.direccion);
+        updateField('sector', datos.sector);
+        updateField('municipio', datos.municipio);
+        updateField('telefono_fijo', datos.telefono_fijo);
+
+        // Si se extrajo o completó una cédula válida, ejecutar búsqueda automática en padrón circ 3
+        const cedInputEl = document.getElementById(prefix + 'cedula');
+        if (cedInputEl && cedInputEl.value) {
+            const cleanCed = cedInputEl.value.replace(/\D/g, '');
+            if (cleanCed.length === 11) {
+                buscarEnPadronCirc3(cedInputEl.value, prefix);
+            }
+        }
     }
 
     // ─── GESTIÓN DE VOTANTES (PADRÓN) ───────────────────────────────────────
     function loadPadron() {
-        const search = document.getElementById('padron-search').value;
-        const region = document.getElementById('filter-region').value;
-        const periodo = document.getElementById('filter-periodo').value || '2028';
+        const search = document.getElementById('padron-search') ? document.getElementById('padron-search').value : '';
+        const region = document.getElementById('filter-region') ? document.getElementById('filter-region').value : '';
+        const periodo = document.getElementById('filter-periodo') ? document.getElementById('filter-periodo').value : '2028';
+        const tipoElector = document.getElementById('filter-padron-tipo') ? document.getElementById('filter-padron-tipo').value : '';
         
-        fetch(`../backend/api/voters.php?action=list&search=${encodeURIComponent(search)}&region=${encodeURIComponent(region)}&periodo=${encodeURIComponent(periodo)}`)
+        fetch(`../backend/api/voters.php?action=list&search=${encodeURIComponent(search)}&region=${encodeURIComponent(region)}&periodo=${encodeURIComponent(periodo)}&tipo_elector=${encodeURIComponent(tipoElector)}`)
             .then(res => res.json())
             .then(data => {
                 if (data.exito) {
@@ -1059,23 +1360,47 @@ document.addEventListener('DOMContentLoaded', () => {
             const badgeIrregular = v.estado_datos === 'pendiente-reg-data' 
                 ? ' <span class="badge badge-danger" style="font-size:10px; padding: 2px 6px;" title="Datos Irregulares - Requiere Regularización JCE"><i class="fa fa-exclamation-triangle"></i> IRREGULAR</span>' 
                 : '';
+            const badgeML = (v.es_militante_lider == 1)
+                ? ' <span class="badge" style="background:#E3A113; color:#000; font-size:10px; font-weight:bold; padding:2px 6px;"><i class="fa fa-user-tag"></i> ML</span>'
+                : ' <span class="badge" style="background:rgba(16, 185, 129, 0.15); color:#10b981; border:1px solid #10b981; font-size:10px; padding:2px 6px;">Nuevo Elector</span>';
+
             tr.innerHTML = `
-                <td><strong>${v.numero_lista}</strong></td>
-                <td>${v.cedula}</td>
-                <td>${v.nombres} ${v.apellidos}${badgeIrregular}</td>
+                <td><strong>#${v.numero_lista}</strong></td>
+                <td><span style="font-family:monospace; font-weight:600;">${v.cedula}</span></td>
+                <td>${v.nombres} ${v.apellidos} ${badgeML}${badgeIrregular}</td>
                 <td><span class="badge badge-primary">${v.colegio_electoral}</span></td>
                 <td>${v.sector}, ${v.municipio}</td>
                 <td>${v.coordinador}</td>
                 <td><span class="badge ${v.canal_origen === 'Manual' ? 'badge-warning' : 'badge-success'}">${v.canal_origen}</span></td>
                 <td>
-                    <button class="btn btn-outline btn-sm btn-print-row" data-id="${v.id}"><i class="fa fa-print"></i></button>
-                    ${State.perms.can_edit == 1 ? `<button class="btn btn-outline btn-sm btn-edit-row" data-id="${v.id}"><i class="fa fa-edit"></i></button>` : ''}
+                    <button class="btn btn-outline btn-sm btn-print-row" data-id="${v.id}" title="Imprimir Comprobante Oficial"><i class="fa fa-print"></i></button>
+                    <button class="btn btn-outline btn-sm btn-email-row" data-id="${v.id}" data-email="${v.email || ''}" title="Enviar Comprobante por Correo"><i class="fa fa-envelope"></i></button>
+                    ${State.perms.can_edit == 1 ? `<button class="btn btn-outline btn-sm btn-edit-row" data-id="${v.id}" title="Editar Votante"><i class="fa fa-edit"></i></button>` : ''}
                 </td>
             `;
             
             // Evento imprimir voucher individual
             tr.querySelector('.btn-print-row').addEventListener('click', () => printVoterVoucher(v.id));
             
+            // Evento enviar comprobante por correo
+            tr.querySelector('.btn-email-row').addEventListener('click', () => {
+                const defaultEmail = v.email || '';
+                const emailPrompt = prompt("Confirme o ingrese el correo del votante para despachar el comprobante oficial:", defaultEmail);
+                if (emailPrompt && emailPrompt.trim()) {
+                    showNotification("⏳ Enviando comprobante por correo...", "info");
+                    fetch(`../backend/api/voters.php?action=email_voucher&id=${v.id}&email=${encodeURIComponent(emailPrompt.trim())}`)
+                        .then(res => res.json())
+                        .then(resData => {
+                            if (resData.exito) {
+                                showNotification(`✓ Comprobante [${resData.codigo_comprobante || ''}] enviado exitosamente a ${emailPrompt}.`, "success");
+                            } else {
+                                alert("Error al enviar comprobante: " + resData.mensaje);
+                            }
+                        })
+                        .catch(() => alert("Error de red al enviar comprobante."));
+                }
+            });
+
             if (State.perms.can_edit == 1) {
                 tr.querySelector('.btn-edit-row').addEventListener('click', () => openEditModal(v.id));
             }
@@ -1118,6 +1443,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const esML = document.getElementById('voter-es-ml') && document.getElementById('voter-es-ml').checked ? 1 : 0;
+        const nivelEst = document.getElementById('voter-nivel-estructura') ? document.getElementById('voter-nivel-estructura').value : (esML ? 'ML - Militante Líder' : 'Votante');
+        const coordPadre = document.getElementById('voter-coordinador-padre') ? document.getElementById('voter-coordinador-padre').value : '';
+
         const voterData = {
             cedula: document.getElementById('cedula').value,
             nombres: document.getElementById('nombres').value,
@@ -1128,9 +1457,13 @@ document.addEventListener('DOMContentLoaded', () => {
             sector: sectorVal,
             municipio: municipioVal,
             telefono: document.getElementById('telefono').value,
+            telefono_fijo: document.getElementById('telefono_fijo') ? document.getElementById('telefono_fijo').value.trim() : '',
             email: document.getElementById('email').value,
             coordinador: document.getElementById('coordinador').value,
             centro_acopio: document.getElementById('centro_acopio').value,
+            es_militante_lider: esML,
+            nivel_estructura: nivelEst,
+            coordinador_padre_id: coordPadre,
             canal_origen: id ? 'Manual' : (document.getElementById('ocr-file').files.length > 0 ? 'OCR' : 'Manual')
         };
 
@@ -1150,12 +1483,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     closeModal('voter-modal');
                     loadPadron();
                     loadDashboardData();
+                    if (State.activeTab === 'red_territorial') {
+                        loadRedTerritorial();
+                    }
                     showNotification(id ? "✓ Votante corregido correctamente." : "✓ Votante registrado exitosamente.", "success");
                     
-                    const adminOcrBtn = document.getElementById('btn-admin-ocr');
-                    if (adminOcrBtn) {
-                        adminOcrBtn.innerHTML = '<i class="fa fa-upload"></i> Cargar foto frontal de cédula';
-                    }
+                    resetOcrButtonState(false);
                     
                     if (!id && data.datos) {
                         showCustomConfirm("¿Desea imprimir el comprobante de inscripción ahora?").then(confirmed => {
@@ -1180,6 +1513,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                     closeModal('voter-modal');
                                     loadPadron();
                                     loadDashboardData();
+                                    if (State.activeTab === 'red_territorial') {
+                                        loadRedTerritorial();
+                                    }
                                     showNotification("✓ Elector irregular registrado como 'Pendiente Regularización'. Notificaciones enviadas.", "warning");
                                 } else {
                                     alert(data2.mensaje);
@@ -1215,6 +1551,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sector: document.getElementById('public-sector').value,
             municipio: document.getElementById('public-municipio').value,
             telefono: document.getElementById('public-telefono').value,
+            telefono_fijo: document.getElementById('public-telefono_fijo') ? document.getElementById('public-telefono_fijo').value.trim() : '',
             email: document.getElementById('public-email').value,
             coordinador: document.getElementById('public-coordinador').value,
             centro_acopio: 'Campaña Digital QR',
@@ -1233,10 +1570,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     showNotification("¡Inscripción Exitosa! Su número de lista oficial es: " + data.datos.numero_lista, "success", true);
                     document.getElementById('public-voter-form').reset();
                     
-                    const publicOcrBtn = document.getElementById('btn-public-ocr');
-                    if (publicOcrBtn) {
-                        publicOcrBtn.innerHTML = '<i class="fa fa-upload"></i> Subir foto frontal de cédula';
-                    }
+                    resetOcrButtonState(true);
                     
                     // Mostrar comprobante imprimible en pantalla
                     renderPublicVoucher(data.datos);
@@ -1248,6 +1582,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openEditModal(id) {
+        resetOcrButtonState(false);
         fetch(`../backend/api/voters.php?action=detail&id=${id}`)
             .then(res => res.json())
             .then(data => {
@@ -1265,9 +1600,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('sector').value = v.sector;
                     document.getElementById('municipio').value = v.municipio;
                     document.getElementById('telefono').value = v.telefono;
+                    if (document.getElementById('telefono_fijo')) {
+                        document.getElementById('telefono_fijo').value = v.telefono_fijo || '';
+                    }
                     document.getElementById('email').value = v.email || '';
                     document.getElementById('coordinador').value = v.coordinador;
                     document.getElementById('centro_acopio').value = v.centro_acopio;
+
+                    if (document.getElementById('voter-es-ml')) {
+                        document.getElementById('voter-es-ml').checked = (v.es_militante_lider == 1);
+                        const detailsBox = document.getElementById('voter-ml-details');
+                        if (detailsBox) {
+                            detailsBox.style.display = (v.es_militante_lider == 1) ? 'block' : 'none';
+                        }
+                        if (document.getElementById('voter-nivel-estructura')) {
+                            document.getElementById('voter-nivel-estructura').value = v.nivel_estructura || 'ML - Militante Líder';
+                        }
+                        if (document.getElementById('voter-coordinador-padre')) {
+                            document.getElementById('voter-coordinador-padre').value = v.coordinador_padre_id || '';
+                        }
+                    }
 
                     openModal('voter-modal');
                 }
@@ -1290,75 +1642,184 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     printArea.className = 'print-hidden-container';
                     
+                    const combinedId = v.codigo_comprobante || (`PAD2832-${v.numero_lista}-${v.cedula}`);
+                    const validUrl = `${window.location.protocol}//${window.location.host}/PLATAFORMA%20DIGITAL-PAD-28-32/validar.php?cedula=${encodeURIComponent(v.cedula)}&folio=${encodeURIComponent(combinedId)}`;
+                    const isFuera = v.es_fuera_circ3 || (v.region && v.region.includes('1')) || (v.sector && v.sector.toUpperCase().includes('ISABELITA')) || (v.colegio_electoral == '1823');
+                    const tagElector = v.tipo_elector || (isFuera ? 'Nuevo Elector (Simpatizante Externo)' : (v.es_militante_lider == 1 ? 'Nuevo Elector (ML)' : 'Nuevo Elector'));
+                    const estatusPRM = v.militancia_partido_label || (isFuera ? 'No figura en Padrón Circ. 3 (Elector Circunscripción 1 - Santo Domingo Este)' : 'Padrón Maestro JCE / PRM');
+                    const registradorStr = (v.registrado_por_nombre || 'Sistema') + (v.perfil_registrador ? ` (${v.perfil_registrador})` : '');
+                    const fechaIngesta = v.fecha_registro || new Date().toLocaleString('es-DO');
+                    const direccionStr = v.direccion || 'N/A';
+                    const demarcaStr = v.circunscripcion_elector || (isFuera ? 'Circunscripción 1 (Santo Domingo Este)' : 'Circunscripción 3 (Santo Domingo Este)');
+
                     printArea.innerHTML = `
-                        <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #fff; color: #000;">
-                            <!-- Header Banner matching the example exactly -->
-                            <div style="text-align: center; margin-bottom: 25px;">
-                                <img src="../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="Pastora Altagracia" style="width: 100%; height: auto; display: block; border-bottom: 4px solid #E3A113; border-radius: 8px;">
+                        <div style="font-family: Arial, sans-serif; max-width: 780px; margin: 0 auto; padding: 12px 16px; background: #ffffff; color: #000000; box-sizing: border-box;">
+                            <!-- Header Banner matching the official campaign art spanning full header width -->
+                            <div style="width: 100%; margin-bottom: 8px;">
+                                <img src="../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="Pastora Altagracia" style="width: 100%; height: auto; display: block; border-bottom: 3px solid #E3A113; border-radius: 6px;">
                             </div>
                             
-                            <!-- White Metadata Section with boxes -->
-                            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 15px; margin-bottom: 30px;">
-                                <div style="border: 2px solid #e2e8f0; padding: 12px 18px; border-radius: 10px; background: #f8fafc; display: flex; align-items: center; gap: 8px;">
-                                    <span style="font-weight: 700; color: #0054A6; font-size: 16px;">Coordinador:</span>
-                                    <span style="color: #334155; font-size: 16px; font-weight: 500; text-transform: uppercase;">${v.coordinador}</span>
+                            <!-- White Metadata Section with boxes using table for strict print alignment -->
+                            <table style="width: 100%; border-collapse: separate; border-spacing: 6px; margin-bottom: 6px;">
+                                <tr>
+                                    <td style="width: 58%; border: 1.5px solid #cbd5e1; padding: 5px 8px; border-radius: 6px; background: #f8fafc; font-size: 11.5px;">
+                                        <strong style="color: #0054A6;">Coordinador:</strong>
+                                        <span style="color: #334155; font-weight: 600; text-transform: uppercase;">${v.coordinador}</span>
+                                    </td>
+                                    <td style="width: 42%; border: 1.5px solid #cbd5e1; padding: 5px 8px; border-radius: 6px; background: #f8fafc; font-size: 11.5px;">
+                                        <strong style="color: #0054A6;">Región / Sector:</strong>
+                                        <span style="color: #334155; font-weight: 600; text-transform: uppercase;">${v.sector || 'SDE Circ. 3'}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 58%; border: 1.5px solid #cbd5e1; padding: 5px 8px; border-radius: 6px; background: #f8fafc; font-size: 11.5px;">
+                                        <strong style="color: #0054A6;">Teléfono:</strong>
+                                        <span style="color: #334155; font-weight: 500;">${v.telefono}</span>
+                                    </td>
+                                    <td style="width: 42%; border: 1.5px solid #cbd5e1; padding: 5px 8px; border-radius: 6px; background: #f8fafc; font-size: 11.5px;">
+                                        <strong style="color: #0054A6;">Zona / Municipio:</strong>
+                                        <span style="color: #334155; font-weight: 500; text-transform: uppercase;">${v.municipio || 'Santo Domingo Este'}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <!-- Centered White Voucher Card (Ahorro de Tinta para Impresión) -->
+                            <div style="background-color: #ffffff; border: 2px solid #0054A6; border-radius: 10px; padding: 12px 14px; color: #000000; margin-bottom: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                                
+                                <div style="text-align: center; margin-bottom: 8px;">
+                                    <div style="display: inline-flex; align-items: center; gap: 5px; background-color: #ecfdf5; color: #059669; border: 1px solid #10b981; padding: 2px 10px; border-radius: 9999px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        ✓ Registro Completado & Verificado
+                                    </div>
+                                    <h2 style="font-size: 17px; font-weight: 800; color: #0054A6; margin: 4px 0 2px 0; font-family: sans-serif;">Comprobante Oficial de Inscripción</h2>
+                                    <div style="display: inline-block; background-color: #fef3c7; color: #b45309; border: 1px solid #f59e0b; padding: 1px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">
+                                        Periodo Electoral: ${v.periodo || '2028'}
+                                    </div>
+                                    ${isFuera ? `
+                                    <div style="margin-top: 4px; background: #fffbeb; color: #b45309; border: 1px solid #f59e0b; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; display: inline-block;">
+                                        ⚠️ Simpatizante Externo (Votante Circunscripción 1 - Santo Domingo Este)
+                                    </div>` : ''}
                                 </div>
-                                <div style="border: 2px solid #e2e8f0; padding: 12px 18px; border-radius: 10px; background: #f8fafc; display: flex; align-items: center; gap: 8px;">
-                                    <span style="font-weight: 700; color: #0054A6; font-size: 16px;">Región:</span>
-                                    <span style="color: #334155; font-size: 16px; font-weight: 500; text-transform: uppercase;">${v.sector || 'SDE Circ. 3'}</span>
-                                </div>
-                                <div style="border: 2px solid #e2e8f0; padding: 12px 18px; border-radius: 10px; background: #f8fafc; display: flex; align-items: center; gap: 8px;">
-                                    <span style="font-weight: 700; color: #0054A6; font-size: 16px;">Teléfono:</span>
-                                    <span style="color: #334155; font-size: 16px; font-weight: 500;">${v.telefono}</span>
-                                </div>
-                                <div style="border: 2px solid #e2e8f0; padding: 12px 18px; border-radius: 10px; background: #f8fafc; display: flex; align-items: center; gap: 8px;">
-                                    <span style="font-weight: 700; color: #0054A6; font-size: 16px;">Zona:</span>
-                                    <span style="color: #334155; font-size: 16px; font-weight: 500; text-transform: uppercase;">${v.municipio || 'Santo Domingo Este'}</span>
-                                </div>
+                                
+                                <!-- Two column table layout: Data Block (68%) + QR Section (32%) -->
+                                <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                                    <tr>
+                                        <!-- Left Data Block -->
+                                        <td style="width: 68%; vertical-align: top; padding-right: 10px;">
+                                            <div style="background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; font-size: 11px;">
+                                                <table style="width: 100%; border-collapse: collapse;">
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold; width: 36%;">Folio Oficial:</td>
+                                                        <td style="padding: 2.5px 0; color: #0054A6; font-weight: bold; font-family: monospace; font-size: 11px;">${combinedId}</td>
+                                                    </tr>
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Número de Lista:</td>
+                                                        <td style="padding: 2.5px 0; color: #059669; font-weight: bold; font-size: 12.5px;">#${v.numero_lista}</td>
+                                                    </tr>
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Cédula:</td>
+                                                        <td style="padding: 2.5px 0; color: #000000; font-weight: 800; font-family: monospace;">${v.cedula}</td>
+                                                    </tr>
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Nombre:</td>
+                                                        <td style="padding: 2.5px 0; color: #000000; font-weight: 700; text-transform: uppercase;">${v.nombres} ${v.apellidos}</td>
+                                                    </tr>
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Demarcación:</td>
+                                                        <td style="padding: 2.5px 0; color: #b45309; font-weight: 700;">${demarcaStr}</td>
+                                                    </tr>
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Etiqueta Elector:</td>
+                                                        <td style="padding: 2.5px 0;"><span style="background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 1px 6px; border-radius: 3px; font-weight: bold; font-size: 10px;">${tagElector}</span></td>
+                                                    </tr>
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Padrón Partido (PRM):</td>
+                                                        <td style="padding: 2.5px 0; color: #0054A6; font-weight: 700;">${estatusPRM}</td>
+                                                    </tr>
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Padrón Candidata:</td>
+                                                        <td style="padding: 2.5px 0; color: #15803d; font-weight: 700;">Padrón Activo Pastora Altagracia (2028)</td>
+                                                    </tr>
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Colegio / Recinto:</td>
+                                                        <td style="padding: 2.5px 0; color: #000000; font-weight: 600;">Col. ${v.colegio_electoral} — ${v.recinto_ubicacion}${v.posicion_recinto ? ' (' + v.posicion_recinto + ')' : ''}</td>
+                                                    </tr>
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Dirección:</td>
+                                                        <td style="padding: 2.5px 0; color: #000000; font-weight: 600;">${direccionStr}</td>
+                                                    </tr>
+                                                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Registrado Por:</td>
+                                                        <td style="padding: 2.5px 0; color: #334155; font-weight: 500;">${registradorStr}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding: 2.5px 0; color: #475569; font-weight: bold;">Fecha de Ingesta:</td>
+                                                        <td style="padding: 2.5px 0; color: #334155; font-weight: 500;">${fechaIngesta}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                        
+                                        <!-- Right QR Code Box -->
+                                        <td style="width: 32%; vertical-align: middle; text-align: center;">
+                                            <div style="background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 10px 6px; text-align: center; box-sizing: border-box;">
+                                                <div id="voucher-qr-target" style="background: #ffffff; border: 1px solid #cbd5e1; padding: 4px; border-radius: 6px; width: 100px; height: 100px; margin: 0 auto; display: block; box-shadow: 0 1px 4px rgba(0,0,0,0.08); box-sizing: border-box;"></div>
+                                                <div style="font-size: 9px; color: #475569; margin-top: 6px; line-height: 1.3; text-align: center;">
+                                                    <strong style="color: #0054A6; font-size: 10px; display: block; margin-bottom: 1px;">VALIDACIÓN EN TIEMPO REAL</strong>
+                                                    <span style="color: #0f172a; font-weight: 700;">Norma PLAD-CERT-QR-01</span><br>
+                                                    <span style="font-size: 8px; color: #64748b;">Escanee para certificar estatus sincronizado</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                             
-                            <!-- Centered Dark Blue Voucher Card -->
-                            <div style="background-color: #0b1320; border: 2px solid #E3A113; border-radius: 16px; padding: 30px; text-align: center; color: #ffffff; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
-                                
-                                <!-- Success pill badge -->
-                                <div style="display: inline-flex; align-items: center; gap: 6px; background-color: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid #10b981; padding: 6px 16px; border-radius: 9999px; font-size: 13px; font-weight: 700; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
-                                    ✓ Registro Completado
-                                </div>
-                                
-                                <h2 style="font-size: 26px; font-weight: 700; color: #ffffff; margin: 0 0 8px 0; font-family: sans-serif; letter-spacing: -0.5px;">¡Gracias por su apoyo!</h2>
-                                <div style="display: inline-block; background-color: rgba(227, 161, 19, 0.2); color: #E3A113; border: 1px solid #E3A113; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; margin-bottom: 12px; text-transform: uppercase;">
-                                    Periodo Electoral: ${v.periodo || '2028'}
-                                </div>
-                                <p style="color: #94a3b8; font-size: 14px; margin: 0 0 25px 0;">Guarde su número de lista oficial</p>
-                                
-                                <!-- Inner Highlight Data Block -->
-                                <div style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 24px; text-align: left; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; font-family: monospace;">
-                                    <div style="font-size: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 8px; color: #f8fafc; font-family: sans-serif;">
-                                        <strong style="color: #94a3b8;">Número de Lista:</strong> 
-                                        <span style="font-size: 22px; color: #E3A113; font-weight: bold; margin-left: 8px;">${v.numero_lista}</span>
-                                    </div>
-                                    <div style="font-size: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 8px; color: #f8fafc; font-family: sans-serif;">
-                                        <strong style="color: #94a3b8;">Cédula:</strong> 
-                                        <span style="color: #ffffff; font-weight: 600; margin-left: 8px;">${v.cedula}</span>
-                                    </div>
-                                    <div style="font-size: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 8px; color: #f8fafc; font-family: sans-serif;">
-                                        <strong style="color: #94a3b8;">Nombre:</strong> 
-                                        <span style="color: #ffffff; font-weight: 600; margin-left: 8px; text-transform: uppercase;">${v.nombres} ${v.apellidos}</span>
-                                    </div>
-                                    <div style="font-size: 15px; color: #f8fafc; font-family: sans-serif;">
-                                        <strong style="color: #94a3b8;">Colegio Electoral:</strong> 
-                                        <span style="color: #ffffff; font-weight: 600; margin-left: 8px;">${v.colegio_electoral}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Footer disclaimer matching the template -->
-                            <div style="text-align: center; margin-top: 35px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 12px; color: #64748b;">
-                                <p>Desarrollado para la administración de logisticas de comandos de campañas en RD, por sypempresariales . Copyright © 2026 Sypempresariales.</p>
+                            <!-- Footer disclaimer -->
+                            <div style="text-align: center; margin-top: 6px; border-top: 1px solid #e2e8f0; padding-top: 4px; font-size: 9px; color: #64748b; line-height: 1.3;">
+                                <p style="margin: 0 0 1px 0;">Plataforma Electoral ADELOG - Comando de Campaña Pastora Altagracia 2028. Validación y Auditoría Electoral ISO 54001 / ISO 27001.</p>
+                                <p style="margin: 0;">Desarrollado para la administración logística de comandos de campañas en RD por Sypempresariales. Copyright © 2026-2028.</p>
                             </div>
                         </div>
                     `;
-                    window.print();
+                    
+                    // Render QR Code dynamically
+                    setTimeout(() => {
+                        const qrContainer = document.getElementById('voucher-qr-target');
+                        if (qrContainer) {
+                            qrContainer.innerHTML = '';
+                            if (typeof QRCode !== 'undefined') {
+                                try {
+                                    new QRCode(qrContainer, {
+                                        text: validUrl,
+                                        width: 92,
+                                        height: 92,
+                                        colorDark: "#0b1320",
+                                        colorLight: "#ffffff",
+                                        correctLevel: QRCode.CorrectLevel.M
+                                    });
+                                    // Convert canvas to image for clean, non-colliding print rendering
+                                    const canvas = qrContainer.querySelector('canvas');
+                                    if (canvas) {
+                                        const dataUrl = canvas.toDataURL('image/png');
+                                        qrContainer.innerHTML = `<img src="${dataUrl}" style="width:92px;height:92px;display:block;margin:0 auto;" alt="QR">`;
+                                    }
+                                } catch (e) {
+                                    qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=92x92&data=${encodeURIComponent(validUrl)}" style="width:92px;height:92px;display:block;margin:0 auto;" alt="QR">`;
+                                }
+                            } else {
+                                qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=92x92&data=${encodeURIComponent(validUrl)}" style="width:92px;height:92px;display:block;margin:0 auto;" alt="QR">`;
+                            }
+                        }
+
+                        const prevTitle = document.title;
+                        document.title = combinedId;
+                        setTimeout(() => {
+                            window.print();
+                            setTimeout(() => {
+                                document.title = prevTitle;
+                            }, 1000);
+                        }, 250);
+                    }, 50);
                 }
             });
     }
@@ -1971,9 +2432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Detener cámara si se cierra modal del votante
         if (id === 'voter-modal' && streamRef) {
-            streamRef.getTracks().forEach(track => track.stop());
-            const cameraBox = document.getElementById('camera-container');
-            if (cameraBox) cameraBox.style.display = 'none';
+            stopWebcam(false);
         }
     };
 
@@ -2027,6 +2486,40 @@ document.addEventListener('DOMContentLoaded', () => {
             clearTimeout(timeout);
             timeout = setTimeout(() => func.apply(this, args), wait);
         };
+    }
+
+    function poblarRolesSelects() {
+        fetch('../backend/api/perfiles.php?action=listar')
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito && Array.isArray(data.perfiles)) {
+                    const selectColab = document.getElementById('colab-role');
+                    const selectUser = document.getElementById('user-role');
+                    const selectVoterNivel = document.getElementById('voter-nivel-estructura');
+
+                    let html = '';
+                    data.perfiles.forEach(p => {
+                        html += `<option value="${p.nombre}">${p.nombre} (Nivel ${p.nivel_jerarquico})</option>`;
+                    });
+
+                    if (selectColab && html) {
+                        const cur = selectColab.value;
+                        selectColab.innerHTML = html;
+                        if (cur) selectColab.value = cur;
+                    }
+                    if (selectUser && html) {
+                        const cur = selectUser.value;
+                        selectUser.innerHTML = html;
+                        if (cur) selectUser.value = cur;
+                    }
+                    if (selectVoterNivel && html) {
+                        const cur = selectVoterNivel.value;
+                        selectVoterNivel.innerHTML = html;
+                        if (cur) selectVoterNivel.value = cur;
+                    }
+                }
+            })
+            .catch(() => {});
     }
 
     function saveCollaborator() {
@@ -2213,8 +2706,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const input = document.getElementById('input-query-2024');
         const term = input.value.trim();
         
-        if (empty(term)) {
-            alert("Por favor, ingrese un término de búsqueda (Cédula o Nombre).");
+        if (!term) {
+            alert("Por favor, ingrese un término de búsqueda (Cédula con o sin guiones, o Nombre).");
             return;
         }
 
@@ -2222,32 +2715,109 @@ document.addEventListener('DOMContentLoaded', () => {
         const alertDiv = document.getElementById('query-2024-status-alert');
         const tbody = document.getElementById('query-2024-tbody');
 
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--text-muted);"><i class="fa fa-spinner fa-spin"></i> Consultando en Padrón Maestro del Partido y Padrón de la Candidata...</td></tr>';
+        resultsDiv.style.display = 'block';
+
         fetch(`../backend/api/voters.php?action=query_2024&search=${encodeURIComponent(term)}`)
             .then(res => res.json())
             .then(data => {
                 if (data.exito) {
-                    resultsDiv.style.display = 'block';
                     tbody.innerHTML = '';
                     
-                    if (data.votantes.length > 0) {
-                        alertDiv.className = 'alert alert-success';
-                        alertDiv.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
-                        alertDiv.style.border = '1px solid #10b981';
-                        alertDiv.style.color = '#10b981';
-                        alertDiv.innerHTML = `<i class="fa fa-check-circle"></i> <strong>✓ REGISTRADO:</strong> Se encontraron coincidencias en el Padrón Histórico 2024.`;
+                    if (data.votantes && data.votantes.length > 0) {
+                        const total = data.votantes.length;
+                        
+                        // Si es búsqueda exacta (1 registro) emitir diagnóstico específico
+                        if (total === 1) {
+                            const v = data.votantes[0];
+                            if (v.estado_diagnostico === 'COMPROMETIDO') {
+                                alertDiv.className = 'alert alert-success';
+                                alertDiv.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
+                                alertDiv.style.border = '1px solid #10b981';
+                                alertDiv.style.color = '#10b981';
+                                alertDiv.innerHTML = `<i class="fa fa-check-circle"></i> <strong>✓ ESTADO 1: MILITANTE COMPROMETIDO</strong> — Elector figura en el Padrón del Partido (PRM) y está registrado en el Padrón Activo de la Candidata Pastora Altagracia (2028). Etiqueta: <strong>${v.tipo_elector_label || 'Nuevo Elector'}</strong>. Folio: <strong>${v.codigo_comprobante || 'N/A'}</strong>.`;
+                            } else if (v.estado_diagnostico === 'NO_CAPTADO') {
+                                alertDiv.className = 'alert alert-warning';
+                                alertDiv.style.backgroundColor = 'rgba(227, 161, 19, 0.15)';
+                                alertDiv.style.border = '1px solid #E3A113';
+                                alertDiv.style.color = '#E3A113';
+                                alertDiv.innerHTML = `<i class="fa fa-exclamation-circle"></i> <strong>⚠️ ESTADO 2: OBJETIVO ESTRATÉGICO (NO CAPTADO)</strong> — Elector figura en el Padrón del Partido (${v.militancia_partido_label}), pero <strong>AÚN NO ESTÁ REGISTRADO</strong> en el padrón de la candidata. Puede afiliarlo inmediatamente haciendo clic en <strong>"+ Registrar como Nuevo Elector"</strong>.`;
+                            } else if (v.estado_diagnostico === 'EXTERNO') {
+                                const demText = v.circunscripcion_elector ? ` (Votante en ${v.circunscripcion_elector})` : '';
+                                alertDiv.className = 'alert alert-info';
+                                alertDiv.style.backgroundColor = 'rgba(0, 84, 166, 0.15)';
+                                alertDiv.style.border = '1px solid #0054A6';
+                                alertDiv.style.color = '#0054A6';
+                                alertDiv.innerHTML = `<i class="fa fa-info-circle"></i> <strong>ℹ️ ESTADO 3: SIMPATIZANTE EXTERNO / NUEVO ELECTOR INDEPENDIENTE</strong> — Elector registrado en el Padrón de la Candidata${demText}. Etiqueta: <strong>${v.tipo_elector_label || 'Nuevo Elector'}</strong>. Folio: <strong>${v.codigo_comprobante || 'N/A'}</strong>.`;
+                            } else {
+                                alertDiv.className = 'alert alert-secondary';
+                                alertDiv.style.backgroundColor = 'rgba(148, 163, 184, 0.15)';
+                                alertDiv.style.border = '1px solid #94a3b8';
+                                alertDiv.style.color = '#94a3b8';
+                                alertDiv.innerHTML = `<i class="fa fa-search"></i> Coincidencia encontrada en la consulta.`;
+                            }
+                        } else {
+                            alertDiv.className = 'alert alert-info';
+                            alertDiv.style.backgroundColor = 'rgba(0, 84, 166, 0.15)';
+                            alertDiv.style.border = '1px solid #0054A6';
+                            alertDiv.style.color = '#0054A6';
+                            alertDiv.innerHTML = `<i class="fa fa-list-check"></i> Se encontraron <strong>${total}</strong> electores en el cruce de padrones. Revise el estatus individual en cada fila:`;
+                        }
                         
                         data.votantes.forEach(v => {
                             const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">${v.cedula}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); text-transform: uppercase;">${v.nombres} ${v.apellidos}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">${v.colegio_electoral}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); text-transform: uppercase;">${v.sector}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); text-transform: uppercase;">${v.recinto_ubicacion}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); text-align: right;">
+                            
+                            // Badge Padrón Partido
+                            let badgePartido = '';
+                            if (v.en_padron_partido) {
+                                badgePartido = `<span class="badge" style="background: rgba(0, 84, 166, 0.15); color: #0054A6; border: 1px solid #0054A6; font-size: 11px; padding: 4px 8px;"><i class="fa fa-check-circle"></i> ${v.militancia_partido_label || 'Padrón PRM'}</span>`;
+                            } else if (v.es_fuera_circ3) {
+                                badgePartido = `<span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; font-size: 11px; padding: 4px 8px;"><i class="fa fa-map-marker-alt"></i> Elector Circ. 1 (Externo)</span>`;
+                            } else {
+                                badgePartido = `<span class="badge" style="background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid #94a3b8; font-size: 11px; padding: 4px 8px;"><i class="fa fa-minus-circle"></i> No figura en Padrón Circ. 3</span>`;
+                            }
+                            
+                            // Badge Padrón Candidata
+                            let badgeCandidata = '';
+                            if (v.en_padron_candidata) {
+                                const tagStr = v.tipo_elector_label || 'Nuevo Elector';
+                                const listaStr = v.numero_lista ? ` #${v.numero_lista}` : '';
+                                badgeCandidata = `<span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid #10b981; font-size: 11px; padding: 4px 8px;"><i class="fa fa-check-circle"></i> ${tagStr}${listaStr}</span>`;
+                            } else {
+                                badgeCandidata = `<span class="badge" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef4444; font-size: 11px; padding: 4px 8px;"><i class="fa fa-times-circle"></i> No Registrado</span>`;
+                            }
+                            
+                            // Acciones
+                            let accionesHtml = '';
+                            if (v.en_padron_candidata && v.id) {
+                                accionesHtml = `
                                     <button class="btn btn-primary btn-sm btn-print-2024" style="padding: 4px 8px; font-size: 11px; margin-right: 6px;" onclick="printVoterVoucher(${v.id})"><i class="fa fa-print"></i> Constancia (PDF)</button>
                                     <button class="btn btn-outline btn-sm" style="padding: 4px 8px; font-size: 11px;" onclick="exportSingleVoterExcel(${v.id})"><i class="fa fa-download"></i> Excel</button>
+                                `;
+                            } else {
+                                const vEncoded = encodeURIComponent(JSON.stringify(v));
+                                accionesHtml = `
+                                    <button class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 11px; white-space: nowrap;" onclick="prefillVoterModalFromQuery('${vEncoded}')"><i class="fa fa-user-plus"></i> + Registrar como Nuevo Elector</button>
+                                `;
+                            }
+                            
+                            tr.innerHTML = `
+                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); font-family: monospace; font-weight: 600;">${v.cedula}</td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); text-transform: uppercase; font-weight: 600;">
+                                    ${v.nombre_completo || (v.nombres + ' ' + v.apellidos)}
+                                    ${v.es_militante_lider ? ' <span class="badge" style="background: rgba(227, 161, 19, 0.2); color: #E3A113; font-size: 10px; padding: 2px 6px;">ML</span>' : ''}
                                 </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">
+                                    <span style="font-weight: 600; color: #0054A6;">Colegio: ${v.colegio_electoral || 'N/A'}</span>
+                                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">${v.recinto_ubicacion || ''}</div>
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 12px; text-transform: uppercase;">
+                                    <div>${v.sector || ''} ${v.municipio ? '(' + v.municipio + ')' : ''}</div>
+                                    ${v.es_fuera_circ3 ? '<span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; font-size: 10px; padding: 2px 6px; margin-top: 2px; display: inline-block;">' + (v.circunscripcion_elector || 'Circ. 1') + '</span>' : ''}
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">${badgePartido}</td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">${badgeCandidata}</td>
+                                <td style="padding: 10px; border-bottom: 1px solid var(--border-color); text-align: right;">${accionesHtml}</td>
                             `;
                             tbody.appendChild(tr);
                         });
@@ -2256,13 +2826,38 @@ document.addEventListener('DOMContentLoaded', () => {
                         alertDiv.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
                         alertDiv.style.border = '1px solid #ef4444';
                         alertDiv.style.color = '#ef4444';
-                        alertDiv.innerHTML = `<i class="fa fa-times-circle"></i> <strong>✗ NO REGISTRADO:</strong> El elector no se encuentra registrado en el Padrón Histórico 2024.`;
+                        alertDiv.innerHTML = `<i class="fa fa-times-circle"></i> <strong>✗ ESTADO 4: NO LOCALIZADO</strong> — El elector consultado no se encuentra en el Padrón Maestro del Partido (Circ. 3) ni en el Padrón Activo de la Candidata.`;
+                        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--text-muted);">No se encontraron coincidencias en ninguna de las dos bases de datos para "${term}".</td></tr>`;
                     }
                 } else {
                     alert(data.mensaje || "Error al realizar la consulta.");
                 }
             })
-            .catch(() => alert("Error de red al consultar el padrón histórico."));
+            .catch(() => alert("Error de red al consultar el padrón."));
+    }
+
+    function prefillVoterModalFromQuery(encodedJson) {
+        try {
+            const v = JSON.parse(decodeURIComponent(encodedJson));
+            document.getElementById('voter-form-title').textContent = "Nueva Inscripción: Nuevo Elector (Desde Padrón Partido)";
+            document.getElementById('voter-id').value = "";
+            document.getElementById('voter-form').reset();
+            
+            document.getElementById('cedula').value = v.cedula || '';
+            document.getElementById('nombres').value = v.nombres || '';
+            document.getElementById('apellidos').value = v.apellidos || '';
+            document.getElementById('colegio_electoral').value = v.colegio_electoral || '';
+            document.getElementById('recinto_ubicacion').value = v.recinto_ubicacion || '';
+            document.getElementById('sector').value = v.sector || '';
+            document.getElementById('municipio').value = v.municipio || 'SANTO DOMINGO ESTE';
+            if (v.telefono) {
+                document.getElementById('telefono').value = v.telefono;
+            }
+            
+            openModal('voter-modal');
+        } catch (e) {
+            console.error("Error parsing voter data:", e);
+        }
     }
 
     function exportSingleVoterExcel(id) {
@@ -2272,14 +2867,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.exito) {
                     const v = data.votante;
                     let csvContent = "\uFEFF"; // BOM UTF-8
-                    csvContent += "Cédula,Nombres,Apellidos,Colegio Electoral,Recinto,Sector,Municipio,Teléfono,Email,Coordinador,Periodo\n";
-                    csvContent += `"${v.cedula}","${v.nombres}","${v.apellidos}","${v.colegio_electoral}","${v.recinto_ubicacion}","${v.sector}","${v.municipio}","${v.telefono}","${v.email}","${v.coordinador}","${v.periodo}"\n`;
+                    csvContent += "Folio Oficial,Número Lista,Cédula,Nombres,Apellidos,Etiqueta Elector,Estatus Partido (PRM),Estatus Candidata,Colegio Electoral,Recinto,Posición Recinto,Sector,Municipio,Teléfono,Email,Coordinador,Registrado Por,Fecha Ingesta\n";
+                    csvContent += `"${v.codigo_comprobante || ('PAD2832-' + v.numero_lista + '-' + v.cedula)}","${v.numero_lista}","${v.cedula}","${v.nombres}","${v.apellidos}","${v.tipo_elector || 'Nuevo Elector'}","${v.militancia_partido_label || 'Padrón Maestro'}","Padrón Activo Pastora Altagracia (2028)","${v.colegio_electoral}","${v.recinto_ubicacion}","${v.posicion_recinto || ''}","${v.sector}","${v.municipio}","${v.telefono}","${v.email || ''}","${v.coordinador}","${(v.registrado_por_nombre || 'Usuario') + ' (' + (v.perfil_registrador || 'Operativo') + ')'}","${v.fecha_registro || ''}"\n`;
                     
                     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                     const link = document.createElement("a");
                     const url = URL.createObjectURL(blob);
                     link.setAttribute("href", url);
-                    link.setAttribute("download", `elector_2024_${v.cedula}.csv`);
+                    link.setAttribute("download", `PAD2832_elector_${v.cedula}.csv`);
                     link.style.visibility = 'hidden';
                     document.body.appendChild(link);
                     link.click();
@@ -2426,6 +3021,10 @@ document.addEventListener('DOMContentLoaded', () => {
             plataforma_nombre: document.getElementById('config-plataforma-nombre').value,
             candidato_logo_url: document.getElementById('config-candidato-logo').value,
             login_banner_url: document.getElementById('config-login-banner').value,
+            social_instagram_url: document.getElementById('config-social-instagram') ? document.getElementById('config-social-instagram').value.trim() : '',
+            social_facebook_url: document.getElementById('config-social-facebook') ? document.getElementById('config-social-facebook').value.trim() : '',
+            social_tiktok_url: document.getElementById('config-social-tiktok') ? document.getElementById('config-social-tiktok').value.trim() : '',
+            social_x_url: document.getElementById('config-social-x') ? document.getElementById('config-social-x').value.trim() : '',
             limite_intentos_login: document.getElementById('config-intentos-fallidos').value,
             bloqueo_ip_tiempo: document.getElementById('config-bloqueo-tiempo').value,
             inactividad_sesion: document.getElementById('config-inactividad').value
@@ -3010,18 +3609,670 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderNotifLogs(data.logs_notificaciones);
                     loadFinanzasData();
                     loadEtlHistory();
+
+                    if (document.getElementById('config-social-instagram')) document.getElementById('config-social-instagram').value = c.social_instagram_url || '';
+                    if (document.getElementById('config-social-facebook')) document.getElementById('config-social-facebook').value = c.social_facebook_url || '';
+                    if (document.getElementById('config-social-tiktok')) document.getElementById('config-social-tiktok').value = c.social_tiktok_url || '';
+                    if (document.getElementById('config-social-x')) document.getElementById('config-social-x').value = c.social_x_url || '';
+                    loadSocialFeedAdmin();
                 }
             });
     }
 
+    // ─── GESTOR DE REDES SOCIALES (FACEBOOK & INSTAGRAM FEED) ────────────────
+    function loadSocialFeedAdmin() {
+        fetch('../backend/api/settings.php?action=get_social_feed')
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    renderSocialFeedAdminTable(data.publicaciones || []);
+                }
+            })
+            .catch(err => console.error("Error al cargar feed de redes:", err));
+    }
+
+    function renderSocialFeedAdminTable(posts) {
+        const tbody = document.getElementById('social-feed-tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        
+        if (posts.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-gray); padding:15px;">No hay publicaciones registradas en el feed.</td></tr>';
+            return;
+        }
+
+        posts.forEach(p => {
+            const tr = document.createElement('tr');
+            let redIcon = 'fab fa-instagram';
+            let redColor = '#E1306C';
+            if (p.red_social === 'Facebook') { redIcon = 'fab fa-facebook'; redColor = '#1877F2'; }
+            else if (p.red_social === 'TikTok') { redIcon = 'fab fa-tiktok'; redColor = '#00f2fe'; }
+            else if (p.red_social === 'X') { redIcon = 'fab fa-twitter'; redColor = '#1DA1F2'; }
+
+            const estadoBadge = p.activo == 1 
+                ? '<span class="badge badge-success" style="cursor:pointer;" title="Clic para pausar">ACTIVO</span>' 
+                : '<span class="badge badge-danger" style="cursor:pointer;" title="Clic para activar">PAUSADO</span>';
+
+            tr.innerHTML = `
+                <td><span style="color:${redColor}; font-weight:600;"><i class="${redIcon}"></i> ${p.red_social}</span></td>
+                <td style="font-size:12px; color:var(--text-muted);">${p.tiempo_publicacion}</td>
+                <td style="max-width:280px; font-size:12px; color:var(--text-white);">${p.contenido}</td>
+                <td style="font-size:11px; color:var(--secondary);">${p.hashtags || ''}</td>
+                <td style="text-align:center;">${estadoBadge}</td>
+                <td style="text-align:center;">
+                    <div style="display:flex; gap:4px; justify-content:center;">
+                        <button type="button" class="btn btn-outline btn-sm btn-edit-social" title="Editar Publicación" style="padding:4px 6px; font-size:11px;"><i class="fa fa-edit"></i></button>
+                        <button type="button" class="btn btn-outline btn-sm btn-del-social" title="Eliminar Publicación" style="padding:4px 6px; font-size:11px; color:#ef4444; border-color:#ef4444;"><i class="fa fa-trash"></i></button>
+                    </div>
+                </td>
+            `;
+
+            // Listeners
+            tr.querySelector('td:nth-child(5)').addEventListener('click', () => {
+                toggleSocialPost(p.id, p.activo);
+            });
+            tr.querySelector('.btn-edit-social').addEventListener('click', () => {
+                openSocialPostModal(p);
+            });
+            tr.querySelector('.btn-del-social').addEventListener('click', () => {
+                deleteSocialPost(p.id);
+            });
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    function openSocialPostModal(post = null) {
+        const modal = document.getElementById('modal-social-post');
+        if (!modal) return;
+        
+        const title = document.getElementById('modal-social-title');
+        const idInput = document.getElementById('social-post-id');
+        const redSelect = document.getElementById('social-post-red');
+        const tiempoInput = document.getElementById('social-post-tiempo');
+        const contenidoInput = document.getElementById('social-post-contenido');
+        const hashtagsInput = document.getElementById('social-post-hashtags');
+        const enlaceInput = document.getElementById('social-post-enlace');
+        const activoCheck = document.getElementById('social-post-activo');
+
+        if (post) {
+            title.innerHTML = '<i class="fa fa-edit" style="color:var(--secondary);"></i> Editar Publicación de Red Social';
+            idInput.value = post.id;
+            redSelect.value = post.red_social;
+            tiempoInput.value = post.tiempo_publicacion;
+            contenidoInput.value = post.contenido;
+            hashtagsInput.value = post.hashtags || '';
+            enlaceInput.value = post.enlace_publicacion || '';
+            activoCheck.checked = (post.activo == 1);
+        } else {
+            title.innerHTML = '<i class="fa fa-plus" style="color:var(--secondary);"></i> Nueva Publicación de Red Social';
+            idInput.value = '0';
+            redSelect.value = 'Instagram';
+            tiempoInput.value = 'Hace unos momentos';
+            contenidoInput.value = '';
+            hashtagsInput.value = '#PastoraDiputada #SDECir3 #PRM';
+            enlaceInput.value = '';
+            activoCheck.checked = true;
+        }
+
+        openModal('modal-social-post');
+    }
+
+    function saveSocialPost() {
+        const id = parseInt(document.getElementById('social-post-id').value) || 0;
+        const payload = {
+            id: id,
+            red_social: document.getElementById('social-post-red').value,
+            tiempo_publicacion: document.getElementById('social-post-tiempo').value.trim(),
+            contenido: document.getElementById('social-post-contenido').value.trim(),
+            hashtags: document.getElementById('social-post-hashtags').value.trim(),
+            enlace_publicacion: document.getElementById('social-post-enlace').value.trim(),
+            activo: document.getElementById('social-post-activo').checked ? 1 : 0
+        };
+
+        if (!payload.contenido) {
+            alert("El contenido de la publicación no puede estar vacío.");
+            return;
+        }
+
+        fetch('../backend/api/settings.php?action=save_social_post', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.exito) {
+                closeModal('modal-social-post');
+                showNotification("✓ Publicación guardada en el feed.", "success");
+                loadSocialFeedAdmin();
+            } else {
+                alert(data.mensaje);
+            }
+        })
+        .catch(() => alert("Error de red al guardar la publicación."));
+    }
+
+    function deleteSocialPost(id) {
+        showCustomConfirm("¿Está seguro de que desea eliminar esta publicación del feed?").then(confirmed => {
+            if (!confirmed) return;
+            fetch('../backend/api/settings.php?action=delete_social_post', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    showNotification("✓ Publicación eliminada.", "success");
+                    loadSocialFeedAdmin();
+                } else {
+                    alert(data.mensaje);
+                }
+            })
+            .catch(() => alert("Error de red al eliminar publicación."));
+        });
+    }
+
+    function toggleSocialPost(id, currentActive) {
+        const newActive = currentActive == 1 ? 0 : 1;
+        fetch('../backend/api/settings.php?action=toggle_social_post', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id, activo: newActive })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.exito) {
+                loadSocialFeedAdmin();
+            }
+        })
+        .catch(() => alert("Error al alternar estado."));
+    }
+
+    // ─── MÓDULO DE RED TERRITORIAL Y TRABAJO DE COORDINADORES ────────────────
+    let cachedCoordinatorsData = [];
+    let cachedNetworkVoters = [];
+
+    function loadRedTerritorial(resetCoord = false) {
+        const levelSelect = document.getElementById('filter-network-level');
+        const level = levelSelect ? levelSelect.value : 'all';
+        
+        fetch(`../backend/api/voters.php?action=coordinators_stats&nivel=${encodeURIComponent(level)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    cachedCoordinatorsData = data.coordinadores || [];
+                    populateCoordinatorsDropdowns(cachedCoordinatorsData, resetCoord);
+                    calculateAndRenderNetworkKPIs(cachedCoordinatorsData);
+                    
+                    const coordSelect = document.getElementById('filter-network-coord');
+                    const selectedCoord = coordSelect ? coordSelect.value : '';
+                    const search = document.getElementById('filter-network-search') ? document.getElementById('filter-network-search').value : '';
+                    loadNetworkVoters(selectedCoord, level, search);
+                }
+            })
+            .catch(() => {
+                console.error("Error al cargar datos de red territorial.");
+            });
+    }
+
+    function populateCoordinatorsDropdowns(coords, resetCoord = false) {
+        const coordSelect = document.getElementById('filter-network-coord');
+        const padreSelect = document.getElementById('voter-coordinador-padre');
+        
+        if (coordSelect) {
+            const currentVal = resetCoord ? '' : coordSelect.value;
+            coordSelect.innerHTML = '<option value="">-- Toda la Red Consolidada --</option>';
+            coords.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.nombre;
+                opt.textContent = `[${c.rol}] ${c.nombre} (${c.total_red} votantes)`;
+                if (c.nombre === currentVal) opt.selected = true;
+                coordSelect.appendChild(opt);
+            });
+        }
+
+        if (padreSelect) {
+            const currentPadreVal = padreSelect.value;
+            padreSelect.innerHTML = '<option value="">Seleccione coordinador superior...</option>';
+            coords.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.nombre;
+                opt.textContent = `[${c.rol}] ${c.nombre}`;
+                if (c.nombre === currentPadreVal) opt.selected = true;
+                padreSelect.appendChild(opt);
+            });
+        }
+    }
+
+    function calculateAndRenderNetworkKPIs(coords) {
+        let totalRed = 0;
+        let totalDirectos = 0;
+        let totalML = 0;
+        let totalMeta = 0;
+
+        const coordSelect = document.getElementById('filter-network-coord');
+        const selectedCoord = coordSelect ? coordSelect.value : '';
+
+        if (selectedCoord) {
+            const active = coords.find(c => c.nombre === selectedCoord);
+            if (active) {
+                totalRed = active.total_red;
+                totalDirectos = active.total_directos;
+                totalML = active.total_ml;
+                totalMeta = active.meta;
+            }
+        } else {
+            coords.forEach(c => {
+                totalRed += c.total_red;
+                totalDirectos += c.total_directos;
+                totalML += c.total_ml;
+                totalMeta += c.meta;
+            });
+        }
+
+        const pctMeta = totalMeta > 0 ? Math.min(100, Math.round((totalRed / totalMeta) * 100)) : 0;
+
+        const elTotal = document.getElementById('net-stat-total');
+        if (elTotal) elTotal.textContent = totalRed.toLocaleString();
+        
+        const elDir = document.getElementById('net-stat-directos');
+        if (elDir) elDir.textContent = totalDirectos.toLocaleString();
+
+        const elML = document.getElementById('net-stat-ml');
+        if (elML) elML.textContent = totalML.toLocaleString();
+
+        const elMeta = document.getElementById('net-stat-meta');
+        if (elMeta) elMeta.textContent = pctMeta + '%';
+    }
+
+    function loadNetworkVoters(coord = '', level = 'all', search = '') {
+        fetch(`../backend/api/voters.php?action=network_voters&coordinador=${encodeURIComponent(coord)}&nivel=${encodeURIComponent(level)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    let voters = data.votantes || [];
+                    if (search && search.trim()) {
+                        const q = search.trim().toLowerCase();
+                        voters = voters.filter(v => 
+                            (v.cedula && v.cedula.toLowerCase().includes(q)) ||
+                            (v.nombres && v.nombres.toLowerCase().includes(q)) ||
+                            (v.apellidos && v.apellidos.toLowerCase().includes(q)) ||
+                            (v.colegio_electoral && v.colegio_electoral.toLowerCase().includes(q)) ||
+                            (v.sector && v.sector.toLowerCase().includes(q))
+                        );
+                    }
+                    cachedNetworkVoters = voters;
+                    renderNetworkVotersTable(voters, coord, level);
+                }
+            });
+    }
+
+    function renderNetworkVotersTable(votantes, coord = '', level = 'all') {
+        const tbody = document.getElementById('net-voters-tbody');
+        const countBadge = document.getElementById('net-active-count');
+        const titleEl = document.getElementById('net-active-title');
+        const subtitleEl = document.getElementById('net-active-subtitle');
+
+        if (countBadge) countBadge.textContent = `${votantes.length} Votantes en esta sección`;
+        if (titleEl) {
+            titleEl.innerHTML = coord 
+                ? `<i class="fa fa-user-tie" style="color: var(--secondary); margin-right: 6px;"></i> Padrón Seccionado: Red de <strong>${coord}</strong>`
+                : `<i class="fa fa-network-wired" style="color: var(--secondary); margin-right: 6px;"></i> Padrón Seccionado Consolidado de la Red`;
+        }
+        if (subtitleEl) {
+            subtitleEl.textContent = coord 
+                ? `Mostrando electores y militantes bajo la línea de mando de ${coord}.`
+                : `Visualizando todos los electores registrados en las diferentes estructuras activas.`;
+        }
+
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        if (votantes.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 25px;">No se encontraron electores para la red o filtro seleccionado.</td></tr>`;
+            return;
+        }
+
+        votantes.forEach(v => {
+            const tr = document.createElement('tr');
+            const isML = (v.es_militante_lider == 1);
+            const badgePerfil = isML 
+                ? '<span class="badge" style="background:#E3A113; color:#000; font-weight:bold; font-size:11px;"><i class="fa fa-user-tag"></i> ML Líder</span>'
+                : '<span class="badge badge-primary" style="font-size:11px;">Votante</span>';
+
+            tr.innerHTML = `
+                <td><strong>#${v.numero_lista}</strong></td>
+                <td><span style="font-family:monospace; font-weight:bold; color:var(--secondary); font-size:12px;">${v.codigo_comprobante || ('PAD2832-' + v.numero_lista + '-' + v.cedula)}</span></td>
+                <td><span style="font-family:monospace; font-weight:600;">${v.cedula}</span></td>
+                <td>${v.nombres} ${v.apellidos}</td>
+                <td>${badgePerfil}</td>
+                <td><span class="badge badge-primary">${v.colegio_electoral}</span></td>
+                <td>${v.sector || ''}, ${v.municipio || ''}</td>
+                <td><span style="font-size:12px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">${v.coordinador}</span></td>
+                <td>
+                    <button class="btn btn-outline btn-sm btn-print-net-row" data-id="${v.id}" title="Imprimir Comprobante Oficial"><i class="fa fa-print"></i></button>
+                    <button class="btn btn-outline btn-sm btn-email-net-row" data-id="${v.id}" data-email="${v.email || ''}" title="Enviar Comprobante por Correo"><i class="fa fa-envelope"></i></button>
+                    ${State.perms.can_edit == 1 ? `<button class="btn btn-outline btn-sm btn-edit-net-row" data-id="${v.id}" title="Editar Votante"><i class="fa fa-edit"></i></button>` : ''}
+                </td>
+            `;
+
+            tr.querySelector('.btn-print-net-row').addEventListener('click', () => printVoterVoucher(v.id));
+
+            tr.querySelector('.btn-email-net-row').addEventListener('click', () => {
+                const defaultEmail = v.email || '';
+                const emailPrompt = prompt("Confirme o ingrese el correo del votante para despachar el comprobante oficial:", defaultEmail);
+                if (emailPrompt && emailPrompt.trim()) {
+                    showNotification("⏳ Enviando comprobante por correo...", "info");
+                    fetch(`../backend/api/voters.php?action=email_voucher&id=${v.id}&email=${encodeURIComponent(emailPrompt.trim())}`)
+                        .then(res => res.json())
+                        .then(resData => {
+                            if (resData.exito) {
+                                showNotification(`✓ Comprobante [${resData.codigo_comprobante || ''}] enviado exitosamente a ${emailPrompt}.`, "success");
+                            } else {
+                                alert("Error al enviar comprobante: " + resData.mensaje);
+                            }
+                        })
+                        .catch(() => alert("Error de red al enviar comprobante."));
+                }
+            });
+
+            if (State.perms.can_edit == 1) {
+                tr.querySelector('.btn-edit-net-row').addEventListener('click', () => openEditModal(v.id));
+            }
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    // ─── IMPRESIÓN SECCIONADA POR RED (PDF) ───────────────────────────────────
+    function printNetworkSeccionedPDF() {
+        const coordSelect = document.getElementById('filter-network-coord');
+        const selectedCoordName = coordSelect ? coordSelect.value : '';
+        const levelSelect = document.getElementById('filter-network-level');
+        const selectedLevel = levelSelect ? levelSelect.value : 'all';
+
+        const activeLeader = cachedCoordinatorsData.find(c => c.nombre === selectedCoordName) || {
+            nombre: selectedCoordName || 'Estructura Territorial General',
+            rol: selectedLevel !== 'all' ? selectedLevel : 'Coordinación Territorial',
+            total_directos: cachedNetworkVoters.length,
+            total_ml: cachedNetworkVoters.filter(v => v.es_militante_lider == 1).length,
+            total_red: cachedNetworkVoters.length,
+            meta: 200
+        };
+
+        const pct = activeLeader.meta > 0 ? Math.min(100, Math.round((activeLeader.total_red / activeLeader.meta) * 100)) : 0;
+
+        let printArea = document.getElementById('print-voucher-area');
+        if (!printArea) {
+            const div = document.createElement('div');
+            div.id = 'print-voucher-area';
+            document.body.appendChild(div);
+            printArea = div;
+        }
+        printArea.className = 'print-hidden-container';
+
+        let rowsHtml = '';
+        cachedNetworkVoters.forEach((v, index) => {
+            const folio = v.codigo_comprobante || (`PAD2832-${v.numero_lista}-${v.cedula}`);
+            const tagStr = v.tipo_elector || (v.es_militante_lider == 1 ? 'Nuevo Elector (ML)' : 'Nuevo Elector');
+            const rolStr = (v.es_militante_lider == 1) ? 'ML Líder' : 'Votante';
+            rowsHtml += `
+                <tr style="border-bottom: 1px solid #e2e8f0; font-size: 11px;">
+                    <td style="padding: 6px 8px; text-align: center; font-weight: bold;">${index + 1}</td>
+                    <td style="padding: 6px 8px; font-family: monospace; font-weight: bold; color: #0054A6;">${folio}</td>
+                    <td style="padding: 6px 8px; font-family: monospace; white-space: nowrap;">${v.cedula}</td>
+                    <td style="padding: 6px 8px; font-weight: 600; text-transform: uppercase;">${v.nombres} ${v.apellidos}</td>
+                    <td style="padding: 6px 8px; text-align: center; font-weight: bold; color: #10b981;">${tagStr}</td>
+                    <td style="padding: 6px 8px; text-align: center;">${v.telefono || 'N/D'}</td>
+                    <td style="padding: 6px 8px; text-align: center; font-weight: bold;">${v.colegio_electoral}</td>
+                    <td style="padding: 6px 8px;">${v.sector || ''}</td>
+                    <td style="padding: 6px 8px; text-align: center; font-weight: bold; color: #E3A113;">${rolStr}</td>
+                    <td style="padding: 6px 8px; border-left: 1px dashed #cbd5e1; min-width: 90px;"></td>
+                </tr>
+            `;
+        });
+
+        if (cachedNetworkVoters.length === 0) {
+            rowsHtml = `<tr><td colspan="10" style="text-align: center; padding: 20px; color: #64748b;">No hay electores en esta red para imprimir.</td></tr>`;
+        }
+
+        printArea.innerHTML = `
+            <div style="font-family: Arial, sans-serif; max-width: 950px; margin: 0 auto; padding: 15px; color: #000; background: #fff;">
+                <!-- Header Banner -->
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <img src="../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="Pastora Altagracia" style="width: 100%; height: auto; display: block; border-bottom: 4px solid #E3A113; border-radius: 6px;">
+                </div>
+
+                <!-- Document Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #0054A6; padding-bottom: 8px;">
+                    <div>
+                        <h2 style="margin: 0; font-size: 18px; color: #0054A6; text-transform: uppercase; letter-spacing: 0.5px;">PADRÓN SECCIONADO DE RED TERRITORIAL</h2>
+                        <p style="margin: 2px 0 0 0; font-size: 12px; color: #475569;">Planilla de Control y Verificación de Campo - Periodo 2028</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 11px; color: #64748b;">Fecha de Emisión:</span>
+                        <div style="font-size: 12px; font-weight: bold; color: #0f172a;">${new Date().toLocaleDateString('es-DO')} ${new Date().toLocaleTimeString('es-DO', {hour:'2-digit', minute:'2-digit'})}</div>
+                    </div>
+                </div>
+
+                <!-- Network Metrics Summary Card -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 10px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                    <div>
+                        <span style="font-size: 10px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block;">Líder / Responsable</span>
+                        <strong style="font-size: 14px; color: #0054A6; text-transform: uppercase;">${activeLeader.nombre}</strong>
+                        <span style="display: block; font-size: 11px; color: #475569; font-weight: 500;">Rol: ${activeLeader.rol}</span>
+                    </div>
+                    <div style="text-align: center; border-left: 1px solid #e2e8f0;">
+                        <span style="font-size: 10px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block;">Total Red</span>
+                        <strong style="font-size: 16px; color: #0f172a;">${activeLeader.total_red}</strong>
+                    </div>
+                    <div style="text-align: center; border-left: 1px solid #e2e8f0;">
+                        <span style="font-size: 10px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block;">Directos</span>
+                        <strong style="font-size: 16px; color: #10b981;">${activeLeader.total_directos}</strong>
+                    </div>
+                    <div style="text-align: center; border-left: 1px solid #e2e8f0;">
+                        <span style="font-size: 10px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block;">Militantes ML</span>
+                        <strong style="font-size: 16px; color: #E3A113;">${activeLeader.total_ml}</strong>
+                    </div>
+                    <div style="text-align: center; border-left: 1px solid #e2e8f0;">
+                        <span style="font-size: 10px; color: #64748b; font-weight: bold; text-transform: uppercase; display: block;">% Cumplimiento</span>
+                        <strong style="font-size: 16px; color: #8b5cf6;">${pct}%</strong>
+                    </div>
+                </div>
+
+                <!-- Table Section -->
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background-color: #0054A6; color: #ffffff; font-size: 11px; text-transform: uppercase;">
+                            <th style="padding: 8px 6px; text-align: center; width: 35px;">No.</th>
+                            <th style="padding: 8px 6px; text-align: left;">Folio Oficial</th>
+                            <th style="padding: 8px 6px; text-align: left;">Cédula</th>
+                            <th style="padding: 8px 6px; text-align: left;">Nombre y Apellidos</th>
+                            <th style="padding: 8px 6px; text-align: center;">Etiqueta</th>
+                            <th style="padding: 8px 6px; text-align: center;">Teléfono</th>
+                            <th style="padding: 8px 6px; text-align: center;">Colegio</th>
+                            <th style="padding: 8px 6px; text-align: left;">Sector</th>
+                            <th style="padding: 8px 6px; text-align: center;">Rol Red</th>
+                            <th style="padding: 8px 6px; text-align: center; width: 100px;">Firma Elector</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+
+                <!-- Footer Signatures Block -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 35px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+                    <div style="text-align: center;">
+                        <div style="border-top: 1px solid #000; width: 220px; margin: 30px auto 5px auto;"></div>
+                        <span style="font-size: 11px; font-weight: bold; text-transform: uppercase;">${activeLeader.nombre}</span>
+                        <div style="font-size: 10px; color: #64748b;">Firma del Responsable de Red</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="border-top: 1px solid #000; width: 220px; margin: 30px auto 5px auto;"></div>
+                        <span style="font-size: 11px; font-weight: bold; text-transform: uppercase;">Comisión Electoral ADELOG</span>
+                        <div style="font-size: 10px; color: #64748b;">Auditoría y Validación Territorial</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const prevTitle = document.title;
+        const sanitizedCoord = (selectedCoordName || 'RED_TERRITORIAL').replace(/[^a-zA-Z0-9]/g, '_');
+        document.title = `PAD2832-SECCIONADO_${sanitizedCoord}_${new Date().toISOString().slice(0,10)}`;
+        window.print();
+        setTimeout(() => {
+            document.title = prevTitle;
+        }, 1000);
+    }
+
+    // ─── IMPRESIÓN GENERAL CONSOLIDADA (PDF) ──────────────────────────────────
+    function printNetworkGeneralPDF() {
+        let printArea = document.getElementById('print-voucher-area');
+        if (!printArea) {
+            const div = document.createElement('div');
+            div.id = 'print-voucher-area';
+            document.body.appendChild(div);
+            printArea = div;
+        }
+        printArea.className = 'print-hidden-container';
+
+        let matrixRowsHtml = '';
+        let totalGeneralRed = 0;
+        let totalGeneralDirectos = 0;
+        let totalGeneralML = 0;
+
+        cachedCoordinatorsData.forEach((c, idx) => {
+            totalGeneralRed += c.total_red;
+            totalGeneralDirectos += c.total_directos;
+            totalGeneralML += c.total_ml;
+            const pct = c.meta > 0 ? Math.min(100, Math.round((c.total_red / c.meta) * 100)) : 0;
+
+            matrixRowsHtml += `
+                <tr style="border-bottom: 1px solid #e2e8f0; font-size: 12px;">
+                    <td style="padding: 8px; text-align: center; font-weight: bold;">${idx + 1}</td>
+                    <td style="padding: 8px; font-weight: 700; color: #0054A6; text-transform: uppercase;">${c.nombre}</td>
+                    <td style="padding: 8px;"><span style="background: #e2e8f0; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">${c.rol}</span></td>
+                    <td style="padding: 8px; text-align: center; font-weight: bold; color: #10b981;">${c.total_directos}</td>
+                    <td style="padding: 8px; text-align: center; font-weight: bold; color: #E3A113;">${c.total_ml}</td>
+                    <td style="padding: 8px; text-align: center; font-weight: bold; font-size: 13px; color: #0f172a;">${c.total_red}</td>
+                    <td style="padding: 8px; text-align: center; color: #64748b;">${c.meta}</td>
+                    <td style="padding: 8px; text-align: center; font-weight: bold; color: ${pct >= 100 ? '#10b981' : (pct >= 50 ? '#E3A113' : '#ef4444')};">${pct}%</td>
+                </tr>
+            `;
+        });
+
+        printArea.innerHTML = `
+            <div style="font-family: Arial, sans-serif; max-width: 950px; margin: 0 auto; padding: 15px; color: #000; background: #fff;">
+                <!-- Header Banner -->
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <img src="../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="Pastora Altagracia" style="width: 100%; height: auto; display: block; border-bottom: 4px solid #E3A113; border-radius: 6px;">
+                </div>
+
+                <!-- Document Header -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #0054A6; padding-bottom: 8px;">
+                    <div>
+                        <h2 style="margin: 0; font-size: 18px; color: #0054A6; text-transform: uppercase; letter-spacing: 0.5px;">INFORME GENERAL CONSOLIDADO DE REDES Y LIDERAZGOS</h2>
+                        <p style="margin: 2px 0 0 0; font-size: 12px; color: #475569;">Matriz Territorial de Captación Multinivel - Periodo Electoral 2028</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 11px; color: #64748b;">Generado:</span>
+                        <div style="font-size: 12px; font-weight: bold; color: #0f172a;">${new Date().toLocaleDateString('es-DO')}</div>
+                    </div>
+                </div>
+
+                <!-- Consolidated Totals Bar -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; background: #0b1320; color: #fff; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center;">
+                    <div>
+                        <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Votantes Consolidados en Red</span>
+                        <h2 style="margin: 4px 0 0 0; font-size: 24px; color: #ffffff;">${totalGeneralRed.toLocaleString()}</h2>
+                    </div>
+                    <div>
+                        <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Inscripciones Directas</span>
+                        <h2 style="margin: 4px 0 0 0; font-size: 24px; color: #10b981;">${totalGeneralDirectos.toLocaleString()}</h2>
+                    </div>
+                    <div>
+                        <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Militantes Líderes (ML) Activos</span>
+                        <h2 style="margin: 4px 0 0 0; font-size: 24px; color: #E3A113;">${totalGeneralML.toLocaleString()}</h2>
+                    </div>
+                </div>
+
+                <!-- Matrix Table -->
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background-color: #0054A6; color: #ffffff; font-size: 11px; text-transform: uppercase;">
+                            <th style="padding: 8px; text-align: center; width: 35px;">No.</th>
+                            <th style="padding: 8px; text-align: left;">Nombre del Líder / Coordinador</th>
+                            <th style="padding: 8px; text-align: left;">Nivel / Rol</th>
+                            <th style="padding: 8px; text-align: center;">Directos</th>
+                            <th style="padding: 8px; text-align: center;">ML</th>
+                            <th style="padding: 8px; text-align: center;">Total en Red</th>
+                            <th style="padding: 8px; text-align: center;">Meta</th>
+                            <th style="padding: 8px; text-align: center;">% Cumplimiento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${matrixRowsHtml}
+                    </tbody>
+                </table>
+
+                <div style="text-align: center; margin-top: 30px; padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b;">
+                    <p>Plataforma Electoral ADELOG - Comando de Campaña Pastora Altagracia 2028. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        `;
+
+        const prevTitle = document.title;
+        document.title = `PAD2832-INFORME_GENERAL_CONSOLIDADO_${new Date().toISOString().slice(0,10)}`;
+        window.print();
+        setTimeout(() => {
+            document.title = prevTitle;
+        }, 1000);
+    }
+
+    // ─── EXPORTAR RED A EXCEL / CSV ──────────────────────────────────────────
+    function exportNetworkExcel() {
+        const coordSelect = document.getElementById('filter-network-coord');
+        const selectedCoord = coordSelect ? coordSelect.value : '';
+        const levelSelect = document.getElementById('filter-network-level');
+        const selectedLevel = levelSelect ? levelSelect.value : 'all';
+
+        let csv = 'No. Lista,Folio Oficial,Cedula,Nombres,Apellidos,Etiqueta Elector,Rol en Red,Colegio,Sector,Municipio,Coordinador Padre\n';
+        cachedNetworkVoters.forEach(v => {
+            const folio = v.codigo_comprobante || (`PAD2832-${v.numero_lista}-${v.cedula}`);
+            const tagStr = v.tipo_elector || (v.es_militante_lider == 1 ? 'Nuevo Elector (ML)' : 'Nuevo Elector');
+            const rolStr = (v.es_militante_lider == 1) ? 'ML - Militante Lider' : 'Votante';
+            csv += `"${v.numero_lista}","${folio}","${v.cedula}","${v.nombres}","${v.apellidos}","${tagStr}","${rolStr}","${v.colegio_electoral}","${v.sector || ''}","${v.municipio || ''}","${v.coordinador}"\n`;
+        });
+
+        const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const filename = selectedCoord ? `PAD2832_RED_${selectedCoord.replace(/\s+/g, '_')}.csv` : 'PAD2832_RED_TERRITORIAL_GENERAL.csv';
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
     // Exponer las funciones de impresión y compartición en el ámbito global
     window.printVoterVoucher = printVoterVoucher;
+    window.printNetworkSeccionedPDF = printNetworkSeccionedPDF;
+    window.printNetworkGeneralPDF = printNetworkGeneralPDF;
+    window.exportNetworkExcel = exportNetworkExcel;
+    window.loadRedTerritorial = loadRedTerritorial;
     window.saveCollaborator = saveCollaborator;
     window.triggerNewChat = triggerNewChat;
     window.fillChatModalFields = fillChatModalFields;
     window.exportSingleVoterExcel = exportSingleVoterExcel;
+    window.consultarEstatus2024 = consultarEstatus2024;
+    window.prefillVoterModalFromQuery = prefillVoterModalFromQuery;
     window.clearActiveChat = clearActiveChat;
     window.sendVoucherEmail = sendVoucherEmail;
     window.shareVoucherWhatsApp = shareVoucherWhatsApp;
     window.shareVoucherTelegram = shareVoucherTelegram;
 });
+
