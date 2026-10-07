@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscripción Padronal - Diputada Pastora Altagracia SDE Circ. 3</title>
     <link rel="shortcut icon" type="image/png" href="../GRAFICOS PARA LA PAGINA WEB/adelog_logo_icon.png">
-    <link rel="stylesheet" href="assets/css/styles.css?v=1.5">
+    <link rel="stylesheet" href="assets/css/styles.css?v=1.6">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QRCode.js para generación de códigos de validación y comprobantes -->
+    <script src="assets/lib/qrcode.min.js"></script>
 </head>
 <body id="public-landing">
 
@@ -183,7 +185,7 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="assets/js/app.js?v=2.8"></script>
+    <script src="assets/js/app.js?v=2.9"></script>
     <script>
         // Cargar configuración de marca y feed dinámico de redes sociales
         fetch('../backend/api/social_feed.php?action=get_feed')

@@ -171,8 +171,8 @@ function getCoordinatorsStats($conn, $nivelFiltro = 'all') {
     return $listaFinal;
 }
 
-// Permitir registros públicos si vienen de la campaña masiva QR o solicitud de comprobantes
-$isPublicRegistration = ($method === 'POST' && $action === 'public_register') || ($method === 'GET' && $action === 'email_voucher');
+// Permitir registros públicos si vienen de la campaña masiva QR o solicitud de comprobantes e impresión
+$isPublicRegistration = ($method === 'POST' && $action === 'public_register') || ($method === 'GET' && in_array($action, ['email_voucher', 'detail']));
 
 if (!$isPublicRegistration) {
     // Si no es público, validar autenticación general
@@ -341,7 +341,9 @@ if ($method === 'GET') {
         exit;
     }
 
-    checkPerm('can_view');
+    if (!$isPublicRegistration) {
+        checkPerm('can_view');
+    }
 
     if ($action === 'coordinators_stats') {
         $nivel = trim($_GET['nivel'] ?? 'all');
@@ -1548,6 +1550,12 @@ if ($method === 'POST') {
                     "codigo_comprobante" => $codigoComprobante,
                     "nombres" => $nombres,
                     "apellidos" => $apellidos,
+                    "colegio_electoral" => $colegio,
+                    "recinto_ubicacion" => $recinto,
+                    "sector" => $sector,
+                    "municipio" => $municipio,
+                    "telefono" => $telefono,
+                    "coordinador" => $coordinador,
                     "es_militante_lider" => $esML,
                     "nivel_estructura" => $nivelEstructura
                 ]

@@ -60,7 +60,7 @@ $pm = ($resPm && $resPm->num_rows > 0) ? $resPm->fetch_assoc() : null;
 $candidato_nombre = "Pastora Altagracia De Los Santos";
 $candidato_cargo = "Diputada Santo Domingo Circ. 3";
 $plataforma_nombre = "Plataforma Oficial Digital Pastora Altagracia";
-$banner_url = "GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png";
+$banner_url = "GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832-02.png";
 
 $tableCheck = $conn->query("SHOW TABLES LIKE 'configuraciones'");
 if ($tableCheck && $tableCheck->num_rows > 0) {
@@ -76,6 +76,35 @@ if ($tableCheck && $tableCheck->num_rows > 0) {
         if (!empty($configs['candidato_logo_url'])) $banner_url = $configs['candidato_logo_url'];
     }
 }
+
+// Resolver archivo del banner y convertir a Base64 Data-URI para garantizar que NUNCA falle ni dependa de rutas relativas
+$bannerDataUri = '';
+$posiblesRutasBanner = [
+    __DIR__ . '/GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832-02.png',
+    __DIR__ . '/GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png',
+    __DIR__ . '/GRAFICOS PARA LA PAGINA WEB/BANNER-ADLS.png'
+];
+
+if (!empty($banner_url)) {
+    $rutaLimpia = preg_replace('/^\.\.[\/\\\\]/', '', $banner_url);
+    array_unshift($posiblesRutasBanner, __DIR__ . '/' . ltrim($rutaLimpia, '/\\'));
+}
+
+foreach ($posiblesRutasBanner as $rutaPrueba) {
+    if (file_exists($rutaPrueba) && is_readable($rutaPrueba)) {
+        $mime = 'image/png';
+        if (preg_match('/\.(jpe?g)$/i', $rutaPrueba)) {
+            $mime = 'image/jpeg';
+        }
+        $imgRaw = file_get_contents($rutaPrueba);
+        if ($imgRaw !== false && strlen($imgRaw) > 0) {
+            $bannerDataUri = 'data:' . $mime . ';base64,' . base64_encode($imgRaw);
+            break;
+        }
+    }
+}
+
+$bannerWebSrc = !empty($bannerDataUri) ? $bannerDataUri : "GRAFICOS%20PARA%20LA%20PAGINA%20WEB/BANNER%20PLATAFORMA%20WEB%20PAD-2832-02.png";
 
 $codigoComprobante = "PAD2832-" . $v['numero_lista'] . "-" . $v['cedula'];
 
@@ -184,8 +213,8 @@ $recintoNombre = !empty($pm['nombre_recinto']) ? $pm['nombre_recinto'] : $v['rec
 <body>
     <div class="container">
         <!-- Banner Header spanning full width -->
-        <div style="width: 100%; margin-bottom: 20px;">
-            <img src="<?php echo htmlspecialchars($banner_url); ?>" alt="<?php echo htmlspecialchars($candidato_nombre); ?>" style="width: 100%; height: auto; display: block; border-bottom: 4px solid #E3A113; border-radius: 8px;">
+        <div style="width: 100%; margin-bottom: 20px; text-align: center;">
+            <img src="<?php echo $bannerWebSrc; ?>" alt="<?php echo htmlspecialchars($candidato_nombre); ?>" style="width: 100%; max-width: 100%; height: auto; display: block; border-bottom: 4px solid #E3A113; border-radius: 8px;">
         </div>
         
         <!-- Sello Superior de Certificación -->
@@ -330,6 +359,11 @@ $recintoNombre = !empty($pm['nombre_recinto']) ? $pm['nombre_recinto'] : $v['rec
                 img.style.height = '120px';
                 qrContainer.appendChild(img);
             }
+            <?php if (!empty($_GET['print']) || !empty($_GET['auto_print'])): ?>
+            setTimeout(function() {
+                window.print();
+            }, 600);
+            <?php endif; ?>
         });
     </script>
 </body>

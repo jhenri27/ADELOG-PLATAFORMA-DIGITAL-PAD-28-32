@@ -1628,8 +1628,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── COMPROBANTES DE INSCRIPCIÓN (VOUCHERS) ─────────────────────────────
     function printVoterVoucher(id) {
+        if (!id) {
+            alert("No se especificó un ID de elector válido para imprimir.");
+            return;
+        }
+
+        // Intento directo y universal: Abrir ventana de comprobante oficial con auto-impresión
+        const comprobanteUrl = `../comprobante.php?id=${id}&print=1`;
+        const printWin = window.open(comprobanteUrl, '_blank');
+        if (printWin) {
+            printWin.focus();
+            return;
+        }
+
+        // Fallback: Si el navegador bloqueó la apertura de ventana emergente, usar motor de impresión en página
         fetch(`../backend/api/voters.php?action=detail&id=${id}`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error("Error en servidor al obtener datos del elector");
+                return res.json();
+            })
             .then(data => {
                 if (data.exito) {
                     const v = data.votante;
@@ -1656,7 +1673,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div style="font-family: Arial, sans-serif; max-width: 780px; margin: 0 auto; padding: 12px 16px; background: #ffffff; color: #000000; box-sizing: border-box;">
                             <!-- Header Banner matching the official campaign art spanning full header width -->
                             <div style="width: 100%; margin-bottom: 8px;">
-                                <img src="../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832.png" alt="Pastora Altagracia" style="width: 100%; height: auto; display: block; border-bottom: 3px solid #E3A113; border-radius: 6px;">
+                                <img src="../GRAFICOS PARA LA PAGINA WEB/BANNER PLATAFORMA WEB PAD-2832-02.png" alt="Pastora Altagracia" style="width: 100%; height: auto; display: block; border-bottom: 3px solid #E3A113; border-radius: 6px;">
                             </div>
                             
                             <!-- White Metadata Section with boxes using table for strict print alignment -->
@@ -1820,7 +1837,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             }, 1000);
                         }, 250);
                     }, 50);
+                } else {
+                    alert("No se pudo obtener la constancia: " + (data.mensaje || 'Error desconocido'));
                 }
+            })
+            .catch(err => {
+                console.error("Error en printVoterVoucher:", err);
+                alert("Error de conexión al cargar la constancia para impresión.");
             });
     }
 
@@ -1829,21 +1852,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!resultDiv) return;
         
         resultDiv.innerHTML = `
-            <div class="card" style="max-width: 500px; margin: 30px auto; border-color: var(--secondary);">
+            <div class="card" style="max-width: 540px; margin: 30px auto; border-color: var(--secondary); box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <span class="badge badge-success" style="font-size: 14px; padding: 6px 12px;"><i class="fa fa-check"></i> Registro Completado</span>
                     <h3 style="margin-top: 12px;">¡Gracias por su apoyo!</h3>
                     <p style="color: var(--text-muted); font-size: 14px;">Guarde su número de lista oficial</p>
                 </div>
                 <div style="background-color: rgba(255,255,255,0.03); padding: 16px; border-radius: 8px; font-size: 15px; margin-bottom: 20px;">
-                    <p><strong>Número de Lista:</strong> <span style="font-size: 22px; color: var(--secondary); font-weight: bold;">${v.numero_lista}</span></p>
-                    <p><strong>Cédula:</strong> ${v.cedula}</p>
-                    <p><strong>Nombre:</strong> ${v.nombres} ${v.apellidos}</p>
-                    <p><strong>Colegio Electoral:</strong> ${v.colegio_electoral}</p>
+                    <p style="margin-bottom: 8px;"><strong>Número de Lista:</strong> <span style="font-size: 22px; color: var(--secondary); font-weight: bold;">#${v.numero_lista}</span></p>
+                    <p style="margin-bottom: 6px;"><strong>Cédula:</strong> <span style="font-family: monospace; font-weight: 700;">${v.cedula}</span></p>
+                    <p style="margin-bottom: 6px;"><strong>Nombre:</strong> ${v.nombres} ${v.apellidos}</p>
+                    <p style="margin-bottom: 6px;"><strong>Colegio Electoral:</strong> ${v.colegio_electoral || 'Asignado'}</p>
                 </div>
-                <div style="display: flex; gap: 12px; justify-content: center;">
-                    <button class="btn btn-primary btn-sm" onclick="printVoterVoucher(${v.id})"><i class="fa fa-print"></i> Imprimir Constancia</button>
-                    <a href="index.html" class="btn btn-outline btn-sm"><i class="fa fa-redo"></i> Inscribir Otro</a>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary btn-sm" onclick="printVoterVoucher(${v.id})" style="padding: 8px 16px; font-weight: 600;"><i class="fa fa-print"></i> Imprimir Constancia</button>
+                    <a href="../comprobante.php?id=${v.id}&print=1" target="_blank" class="btn btn-secondary btn-sm" style="padding: 8px 16px; font-weight: 600;"><i class="fa fa-file-pdf"></i> Comprobante Oficial</a>
+                    <a href="index.html" class="btn btn-outline btn-sm" style="padding: 8px 16px;"><i class="fa fa-redo"></i> Inscribir Otro</a>
                 </div>
             </div>
         `;
