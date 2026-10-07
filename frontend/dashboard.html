@@ -46,6 +46,8 @@
             <a class="tab-link active" data-tab="dashboard"><i class="fa fa-chart-line"></i> Dashboard</a>
             <a class="tab-link" data-tab="padron"><i class="fa fa-address-book"></i> Padrón Real-Time</a>
             <a class="tab-link" data-tab="red_territorial" id="tab-red_territorial"><i class="fa fa-sitemap"></i> Red Territorial y Coordinadores</a>
+            <a class="tab-link" data-tab="avance_ml" id="tab-avance_ml"><i class="fa fa-trophy"></i> Dashboard de Avance ML</a>
+            <a class="tab-link" data-tab="usuarios" id="tab-usuarios"><i class="fa fa-users-cog"></i> Usuarios del Sistema</a>
             <a class="tab-link" data-tab="chat" id="tab-chat"><i class="fa fa-comments"></i> Chat Coordinadores</a>
             <a class="tab-link" data-tab="helpdesk" id="tab-helpdesk"><i class="fa fa-ticket-alt"></i> Helpdesk</a>
             <a class="tab-link" data-tab="docs"><i class="fa fa-file-text"></i> Documentos</a>
@@ -357,6 +359,239 @@
             </div>
         </section>
 
+        <!-- ==================== TAB: DASHBOARD DE AVANCE ML ==================== -->
+        <section id="tab-content-avance_ml" class="tab-content">
+            <!-- Header Section -->
+            <div class="card" style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <h3 style="font-size: 20px; color: var(--text-white); margin: 0 0 4px 0;">
+                            <i class="fa fa-trophy" style="color: #E3A113; margin-right: 8px;"></i> Panel de Avance y Escalafón de Militantes Líderes (ML)
+                        </h3>
+                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">
+                            Seguimiento de progresión gamificada en 10 niveles jerárquicos según metas de colaboradores inscritos en apoyo a la candidatura de Pastora Altagracia.
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="btn-admin-config-escalafon" class="btn btn-outline" style="border-color: #E3A113; color: #fef08a; display: none;">
+                            <i class="fa fa-sliders-h" style="color: #E3A113;"></i> Configurar Límites de Niveles
+                        </button>
+                        <button id="btn-refresh-avance-ml" class="btn btn-secondary">
+                            <i class="fa fa-sync-alt"></i> Actualizar Métricas
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de Progreso Personal (visible si es Militante Líder o para auditar un ML) -->
+            <div id="card-avance-personal" class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 58, 138, 0.4) 100%); border: 1.5px solid rgba(227, 161, 19, 0.5);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div id="avance-personal-avatar" style="width: 50px; height: 50px; border-radius: 50%; background: #E3A113; color: #0f172a; font-weight: 800; font-size: 22px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(227, 161, 19, 0.3);">
+                            ML
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <h4 id="avance-personal-nombre" style="font-size: 18px; margin: 0; color: #ffffff;">Mi Perfil de Militante Líder</h4>
+                                <span id="avance-personal-codigo" class="badge" style="background: rgba(227, 161, 19, 0.2); border: 1px solid #E3A113; color: #fef08a; font-family: monospace; font-size: 12px;">ML-0000</span>
+                                <span id="avance-personal-badge-nivel" class="badge" style="background: #3b82f6; color: #ffffff; font-weight: 700;">NIVEL ML</span>
+                            </div>
+                            <span id="avance-personal-coord" style="font-size: 12px; color: #94a3b8; display: block; margin-top: 3px;">Coordinador Asignado: Cargando...</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button id="btn-mi-qr-promocion" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="fa fa-qrcode"></i> Mi QR de Captación
+                        </button>
+                        <button id="btn-copiar-mi-link-ml" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="fa fa-link"></i> Copiar Enlace
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Barra de Progreso y Meta -->
+                <div style="background: rgba(0,0,0,0.25); border-radius: 12px; padding: 16px; border: 1px solid rgba(255,255,255,0.08);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px;">
+                        <span style="color: #cbd5e1;">Progreso actual de colaboradores inscritos:</span>
+                        <strong id="avance-personal-conteo" style="color: #fef08a; font-size: 15px;">0 / 10 Inscritos</strong>
+                    </div>
+                    <div style="width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 9999px; overflow: hidden; margin-bottom: 8px;">
+                        <div id="avance-personal-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #E3A113, #22c55e); border-radius: 9999px; transition: width 0.5s ease;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8;">
+                        <span id="avance-personal-porcentaje">0% de cumplimiento</span>
+                        <span id="avance-personal-siguiente-meta">Meta para el siguiente nivel: 11 inscritos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pirámide y Distribución por Escalafón (10 Niveles) -->
+            <div class="card" style="margin-bottom: 24px;">
+                <h4 style="font-size: 16px; margin: 0 0 16px 0; color: var(--secondary); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa fa-layer-group"></i> Estructura y Distribución de los 10 Niveles de Escalafón
+                </h4>
+                <div id="grid-escalafon-niveles" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+                    <!-- Inyectado dinámicamente con los 10 niveles y sus conteos -->
+                </div>
+            </div>
+
+            <!-- Ranking / Top 10 Militantes Líderes -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                    <h4 style="font-size: 16px; margin: 0; color: var(--text-white); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-medal" style="color: #E3A113;"></i> Cuadro de Honor: Top 10 Militantes Líderes con Mayor Desempeño
+                    </h4>
+                    <span style="font-size: 12px; color: var(--text-muted);">Actualizado en tiempo real según inscripciones confirmadas</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">Pos.</th>
+                                <th>Código ML</th>
+                                <th>Nombre Completo</th>
+                                <th>Coordinador</th>
+                                <th>Nivel Actual</th>
+                                <th>Colaboradores Inscritos</th>
+                                <th>Avance %</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="top-lideres-tbody">
+                            <!-- Inyectado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: USUARIOS DEL SISTEMA ==================== -->
+        <section id="tab-content-usuarios" class="tab-content">
+            <!-- Header Section -->
+            <div class="card" style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <h3 style="font-size: 20px; color: var(--text-white); margin: 0 0 4px 0;">
+                            <i class="fa fa-users-cog" style="color: var(--secondary); margin-right: 8px;"></i> Usuarios del Sistema
+                        </h3>
+                        <p style="color: var(--text-muted); font-size: 13px; margin: 0;">
+                            Administración centralizada de usuarios, coordinadores y militantes líderes con credenciales unificadas, enlaces de activación segura y trazabilidad completa.
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="btn-config-escalafon-users" class="btn btn-outline" style="border-color: #E3A113; color: #fef08a; display: none;">
+                            <i class="fa fa-sliders-h" style="color: #E3A113;"></i> Configurar Límites Escalafón
+                        </button>
+                        <button id="btn-nuevo-usuario-modal" class="btn btn-secondary">
+                            <i class="fa fa-user-plus"></i> Crear Nuevo Usuario
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métricas Rápidas de Usuarios -->
+            <div class="grid-4" style="margin-bottom: 24px;">
+                <div class="card" style="display: flex; align-items: center; gap: 16px;">
+                    <div style="background: rgba(0, 84, 166, 0.15); color: #38bdf8; padding: 14px; border-radius: 12px; font-size: 22px;">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">TOTAL USUARIOS</div>
+                        <h3 id="users-stat-total" style="font-size: 24px; margin: 2px 0 0 0; color: #ffffff;">0</h3>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 16px;">
+                    <div style="background: rgba(227, 161, 19, 0.15); color: #E3A113; padding: 14px; border-radius: 12px; font-size: 22px;">
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">MILITANTES LÍDERES</div>
+                        <h3 id="users-stat-ml" style="font-size: 24px; margin: 2px 0 0 0; color: #ffffff;">0</h3>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 16px;">
+                    <div style="background: rgba(16, 185, 129, 0.15); color: #4ade80; padding: 14px; border-radius: 12px; font-size: 22px;">
+                        <i class="fa fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">CUENTAS ACTIVAS</div>
+                        <h3 id="users-stat-activos" style="font-size: 24px; margin: 2px 0 0 0; color: #ffffff;">0</h3>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; align-items: center; gap: 16px;">
+                    <div style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; padding: 14px; border-radius: 12px; font-size: 22px;">
+                        <i class="fa fa-clock"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">PEND. ACTIVACIÓN</div>
+                        <h3 id="users-stat-pendientes" style="font-size: 24px; margin: 2px 0 0 0; color: #ffffff;">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros y Búsqueda -->
+            <div class="card" style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; gap: 10px; flex: 1; min-width: 280px; flex-wrap: wrap;">
+                        <div style="position: relative; flex: 1; min-width: 220px;">
+                            <input type="text" id="users-search-input" class="form-control" placeholder="Buscar por nombre, usuario, cédula o código ML...">
+                        </div>
+                        <select id="users-filter-perfil" class="form-control" style="max-width: 200px;">
+                            <option value="">Todos los Perfiles</option>
+                        </select>
+                        <select id="users-filter-coord" class="form-control" style="max-width: 200px;">
+                            <option value="">Todos los Coordinadores</option>
+                        </select>
+                        <select id="users-filter-nivel" class="form-control" style="max-width: 180px;">
+                            <option value="">Todos los Niveles ML</option>
+                        </select>
+                        <select id="users-filter-estado" class="form-control" style="max-width: 170px;">
+                            <option value="">Todos los Estados</option>
+                            <option value="activo">Activos</option>
+                            <option value="pendiente">Pend. Activación</option>
+                            <option value="inactivo">Inactivos</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button id="btn-users-reset-filters" class="btn btn-outline" style="padding: 8px 14px; font-size: 13px;">
+                            <i class="fa fa-undo"></i> Limpiar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Usuarios Central -->
+            <div class="card">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Código / ID</th>
+                                <th>Usuario & Cédula</th>
+                                <th>Nombre Completo</th>
+                                <th>Perfil / Rol</th>
+                                <th>Coordinador</th>
+                                <th>Escalafón & Red</th>
+                                <th>Estado</th>
+                                <th style="text-align: right;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modulo-users-tbody">
+                            <!-- Inyectado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; flex-wrap: wrap; gap: 10px; font-size: 13px; color: var(--text-muted);">
+                    <div id="users-pagination-info">Mostrando 0 de 0 usuarios</div>
+                    <div id="users-pagination-controls" style="display: flex; gap: 6px;">
+                        <!-- Botones de página -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- 3. TAB: CHAT DE WHATSAPP EN VIVO -->
         <section id="tab-content-chat" class="tab-content">
             <div class="card" style="padding: 0; overflow: hidden;">
@@ -625,7 +860,12 @@
             <!-- Sección Clásica de Usuarios y Permisos Directos -->
             <div class="grid-2">
                 <div class="card">
-                    <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--secondary);"><i class="fa fa-users-cog"></i> Usuarios del Sistema y Perfil Asignado</h3>
+                    <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--secondary); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <span><i class="fa fa-users-cog"></i> Usuarios del Sistema</span>
+                        <button type="button" onclick="switchTab('usuarios')" class="btn btn-primary btn-sm" style="font-size: 12px; padding: 4px 10px;">
+                            <i class="fa fa-external-link-alt"></i> Abrir Módulo Completo
+                        </button>
+                    </h3>
                     
                     <form id="user-form" style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);">
                         <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--text-white);">Crear Nuevo Usuario</h4>
@@ -1720,8 +1960,208 @@
         </div>
     </div>
 
+    <!-- ==================== MODAL: DETALLE DE USUARIO Y RED ==================== -->
+    <div id="modal-usuario-detalle" class="modal">
+        <div class="modal-content" style="max-width: 850px;">
+            <div class="modal-header">
+                <h3 id="modal-usuario-detalle-title"><i class="fa fa-id-card" style="color: var(--secondary);"></i> Expediente de Usuario & Red</h3>
+                <button type="button" onclick="closeModal('modal-usuario-detalle')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-usuario-detalle-hero" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+                    <!-- Cabecera con datos del usuario inyectados -->
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                    <h4 style="margin: 0; font-size: 15px; color: var(--secondary); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa fa-users"></i> Colaboradores Inscritos Bajo su Red (<span id="detalle-total-colaboradores">0</span>)
+                    </h4>
+                    <span style="font-size: 12px; color: var(--text-muted);">Suman directamente al escalafón del líder</span>
+                </div>
+
+                <div class="table-container" style="max-height: 320px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No. Lista</th>
+                                <th>Cédula</th>
+                                <th>Nombre Completo</th>
+                                <th>Colegio / Recinto</th>
+                                <th>Canal</th>
+                                <th>Fecha Registro</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detalle-colaboradores-tbody">
+                            <!-- Inyectado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" onclick="closeModal('modal-usuario-detalle')" class="btn btn-outline">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: CREAR / EDITAR USUARIO ==================== -->
+    <div id="modal-usuario-crud" class="modal">
+        <div class="modal-content" style="max-width: 650px;">
+            <div class="modal-header">
+                <h3 id="modal-usuario-crud-title"><i class="fa fa-user-plus" style="color: var(--secondary);"></i> Nuevo Usuario del Sistema</h3>
+                <button type="button" onclick="closeModal('modal-usuario-crud')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-usuario-crud">
+                    <input type="hidden" id="crud-user-id" value="0">
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Nombre Completo *</label>
+                            <input type="text" id="crud-user-nombre" class="form-control" placeholder="Ej: Pedro Martínez Pérez" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cédula de Identidad *</label>
+                            <input type="text" id="crud-user-cedula" class="form-control" placeholder="001-0000000-0" required maxlength="13">
+                            <small style="color: var(--text-muted); font-size: 11px;">Será su contraseña de acceso inicial segura</small>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Perfil / Rol Asignado *</label>
+                            <select id="crud-user-perfil" class="form-control" required>
+                                <!-- Inyectado dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Coordinador a Cargo</label>
+                            <select id="crud-user-coordinador" class="form-control">
+                                <option value="">-- Sin Coordinador Asignado --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">Teléfono Móvil (WhatsApp)</label>
+                            <input type="tel" id="crud-user-telefono" class="form-control" placeholder="809-000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Correo Electrónico (Opcional)</label>
+                            <input type="email" id="crud-user-email" class="form-control" placeholder="usuario@ejemplo.com">
+                        </div>
+                    </div>
+
+                    <div class="grid-2" style="background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label class="form-label">Nombre de Usuario (Opcional)</label>
+                            <input type="text" id="crud-user-username" class="form-control" placeholder="Dejar vacío para auto-asignar ID">
+                            <small style="color: var(--text-muted); font-size: 11px;">Si es Militante Líder se generará ML-XXXX</small>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contraseña Específica (Opcional)</label>
+                            <input type="password" id="crud-user-password" class="form-control" placeholder="Por defecto será su Cédula">
+                            <small style="color: var(--text-muted); font-size: 11px;">Cifrada automáticamente con BCRYPT</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-white);">
+                            <input type="checkbox" id="crud-user-es-ml" style="width: 18px; height: 18px; accent-color: var(--secondary);">
+                            <span><strong>Asignar como Militante Líder (ML)</strong> con código único de red y escalafón</span>
+                        </label>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" onclick="closeModal('modal-usuario-crud')" class="btn btn-outline">Cancelar</button>
+                        <button type="submit" id="btn-submit-user-crud" class="btn btn-primary"><i class="fa fa-save"></i> Guardar Usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: CONFIGURAR LÍMITES DE ESCALAFÓN ==================== -->
+    <div id="modal-escalafon-config" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3><i class="fa fa-sliders-h" style="color: #E3A113;"></i> Configuración de Límites y Metas del Escalafón ML</h3>
+                <button type="button" onclick="closeModal('modal-escalafon-config')" class="btn btn-outline" style="padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+                    Como Administrador, modifique los rangos de colaboradores requeridos para cada uno de los 10 niveles. Al guardar, el sistema recalculará automáticamente el nivel de todos los Militantes Líderes en tiempo real.
+                </p>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 70px;">Nivel</th>
+                                <th style="width: 80px;">Código</th>
+                                <th>Nombre del Escalafón</th>
+                                <th style="width: 120px;">Mín. Inscritos</th>
+                                <th style="width: 120px;">Máx. Inscritos</th>
+                                <th style="width: 100px;">Color</th>
+                            </tr>
+                        </thead>
+                        <tbody id="escalafon-config-tbody">
+                            <!-- Inyectado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; flex-wrap: wrap; gap: 10px;">
+                    <span id="escalafon-save-status" style="font-size: 13px; color: #4ade80; display: none;">✓ Configuración guardada y niveles recalculados</span>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" onclick="closeModal('modal-escalafon-config')" class="btn btn-outline">Cancelar</button>
+                        <button type="button" id="btn-save-escalafon-config" class="btn btn-secondary">
+                            <i class="fa fa-save"></i> Guardar Cambios y Recalcular
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: CÓDIGO QR UNIVERSAL ==================== -->
+    <div id="modal-universal-qr" class="modal">
+        <div class="modal-content" style="max-width: 480px; text-align: center;">
+            <div class="modal-header" style="justify-content: center; position: relative;">
+                <h3 id="modal-qr-title" style="margin: 0; font-size: 18px; color: #ffffff;"><i class="fa fa-qrcode" style="color: var(--secondary);"></i> Código QR Oficial</h3>
+                <button type="button" onclick="closeModal('modal-universal-qr')" class="btn btn-outline" style="position: absolute; right: 15px; padding: 6px 10px;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 24px 20px;">
+                <p id="modal-qr-subtitle" style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+                    Escanee con la cámara de su teléfono o comparta este enlace con su red.
+                </p>
+
+                <div id="universal-qr-box" style="background: #ffffff; padding: 16px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
+                    <div id="universal-qrcode-container"></div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <input type="text" id="modal-qr-url-input" class="form-control" readonly style="font-size: 12px; font-family: monospace; text-align: center; background: rgba(0,0,0,0.2);">
+                </div>
+
+                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                    <button type="button" id="btn-modal-qr-copy" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fa fa-copy"></i> Copiar Enlace
+                    </button>
+                    <a id="btn-modal-qr-whatsapp" href="#" target="_blank" class="btn btn-success btn-sm" style="background: #25D366; color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <button type="button" id="btn-modal-qr-download" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fa fa-download"></i> Descargar PNG
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Script Global de la Aplicación y Motor RBAC -->
-    <script src="assets/js/app.js?v=2.9"></script>
+    <script src="assets/js/app.js?v=3.0"></script>
     <script src="assets/js/perfiles_engine.js?v=2.1"></script>
 </body>
 </html>

@@ -1314,15 +1314,111 @@ if ($method === 'POST') {
         $nivelEstructuraEsc = $conn->real_escape_string($nivelEstructura);
         $coordPadreId = !empty($input['coordinador_padre_id']) ? intval($input['coordinador_padre_id']) : "NULL";
         
+        // -------------------------------------------------------------
+        // DETECCIÓN Y ATRIBUCIÓN DE ENLACE DE RED (ref=ML-XXXX / USER-X)
+        // -------------------------------------------------------------
+        $refInput = trim($input['ref'] ?? $input['referido_por'] ?? $_GET['ref'] ?? '');
+        $referidoPorMLId = "NULL";
+        $codigoRefOrigen = "NULL";
+        
+        if (!empty($refInput)) {
+            $refEsc = $conn->real_escape_string($refInput);
+            $qML = $conn->query("SELECT id, coordinador_id FROM usuarios WHERE codigo_ml = '$refEsc' OR username = '$refEsc' OR id = " . intval($refInput) . " LIMIT 1");
+            if ($qML && $qML->num_rows > 0) {
+                $mlFound = $qML->fetch_assoc();
+                $referidoPorMLId = intval($mlFound['id']);
+                $codigoRefOrigen = "'$refEsc'";
+                $canal_origen = 'Red ML';
+                $canalEsc = $conn->real_escape_string($canal_origen);
+                if (empty($coordPadreId) || $coordPadreId === "NULL") {
+                    $coordPadreId = !empty($mlFound['coordinador_id']) ? intval($mlFound['coordinador_id']) : $referidoPorMLId;
+                }
+            }
+        }
+        
         $tipoElector = $esML ? 'Nuevo Elector (ML)' : 'Nuevo Elector';
         $tipoElectorEsc = $conn->real_escape_string($tipoElector);
         
         $estadoDatos = $esIrregular ? 'pendiente-reg-data' : 'validado';
-        $sqlInsert = "INSERT INTO inscritos (numero_lista, cedula, nombres, apellidos, nacionalidad, colegio_electoral, recinto_ubicacion, direccion, sector, municipio, telefono, telefono_fijo, email, coordinador, centro_acopio, registrado_por, canal_origen, estado_datos, tipo_elector, es_militante_lider, nivel_estructura, coordinador_padre_id) 
-                      VALUES ($numero_lista, '$cedulaEsc', '$nombresEsc', '$apellidosEsc', '$nacionalidadEsc', '$colegioEsc', '$recintoEsc', '$direccionEsc', '$sectorEsc', '$municipioEsc', '$telefonoEsc', '$telefonoFijoEsc', '$emailEsc', '$coordinadorEsc', '$centroEsc', $registradoPor, '$canalEsc', '$estadoDatos', '$tipoElectorEsc', $esML, '$nivelEstructuraEsc', $coordPadreId)";
+        $sqlInsert = "INSERT INTO inscritos (numero_lista, cedula, nombres, apellidos, nacionalidad, colegio_electoral, recinto_ubicacion, direccion, sector, municipio, telefono, telefono_fijo, email, coordinador, centro_acopio, registrado_por, referido_por_ml_id, codigo_ref_origen, canal_origen, estado_datos, tipo_elector, es_militante_lider, nivel_estructura, coordinador_padre_id) 
+                      VALUES ($numero_lista, '$cedulaEsc', '$nombresEsc', '$apellidosEsc', '$nacionalidadEsc', '$colegioEsc', '$recintoEsc', '$direccionEsc', '$sectorEsc', '$municipioEsc', '$telefonoEsc', '$telefonoFijoEsc', '$emailEsc', '$coordinadorEsc', '$centroEsc', $registradoPor, $referidoPorMLId, $codigoRefOrigen, '$canalEsc', '$estadoDatos', '$tipoElectorEsc', $esML, '$nivelEstructuraEsc', $coordPadreId)";
                       
         if ($conn->query($sqlInsert)) {
             $newVoterId = $conn->insert_id;
+            
+            // -------------------------------------------------------------
+            // AUTO-PROVISIÓN DE CUENTA PARA MILITANTE LÍDER (PLAD)
+            // -------------------------------------------------------------
+            $codigoMLAsignado = null;
+            $tokenML = null;
+            $cleanCedulaEsc = preg_replace('/\D/', '', $cedula);
+            
+            if ($esML) {
+                // Verificar si ya tiene cuenta existente para no duplicar
+                $checkUser = $conn->query("SELECT id, codigo_ml FROM usuarios WHERE cedula = '$cedulaEsc' OR (LENGTH('$cleanCedulaEsc') >= 9 AND REPLACE(cedula, '-', '') = '$cleanCedulaEsc') LIMIT 1");
+                if ($checkUser && $checkUser->num_rows > 0) {
+                    $uRow = $checkUser->fetch_assoc();
+                    $userMLId = intval($uRow['id']);
+                    $codigoMLAsignado = $uRow['codigo_ml'];
+                    if (empty($codigoMLAsignado)) {
+                        $codigoMLAsignado = sprintf("ML-%04d", $userMLId);
+                        $conn->query("UPDATE usuarios SET codigo_ml = '$codigoMLAsignado' WHERE id = $userMLId");
+                    }
+                    $conn->query("UPDATE usuarios SET inscrito_id = $newVoterId WHERE id = $userMLId");
+                } else {
+                    // Generar código autoincremental ML-XXXX
+                    $qMax = $conn->query("SELECT MAX(id) as max_id FROM usuarios");
+                    $nextUId = ($qMax ? intval($qMax->fetch_assoc()['max_id']) : 0) + 1;
+                    $codigoMLAsignado = sprintf("ML-%04d", $nextUId);
+                    
+                    $userMlName = "ml_" . (!empty($cleanCedulaEsc) ? substr($cleanCedulaEsc, -6) : $nextUId);
+                    // Cédula como credencial cifrada con BCRYPT
+                    $cleanPass = !empty($cleanCedulaEsc) ? $cleanCedulaEsc : '123456';
+                    $passHash = password_hash($cleanPass, PASSWORD_BCRYPT);
+                    
+                    $tokenML = bin2hex(random_bytes(32));
+                    $expiraML = date('Y-m-d H:i:s', strtotime('+72 hours'));
+                    
+                    $sqlNewU = "INSERT INTO usuarios (codigo_ml, username, password, nombre, cedula, telefono, email, 
+                                                      role, perfil_id, coordinador_id, inscrito_id, nivel_avance, nivel_avance_label, 
+                                                      token_activacion, token_expiracion, estado, estado_activacion)
+                                VALUES ('$codigoMLAsignado', '$userMlName', '$passHash', '$nombresEsc $apellidosEsc', '$cedulaEsc', '$telefonoEsc', '$emailEsc', 
+                                        'ML - Militante Líder', 5, $coordPadreId, $newVoterId, 'ML', 'Militante Líder', 
+                                        '$tokenML', '$expiraML', 1, 'pendiente')";
+                    if ($conn->query($sqlNewU)) {
+                        $userMLId = $conn->insert_id;
+                        $conn->query("INSERT INTO permisos (usuario_id, can_create, can_edit, can_view, can_print, can_send, can_view_historical)
+                                      VALUES ($userMLId, 1, 0, 1, 1, 0, 0)
+                                      ON DUPLICATE KEY UPDATE can_view = 1");
+                    }
+                }
+            }
+            
+            // -------------------------------------------------------------
+            // ATRIBUCIÓN DE CRECIMIENTO AL MILITANTE LÍDER PROMOTOR
+            // -------------------------------------------------------------
+            if ($referidoPorMLId !== "NULL" && intval($referidoPorMLId) > 0) {
+                $refIdInt = intval($referidoPorMLId);
+                $campoExtra = $esML ? ", total_prospectos_ml = total_prospectos_ml + 1" : "";
+                $conn->query("UPDATE usuarios SET total_colaboradores = total_colaboradores + 1 $campoExtra WHERE id = $refIdInt");
+                
+                // Recalcular nivel del promotor en tiempo real
+                $qTot = $conn->query("SELECT total_colaboradores FROM usuarios WHERE id = $refIdInt");
+                if ($qTot) {
+                    $totP = intval($qTot->fetch_assoc()['total_colaboradores']);
+                    $qNiv = $conn->query("SELECT siglas, nombre_nivel FROM escalafon_niveles_ml WHERE activo = 1 AND $totP >= min_inscritos ORDER BY min_inscritos DESC LIMIT 1");
+                    if ($qNiv && $qNiv->num_rows > 0) {
+                        $nRow = $qNiv->fetch_assoc();
+                        $conn->query("UPDATE usuarios SET nivel_avance = '{$nRow['siglas']}', nivel_avance_label = '{$nRow['nombre_nivel']}' WHERE id = $refIdInt");
+                    }
+                }
+            }
+            
+            // URLs dinámicas para el comprobante
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? '') == 443) ? "https://" : "http://";
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $enlaceRedProspeccion = $codigoMLAsignado ? "$protocol$host/pad2832/frontend/index.html?canal=red_ml&ref=" . urlencode($codigoMLAsignado) : "";
+            $enlaceActivacion = $tokenML ? "$protocol$host/pad2832/activar.php?token=" . $tokenML : "";
             
             // Si es campaña QR, incrementar contador
             if ($canal_origen === 'QR Campaign' && !empty($input['campana_codigo'])) {
@@ -1557,7 +1653,10 @@ if ($method === 'POST') {
                     "telefono" => $telefono,
                     "coordinador" => $coordinador,
                     "es_militante_lider" => $esML,
-                    "nivel_estructura" => $nivelEstructura
+                    "nivel_estructura" => $nivelEstructura,
+                    "codigo_ml" => $codigoMLAsignado,
+                    "enlace_red_prospeccion" => $enlaceRedProspeccion,
+                    "enlace_activacion" => $enlaceActivacion
                 ]
             ]);
             exit;

@@ -159,7 +159,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const tabHelpdesk = document.getElementById('tab-helpdesk');
         const tabChat = document.getElementById('tab-chat');
         const tabConfig = document.getElementById('tab-config');
+        const tabAvanceMl = document.getElementById('tab-avance_ml');
+        const tabUsuarios = document.getElementById('tab-usuarios');
+        const btnAdminConfigEsc = document.getElementById('btn-admin-config-escalafon');
+        const btnAdminConfigUsers = document.getElementById('btn-config-escalafon-users');
         
+        // Pestaña de Dashboard de Avance ML (disponible para todos)
+        if (tabAvanceMl) tabAvanceMl.style.display = 'block';
+
+        // Pestaña de Usuarios del Sistema (Administradores, Gerentes, Coordinadores Generales y Coordinadores)
+        const isCoordinador = State.user.role && State.user.role.toLowerCase().includes('coordinador');
+        if (tabUsuarios) {
+            tabUsuarios.style.display = (isAdmin || isGerente || isDigitadorOrAdmin || isCoordinador) ? 'block' : 'none';
+        }
+
+        // Botones de configuración del Escalafón (Exclusivo Administrador)
+        if (btnAdminConfigEsc) btnAdminConfigEsc.style.display = isAdmin ? 'inline-flex' : 'none';
+        if (btnAdminConfigUsers) btnAdminConfigUsers.style.display = isAdmin ? 'inline-flex' : 'none';
+
         // Solo administradores o digitadores o gerentes pueden acceder a la pestaña de ajustes (para ver la lista de usuarios y crear enlaces QR)
         if (tabPermissions) {
             tabPermissions.style.display = isDigitadorOrAdminOrGerente ? 'block' : 'none';
@@ -836,6 +853,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 runEtlImport();
             });
         }
+
+        // 9. Módulo Centralizado de Usuarios del Sistema & Dashboard de Avance ML
+        setupModuloUsuariosEventListeners();
+        setupDashboardAvanceEventListeners();
     }
 
     function switchTab(tabId) {
@@ -856,6 +877,10 @@ document.addEventListener('DOMContentLoaded', () => {
             loadPadron();
         } else if (tabId === 'red_territorial') {
             loadRedTerritorial();
+        } else if (tabId === 'avance_ml') {
+            loadDashboardAvanceML();
+        } else if (tabId === 'usuarios') {
+            loadModuloUsuarios();
         } else if (tabId === 'chat') {
             loadChats();
             startChatPolling();
@@ -4282,7 +4307,809 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.removeChild(a);
     }
 
+    // =========================================================================
+    // ─── MÓDULO CENTRALIZADO: USUARIOS DEL SISTEMA Y ESCALAFÓN ML ────────────
+    // =========================================================================
+
+    let moduloUsersCurrentPage = 1;
+    let moduloUsersLimit = 15;
+    let cachedCoordinadoresList = [];
+    let cachedEscalafonNiveles = [];
+
+    function setupModuloUsuariosEventListeners() {
+        const searchInput = document.getElementById('users-search-input');
+        if (searchInput) {
+            let debounceTimer;
+            searchInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    moduloUsersCurrentPage = 1;
+                    loadModuloUsuarios();
+                }, 300);
+            });
+        }
+
+        ['users-filter-perfil', 'users-filter-coord', 'users-filter-nivel', 'users-filter-estado'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', () => {
+                    moduloUsersCurrentPage = 1;
+                    loadModuloUsuarios();
+                });
+            }
+        });
+
+        const btnReset = document.getElementById('btn-users-reset-filters');
+        if (btnReset) {
+            btnReset.addEventListener('click', () => {
+                const s = document.getElementById('users-search-input'); if (s) s.value = '';
+                const p = document.getElementById('users-filter-perfil'); if (p) p.value = '';
+                const c = document.getElementById('users-filter-coord'); if (c) c.value = '';
+                const n = document.getElementById('users-filter-nivel'); if (n) n.value = '';
+                const e = document.getElementById('users-filter-estado'); if (e) e.value = '';
+                moduloUsersCurrentPage = 1;
+                loadModuloUsuarios();
+            });
+        }
+
+        const btnNuevo = document.getElementById('btn-nuevo-usuario-modal');
+        if (btnNuevo) {
+            btnNuevo.addEventListener('click', () => abrirModalUsuarioCRUD(0));
+        }
+
+        const formCrud = document.getElementById('form-usuario-crud');
+        if (formCrud) {
+            formCrud.addEventListener('submit', guardarUsuarioCRUD);
+        }
+
+        const btnConfigUsers = document.getElementById('btn-config-escalafon-users');
+        if (btnConfigUsers) {
+            btnConfigUsers.addEventListener('click', abrirModalEscalafonConfig);
+        }
+
+        const btnSaveEsc = document.getElementById('btn-save-escalafon-config');
+        if (btnSaveEsc) {
+            btnSaveEsc.addEventListener('click', guardarEscalafonConfig);
+        }
+
+        // Modal QR Universal listeners
+        const btnQrCopy = document.getElementById('btn-modal-qr-copy');
+        if (btnQrCopy) {
+            btnQrCopy.addEventListener('click', () => {
+                const url = document.getElementById('modal-qr-url-input').value;
+                copiarTextoAlPortapapeles(url);
+            });
+        }
+
+        const btnQrDownload = document.getElementById('btn-modal-qr-download');
+        if (btnQrDownload) {
+            btnQrDownload.addEventListener('click', descargarUniversalQR);
+        }
+    }
+
+    function loadModuloUsuarios(page = null) {
+        if (page !== null) moduloUsersCurrentPage = page;
+        
+        const search = document.getElementById('users-search-input') ? document.getElementById('users-search-input').value.trim() : '';
+        const perfilId = document.getElementById('users-filter-perfil') ? document.getElementById('users-filter-perfil').value : '';
+        const coordId = document.getElementById('users-filter-coord') ? document.getElementById('users-filter-coord').value : '';
+        const nivel = document.getElementById('users-filter-nivel') ? document.getElementById('users-filter-nivel').value : '';
+        const estado = document.getElementById('users-filter-estado') ? document.getElementById('users-filter-estado').value : '';
+
+        const params = new URLSearchParams({
+            action: 'list',
+            page: moduloUsersCurrentPage,
+            limit: moduloUsersLimit,
+            search: search,
+            perfil_id: perfilId,
+            coordinador_id: coordId,
+            nivel: nivel,
+            estado: estado
+        });
+
+        // Asegurar que los selectores estén poblados
+        if (cachedCoordinadoresList.length === 0) cargarSelectoresModuloUsuarios();
+
+        fetch(`../backend/api/users.php?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    renderModuloUsuariosTable(data);
+                } else {
+                    console.error("Error al cargar usuarios:", data.mensaje);
+                }
+            })
+            .catch(err => console.error("Error de conexión al cargar usuarios:", err));
+    }
+
+    function cargarSelectoresModuloUsuarios() {
+        // Cargar coordinadores
+        fetch('../backend/api/users.php?action=list_coordinadores')
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito && Array.isArray(data.coordinadores)) {
+                    cachedCoordinadoresList = data.coordinadores;
+                    const filterCoord = document.getElementById('users-filter-coord');
+                    const crudCoord = document.getElementById('crud-user-coordinador');
+                    
+                    let filterOptions = '<option value="">Todos los Coordinadores</option>';
+                    let crudOptions = '<option value="">-- Sin Coordinador Asignado --</option>';
+                    
+                    data.coordinadores.forEach(c => {
+                        filterOptions += `<option value="${c.id}">${c.nombre} (${c.perfil})</option>`;
+                        crudOptions += `<option value="${c.id}">${c.nombre} (${c.perfil})</option>`;
+                    });
+
+                    if (filterCoord) filterCoord.innerHTML = filterOptions;
+                    if (crudCoord) crudCoord.innerHTML = crudOptions;
+                }
+            });
+
+        // Cargar perfiles
+        fetch('../backend/api/perfiles.php?action=listar')
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito && Array.isArray(data.perfiles)) {
+                    const filterPerfil = document.getElementById('users-filter-perfil');
+                    const crudPerfil = document.getElementById('crud-user-perfil');
+
+                    let fOpt = '<option value="">Todos los Perfiles</option>';
+                    let cOpt = '<option value="">-- Seleccionar Perfil --</option>';
+
+                    data.perfiles.forEach(p => {
+                        fOpt += `<option value="${p.id}">${p.nombre}</option>`;
+                        cOpt += `<option value="${p.id}">${p.nombre}</option>`;
+                    });
+
+                    if (filterPerfil) filterPerfil.innerHTML = fOpt;
+                    if (crudPerfil) crudPerfil.innerHTML = cOpt;
+                }
+            });
+
+        // Cargar niveles de escalafón
+        fetch('../backend/api/users.php?action=get_escalafon')
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito && Array.isArray(data.niveles)) {
+                    cachedEscalafonNiveles = data.niveles;
+                    const filterNivel = document.getElementById('users-filter-nivel');
+                    if (filterNivel) {
+                        let nOpt = '<option value="">Todos los Niveles ML</option>';
+                        data.niveles.forEach(n => {
+                            nOpt += `<option value="${n.codigo_nivel}">${n.codigo_nivel} - ${n.nombre_nivel}</option>`;
+                        });
+                        filterNivel.innerHTML = nOpt;
+                    }
+                }
+            });
+    }
+
+    function renderModuloUsuariosTable(data) {
+        // Métricas
+        if (data.metricas) {
+            const m = data.metricas;
+            const elTotal = document.getElementById('users-stat-total'); if (elTotal) elTotal.textContent = m.total_usuarios || 0;
+            const elMl = document.getElementById('users-stat-ml'); if (elMl) elMl.textContent = m.total_ml || 0;
+            const elAct = document.getElementById('users-stat-activos'); if (elAct) elAct.textContent = m.activos || 0;
+            const elPend = document.getElementById('users-stat-pendientes'); if (elPend) elPend.textContent = m.pendientes_activacion || 0;
+        }
+
+        const tbody = document.getElementById('modulo-users-tbody');
+        if (!tbody) return;
+
+        if (!data.usuarios || data.usuarios.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 25px; color: var(--text-muted);">No se encontraron usuarios coincidentes con los criterios de búsqueda.</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        data.usuarios.forEach(u => {
+            const isML = u.es_militante_lider || (u.codigo_ml && u.codigo_ml !== '');
+            const badgeCodigo = isML 
+                ? `<span class="badge" style="background: rgba(227, 161, 19, 0.2); border: 1px solid #E3A113; color: #fef08a; font-family: monospace; font-size: 11px;">${u.codigo_ml || ('ML-' + String(u.id).padStart(4, '0'))}</span>`
+                : `<span class="badge" style="background: rgba(255,255,255,0.08); color: var(--text-muted); font-family: monospace;">#${u.id}</span>`;
+
+            // Estado Badge
+            let estadoBadge = '<span class="badge badge-success">Activo</span>';
+            if (u.estado == 0) {
+                estadoBadge = '<span class="badge badge-danger">Inactivo</span>';
+            } else if (u.estado_activacion === 'pendiente') {
+                estadoBadge = '<span class="badge badge-warning" title="Enlace generado, pendiente de activación">Pendiente</span>';
+            }
+
+            // Escalafón
+            const nivelBadge = isML
+                ? `<span class="badge" style="background: #0054A6; color: #ffffff; font-weight: 700;">${u.nivel_avance || 'ML'}</span> <small style="color: #fef08a; font-weight: 600; display: block; margin-top: 2px;">${u.total_colaboradores || 0} inscritos</small>`
+                : `<span style="color: var(--text-muted); font-size: 12px;">N/A</span>`;
+
+            // Coordinador
+            const coordStr = u.nombre_coordinador ? `<strong style="color: #cbd5e1;">${escapeHTML(u.nombre_coordinador)}</strong>` : `<span style="color: var(--text-muted); font-style: italic;">Sin asignar</span>`;
+
+            // Acciones
+            const btnDetail = `<button class="btn btn-outline btn-sm" onclick="abrirModalDetalleUsuario(${u.id})" title="Ver Expediente y Colaboradores" style="padding: 4px 8px;"><i class="fa fa-eye"></i></button>`;
+            const btnQR = isML ? `<button class="btn btn-primary btn-sm" onclick="abrirQRDeML('${u.codigo_ml || ('ML-' + String(u.id).padStart(4, '0'))}', '${escapeHTML(u.nombre)}')" title="Ver Código QR de Captación" style="padding: 4px 8px;"><i class="fa fa-qrcode"></i></button>` : '';
+            const btnLinkActivar = (u.estado_activacion === 'pendiente' && u.token_activacion)
+                ? `<button class="btn btn-outline btn-sm" onclick="compartirEnlaceActivacion('${u.token_activacion}', '${escapeHTML(u.nombre)}')" title="Enlace de Alta / Activación" style="padding: 4px 8px; border-color: #f59e0b; color: #f59e0b;"><i class="fa fa-link"></i></button>`
+                : '';
+            const btnEdit = `<button class="btn btn-outline btn-sm" onclick="abrirModalUsuarioCRUD(${u.id})" title="Editar Usuario" style="padding: 4px 8px;"><i class="fa fa-edit"></i></button>`;
+            const btnToggle = `<button class="btn btn-outline btn-sm" onclick="toggleEstadoUsuario(${u.id})" title="${u.estado == 1 ? 'Desactivar Usuario' : 'Activar Usuario'}" style="padding: 4px 8px; color: ${u.estado == 1 ? 'var(--danger)' : 'var(--success)'};"><i class="fa fa-power-off"></i></button>`;
+
+            html += `
+                <tr>
+                    <td>${badgeCodigo}</td>
+                    <td>
+                        <strong style="color: #38bdf8; font-family: monospace;">${escapeHTML(u.username)}</strong>
+                        <div style="font-size: 11px; color: var(--text-muted);">${u.cedula || 'Sin cédula'}</div>
+                    </td>
+                    <td>
+                        <strong style="color: #ffffff;">${escapeHTML(u.nombre)}</strong>
+                        ${u.telefono ? `<div style="font-size: 11px; color: var(--text-muted);"><i class="fa fa-phone" style="font-size: 9px;"></i> ${u.telefono}</div>` : ''}
+                    </td>
+                    <td><span class="badge badge-primary">${escapeHTML(u.perfil_nombre || 'Usuario')}</span></td>
+                    <td>${coordStr}</td>
+                    <td>${nivelBadge}</td>
+                    <td>${estadoBadge}</td>
+                    <td style="text-align: right;">
+                        <div style="display: inline-flex; gap: 4px; justify-content: flex-end;">
+                            ${btnDetail}
+                            ${btnQR}
+                            ${btnLinkActivar}
+                            ${btnEdit}
+                            ${btnToggle}
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML = html;
+
+        // Paginador
+        const pagInfo = document.getElementById('users-pagination-info');
+        const pagControls = document.getElementById('users-pagination-controls');
+        if (pagInfo) {
+            const start = (data.page - 1) * data.limit + 1;
+            const end = Math.min(data.page * data.limit, data.total);
+            pagInfo.textContent = `Mostrando ${data.total > 0 ? start : 0} a ${end} de ${data.total} usuarios`;
+        }
+
+        if (pagControls) {
+            let ctrls = '';
+            if (data.total_pages > 1) {
+                if (data.page > 1) {
+                    ctrls += `<button class="btn btn-outline btn-sm" onclick="loadModuloUsuarios(${data.page - 1})"><i class="fa fa-chevron-left"></i> Anterior</button>`;
+                }
+                for (let p = 1; p <= data.total_pages; p++) {
+                    if (p === 1 || p === data.total_pages || (p >= data.page - 2 && p <= data.page + 2)) {
+                        ctrls += `<button class="btn btn-sm ${p === data.page ? 'btn-primary' : 'btn-outline'}" onclick="loadModuloUsuarios(${p})">${p}</button>`;
+                    } else if (p === data.page - 3 || p === data.page + 3) {
+                        ctrls += `<span style="padding: 4px 6px; color: var(--text-muted);">...</span>`;
+                    }
+                }
+                if (data.page < data.total_pages) {
+                    ctrls += `<button class="btn btn-outline btn-sm" onclick="loadModuloUsuarios(${data.page + 1})">Siguiente <i class="fa fa-chevron-right"></i></button>`;
+                }
+            }
+            pagControls.innerHTML = ctrls;
+        }
+    }
+
+    function abrirModalUsuarioCRUD(userId = 0) {
+        document.getElementById('form-usuario-crud').reset();
+        document.getElementById('crud-user-id').value = userId;
+
+        if (userId > 0) {
+            document.getElementById('modal-usuario-crud-title').innerHTML = '<i class="fa fa-user-edit" style="color: var(--secondary);"></i> Editar Usuario';
+            fetch(`../backend/api/users.php?action=detail&id=${userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.exito && data.usuario) {
+                        const u = data.usuario;
+                        document.getElementById('crud-user-nombre').value = u.nombre || '';
+                        document.getElementById('crud-user-cedula').value = u.cedula || '';
+                        document.getElementById('crud-user-telefono').value = u.telefono || '';
+                        document.getElementById('crud-user-email').value = u.email || '';
+                        document.getElementById('crud-user-username').value = u.username || '';
+                        document.getElementById('crud-user-perfil').value = u.perfil_id || '';
+                        document.getElementById('crud-user-coordinador').value = u.coordinador_id || '';
+                        document.getElementById('crud-user-es-ml').checked = u.es_militante_lider == 1 || (u.codigo_ml && u.codigo_ml !== '');
+                        openModal('modal-usuario-crud');
+                    }
+                });
+        } else {
+            document.getElementById('modal-usuario-crud-title').innerHTML = '<i class="fa fa-user-plus" style="color: var(--secondary);"></i> Nuevo Usuario del Sistema';
+            openModal('modal-usuario-crud');
+        }
+    }
+
+    function guardarUsuarioCRUD(e) {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('crud-user-id').value, 10);
+        const payload = {
+            id: id,
+            nombre: document.getElementById('crud-user-nombre').value.trim(),
+            cedula: document.getElementById('crud-user-cedula').value.trim(),
+            telefono: document.getElementById('crud-user-telefono').value.trim(),
+            email: document.getElementById('crud-user-email').value.trim(),
+            perfil_id: parseInt(document.getElementById('crud-user-perfil').value, 10),
+            coordinador_id: parseInt(document.getElementById('crud-user-coordinador').value || 0, 10),
+            username: document.getElementById('crud-user-username').value.trim(),
+            password: document.getElementById('crud-user-password').value,
+            es_militante_lider: document.getElementById('crud-user-es-ml').checked ? 1 : 0
+        };
+
+        const action = id > 0 ? 'update_user' : 'create_user';
+        const btnSubmit = document.getElementById('btn-submit-user-crud');
+        if (btnSubmit) btnSubmit.disabled = true;
+
+        fetch(`../backend/api/users.php?action=${action}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (btnSubmit) btnSubmit.disabled = false;
+                if (data.exito) {
+                    closeModal('modal-usuario-crud');
+                    showNotification(data.mensaje || "✓ Usuario guardado con éxito.", "success");
+                    loadModuloUsuarios();
+                    if (data.token_activacion) {
+                        compartirEnlaceActivacion(data.token_activacion, payload.nombre);
+                    }
+                } else {
+                    alert("Error: " + data.mensaje);
+                }
+            })
+            .catch(err => {
+                if (btnSubmit) btnSubmit.disabled = false;
+                console.error("Error al guardar usuario:", err);
+            });
+    }
+
+    function toggleEstadoUsuario(userId) {
+        if (!confirm("¿Desea cambiar el estado de acceso de este usuario?")) return;
+        fetch('../backend/api/users.php?action=toggle_status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: userId })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    showNotification("✓ Estado de usuario actualizado.", "success");
+                    loadModuloUsuarios();
+                } else {
+                    alert("Error: " + data.mensaje);
+                }
+            });
+    }
+
+    function abrirModalDetalleUsuario(userId) {
+        fetch(`../backend/api/users.php?action=detail&id=${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito && data.usuario) {
+                    const u = data.usuario;
+                    const cols = data.colaboradores || [];
+                    const isML = u.es_militante_lider || (u.codigo_ml && u.codigo_ml !== '');
+                    const codigoStr = isML ? (u.codigo_ml || ('ML-' + String(u.id).padStart(4, '0'))) : `#${u.id}`;
+
+                    // Hero
+                    const hero = document.getElementById('modal-usuario-detalle-hero');
+                    if (hero) {
+                        hero.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                                <div>
+                                    <h3 style="margin: 0; font-size: 18px; color: #ffffff;">${escapeHTML(u.nombre)}</h3>
+                                    <span style="font-size: 12px; color: var(--text-muted);">${escapeHTML(u.perfil_nombre || 'Usuario')} • Código: <strong style="color: #fef08a;">${codigoStr}</strong></span>
+                                </div>
+                                <div>
+                                    <span class="badge ${u.estado == 1 ? 'badge-success' : 'badge-danger'}">${u.estado == 1 ? 'Activo' : 'Inactivo'}</span>
+                                    ${u.estado_activacion === 'pendiente' ? '<span class="badge badge-warning" style="margin-left: 4px;">Activación Pendiente</span>' : ''}
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; font-size: 13px;">
+                                <div><span style="color: var(--text-muted); font-size: 11px; display: block;">USUARIO:</span><strong>${escapeHTML(u.username)}</strong></div>
+                                <div><span style="color: var(--text-muted); font-size: 11px; display: block;">CÉDULA:</span><strong>${u.cedula || 'N/A'}</strong></div>
+                                <div><span style="color: var(--text-muted); font-size: 11px; display: block;">COORDINADOR:</span><strong>${escapeHTML(u.nombre_coordinador || 'Sin asignar')}</strong></div>
+                                <div><span style="color: var(--text-muted); font-size: 11px; display: block;">ESCALAFÓN:</span><strong style="color: #38bdf8;">${u.nivel_avance || 'ML'} (${u.total_colaboradores || 0} inscritos)</strong></div>
+                                <div><span style="color: var(--text-muted); font-size: 11px; display: block;">TELÉFONO:</span><strong>${u.telefono || 'N/A'}</strong></div>
+                                <div><span style="color: var(--text-muted); font-size: 11px; display: block;">REGISTRADO:</span><span>${u.created_at || 'N/A'}</span></div>
+                            </div>
+                            ${u.token_activacion ? `
+                                <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                                    <span style="font-size: 12px; color: #fbbf24;"><i class="fa fa-key"></i> Token de Activación Vigente (72h)</span>
+                                    <div style="display: flex; gap: 6px;">
+                                        <button class="btn btn-outline btn-sm" onclick="compartirEnlaceActivacion('${u.token_activacion}', '${escapeHTML(u.nombre)}')" style="font-size: 11px; padding: 4px 8px;"><i class="fa fa-link"></i> Ver Enlace Alta</button>
+                                        <button class="btn btn-outline btn-sm" onclick="regenerarTokenActivacion(${u.id})" style="font-size: 11px; padding: 4px 8px;"><i class="fa fa-sync-alt"></i> Regenerar Token</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        `;
+                    }
+
+                    // Colaboradores
+                    const elTotalCols = document.getElementById('detalle-total-colaboradores');
+                    if (elTotalCols) elTotalCols.textContent = cols.length;
+
+                    const tbodyCols = document.getElementById('detalle-colaboradores-tbody');
+                    if (tbodyCols) {
+                        if (cols.length === 0) {
+                            tbodyCols.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--text-muted);">Este líder aún no tiene colaboradores inscritos con su enlace de referencia.</td></tr>`;
+                        } else {
+                            let cHtml = '';
+                            cols.forEach(c => {
+                                cHtml += `
+                                    <tr>
+                                        <td><strong style="color: #059669;">#${c.numero_lista}</strong></td>
+                                        <td>${c.cedula}</td>
+                                        <td><strong style="color: #ffffff;">${escapeHTML(c.nombres + ' ' + c.apellidos)}</strong></td>
+                                        <td>Col. ${c.colegio_electoral} • ${escapeHTML(c.recinto_ubicacion || 'N/A')}</td>
+                                        <td><span class="badge badge-primary">${escapeHTML(c.canal_origen || 'red_ml')}</span></td>
+                                        <td><span style="font-size: 11px; color: var(--text-muted);">${c.fecha_registro ? c.fecha_registro.slice(0,10) : ''}</span></td>
+                                    </tr>
+                                `;
+                            });
+                            tbodyCols.innerHTML = cHtml;
+                        }
+                    }
+
+                    openModal('modal-usuario-detalle');
+                }
+            });
+    }
+
+    function regenerarTokenActivacion(userId) {
+        fetch('../backend/api/users.php?action=regenerate_token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: userId })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    showNotification("✓ Token de activación regenerado por 72 horas.", "success");
+                    abrirModalDetalleUsuario(userId);
+                } else {
+                    alert("Error: " + data.mensaje);
+                }
+            });
+    }
+
+    // =========================================================================
+    // ─── DASHBOARD DE AVANCE ML ──────────────────────────────────────────────
+    // =========================================================================
+
+    function setupDashboardAvanceEventListeners() {
+        const btnRefresh = document.getElementById('btn-refresh-avance-ml');
+        if (btnRefresh) {
+            btnRefresh.addEventListener('click', loadDashboardAvanceML);
+        }
+
+        const btnAdminConfig = document.getElementById('btn-admin-config-escalafon');
+        if (btnAdminConfig) {
+            btnAdminConfig.addEventListener('click', abrirModalEscalafonConfig);
+        }
+
+        const btnMiQr = document.getElementById('btn-mi-qr-promocion');
+        if (btnMiQr) {
+            btnMiQr.addEventListener('click', () => {
+                if (State.user && State.user.codigo_ml) {
+                    abrirQRDeML(State.user.codigo_ml, State.user.nombre);
+                } else {
+                    alert("Su usuario actual no posee un código de Militante Líder asignado.");
+                }
+            });
+        }
+
+        const btnCopiarLink = document.getElementById('btn-copiar-mi-link-ml');
+        if (btnCopiarLink) {
+            btnCopiarLink.addEventListener('click', () => {
+                if (State.user && State.user.codigo_ml) {
+                    const host = window.location.origin;
+                    const folder = window.location.pathname.includes('PLATAFORMA%20DIGITAL-PAD-28-32') ? 'PLATAFORMA%20DIGITAL-PAD-28-32' : 'PLATAFORMA DIGITAL-PAD-28-32';
+                    const link = `${host}/${folder}/registro.html?canal=red_ml&ref=${encodeURIComponent(State.user.codigo_ml)}`;
+                    copiarTextoAlPortapapeles(link);
+                }
+            });
+        }
+    }
+
+    function loadDashboardAvanceML() {
+        fetch('../backend/api/users.php?action=dashboard_avance')
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito) {
+                    renderDashboardAvanceML(data);
+                }
+            })
+            .catch(err => console.error("Error al cargar dashboard de avance:", err));
+    }
+
+    function renderDashboardAvanceML(data) {
+        // 1. Tarjeta Personal (Progreso del usuario activo)
+        const myProg = data.mi_progreso;
+        if (myProg) {
+            const elAvatar = document.getElementById('avance-personal-avatar');
+            const elNombre = document.getElementById('avance-personal-nombre');
+            const elCodigo = document.getElementById('avance-personal-codigo');
+            const elNivelBadge = document.getElementById('avance-personal-badge-nivel');
+            const elCoord = document.getElementById('avance-personal-coord');
+            const elConteo = document.getElementById('avance-personal-conteo');
+            const elBar = document.getElementById('avance-personal-bar');
+            const elPorc = document.getElementById('avance-personal-porcentaje');
+            const elSiguiente = document.getElementById('avance-personal-siguiente-meta');
+
+            if (elAvatar) elAvatar.textContent = myProg.nivel_actual || 'ML';
+            if (elNombre) elNombre.textContent = myProg.nombre;
+            if (elCodigo) elCodigo.textContent = myProg.codigo_ml;
+            if (elNivelBadge) {
+                elNivelBadge.textContent = myProg.nivel_nombre || myProg.nivel_actual;
+                if (myProg.nivel_color) elNivelBadge.style.backgroundColor = myProg.nivel_color;
+            }
+            if (elCoord) elCoord.textContent = `Coordinador Asignado: ${myProg.coordinador_nombre || 'Coordinador General'}`;
+            if (elConteo) elConteo.textContent = `${myProg.total_colaboradores} / ${myProg.meta_proximo_nivel} Inscritos`;
+            if (elBar) elBar.style.width = `${myProg.porcentaje_avance}%`;
+            if (elPorc) elPorc.textContent = `${myProg.porcentaje_avance}% del objetivo completado`;
+            if (elSiguiente) elSiguiente.textContent = `Próximo Nivel: ${myProg.siguiente_nivel} (Faltan ${myProg.faltantes} inscritos)`;
+        }
+
+        // 2. Pirámide y Distribución de los 10 Niveles
+        const containerNiveles = document.getElementById('grid-escalafon-niveles');
+        if (containerNiveles && Array.isArray(data.distribucion_niveles)) {
+            let nHtml = '';
+            data.distribucion_niveles.forEach(n => {
+                const colorHex = n.color_hex || '#3b82f6';
+                const pct = data.total_militantes_lideres > 0 ? Math.round((n.total_lideres / data.total_militantes_lideres) * 100) : 0;
+
+                nHtml += `
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-top: 4px solid ${colorHex}; border-radius: 10px; padding: 14px; position: relative;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                            <span class="badge" style="background: ${colorHex}; color: #ffffff; font-weight: 800; font-size: 11px;">${n.codigo_nivel}</span>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">${n.min_inscritos} - ${n.max_inscritos} colaboradores</span>
+                        </div>
+                        <h5 style="margin: 4px 0 10px 0; font-size: 14px; color: #ffffff; font-weight: 700;">${escapeHTML(n.nombre_nivel)}</h5>
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                            <span style="font-size: 22px; font-weight: 800; color: ${colorHex};">${n.total_lideres}</span>
+                            <span style="font-size: 12px; color: var(--text-muted);">${pct}% del padrón ML</span>
+                        </div>
+                        <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 9999px; overflow: hidden;">
+                            <div style="width: ${pct}%; height: 100%; background: ${colorHex}; border-radius: 9999px;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            containerNiveles.innerHTML = nHtml;
+        }
+
+        // 3. Top 10 Líderes
+        const tbodyTop = document.getElementById('top-lideres-tbody');
+        if (tbodyTop && Array.isArray(data.top_10)) {
+            if (data.top_10.length === 0) {
+                tbodyTop.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--text-muted);">Aún no hay Militantes Líderes con colaboradores inscritos.</td></tr>`;
+                return;
+            }
+
+            let tHtml = '';
+            data.top_10.forEach((item, idx) => {
+                let posBadge = `<span class="badge" style="background: rgba(255,255,255,0.1); color: #cbd5e1; font-weight: bold;">#${idx + 1}</span>`;
+                if (idx === 0) posBadge = `<span style="font-size: 18px;" title="1er Lugar">🥇</span>`;
+                else if (idx === 1) posBadge = `<span style="font-size: 18px;" title="2do Lugar">🥈</span>`;
+                else if (idx === 2) posBadge = `<span style="font-size: 18px;" title="3er Lugar">🥉</span>`;
+
+                const colorHex = item.color_hex || '#3b82f6';
+                const pct = Math.min(100, Math.round((item.total_colaboradores / (item.max_inscritos || 10)) * 100));
+
+                tHtml += `
+                    <tr>
+                        <td style="text-align: center;">${posBadge}</td>
+                        <td><span class="badge" style="background: rgba(227, 161, 19, 0.2); border: 1px solid #E3A113; color: #fef08a; font-family: monospace;">${item.codigo_ml}</span></td>
+                        <td><strong style="color: #ffffff;">${escapeHTML(item.nombre)}</strong></td>
+                        <td><span style="color: #cbd5e1; font-size: 12px;">${escapeHTML(item.nombre_coordinador || 'Coordinador General')}</span></td>
+                        <td><span class="badge" style="background: ${colorHex}; color: #ffffff; font-weight: 700;">${item.nivel_avance} - ${escapeHTML(item.nombre_nivel)}</span></td>
+                        <td><strong style="color: #fde047; font-size: 16px;">${item.total_colaboradores}</strong> <span style="font-size: 11px; color: var(--text-muted);">inscritos</span></td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div style="flex: 1; min-width: 60px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 9999px; overflow: hidden;">
+                                    <div style="width: ${pct}%; height: 100%; background: ${colorHex};"></div>
+                                </div>
+                                <span style="font-size: 11px; font-weight: 700; color: #ffffff;">${pct}%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 4px;">
+                                <button class="btn btn-outline btn-sm" onclick="abrirModalDetalleUsuario(${item.id})" title="Ver Red de Colaboradores" style="padding: 4px 8px;"><i class="fa fa-users"></i></button>
+                                <button class="btn btn-primary btn-sm" onclick="abrirQRDeML('${item.codigo_ml}', '${escapeHTML(item.nombre)}')" title="Ver QR de Captación" style="padding: 4px 8px;"><i class="fa fa-qrcode"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbodyTop.innerHTML = tHtml;
+        }
+    }
+
+    // =========================================================================
+    // ─── CONFIGURACIÓN DE LÍMITES DE ESCALAFÓN (ADMINISTRADOR) ───────────────
+    // =========================================================================
+
+    function abrirModalEscalafonConfig() {
+        const tbody = document.getElementById('escalafon-config-tbody');
+        if (!tbody) return;
+
+        fetch('../backend/api/users.php?action=get_escalafon')
+            .then(res => res.json())
+            .then(data => {
+                if (data.exito && Array.isArray(data.niveles)) {
+                    let html = '';
+                    data.niveles.forEach(n => {
+                        html += `
+                            <tr data-nivel-id="${n.id}">
+                                <td style="text-align: center; font-weight: bold; color: #cbd5e1;">${n.id}</td>
+                                <td><span class="badge" style="background: ${n.color_hex}; color: #ffffff; font-weight: bold;">${n.codigo_nivel}</span></td>
+                                <td><input type="text" class="form-control esc-nombre" value="${escapeHTML(n.nombre_nivel)}" style="padding: 4px 8px; font-size: 13px;"></td>
+                                <td><input type="number" class="form-control esc-min" value="${n.min_inscritos}" min="0" style="padding: 4px 8px; font-size: 13px; font-family: monospace;"></td>
+                                <td><input type="number" class="form-control esc-max" value="${n.max_inscritos}" min="0" style="padding: 4px 8px; font-size: 13px; font-family: monospace;"></td>
+                                <td><input type="color" class="esc-color" value="${n.color_hex}" style="width: 45px; height: 32px; border: none; border-radius: 4px; cursor: pointer; background: transparent;"></td>
+                            </tr>
+                        `;
+                    });
+                    tbody.innerHTML = html;
+                    openModal('modal-escalafon-config');
+                }
+            });
+    }
+
+    function guardarEscalafonConfig() {
+        const rows = document.querySelectorAll('#escalafon-config-tbody tr');
+        const niveles = [];
+        rows.forEach(r => {
+            niveles.push({
+                id: parseInt(r.getAttribute('data-nivel-id'), 10),
+                nombre_nivel: r.querySelector('.esc-nombre').value.trim(),
+                min_inscritos: parseInt(r.querySelector('.esc-min').value, 10),
+                max_inscritos: parseInt(r.querySelector('.esc-max').value, 10),
+                color_hex: r.querySelector('.esc-color').value
+            });
+        });
+
+        const btnSave = document.getElementById('btn-save-escalafon-config');
+        if (btnSave) btnSave.disabled = true;
+
+        fetch('../backend/api/users.php?action=update_escalafon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ niveles: niveles })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (btnSave) btnSave.disabled = false;
+                if (data.exito) {
+                    showNotification("✓ Límites de escalafón actualizados y niveles recalculados en todo el sistema.", "success");
+                    closeModal('modal-escalafon-config');
+                    loadDashboardAvanceML();
+                    loadModuloUsuarios();
+                } else {
+                    alert("Error: " + data.mensaje);
+                }
+            })
+            .catch(err => {
+                if (btnSave) btnSave.disabled = false;
+                console.error("Error al guardar escalafón:", err);
+            });
+    }
+
+    // =========================================================================
+    // ─── VISOR UNIVERSAL DE CÓDIGOS QR & COMPARTICIÓN ────────────────────────
+    // =========================================================================
+
+    function abrirModalUniversalQR(titulo, subtitulo, url, whatsappMsg) {
+        document.getElementById('modal-qr-title').innerHTML = `<i class="fa fa-qrcode" style="color: var(--secondary); margin-right: 8px;"></i> ${titulo}`;
+        document.getElementById('modal-qr-subtitle').textContent = subtitulo;
+        document.getElementById('modal-qr-url-input').value = url;
+
+        const qrContainer = document.getElementById('universal-qrcode-container');
+        if (qrContainer) {
+            qrContainer.innerHTML = '';
+            if (typeof QRCode !== 'undefined') {
+                new QRCode(qrContainer, {
+                    text: url,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#0054A6",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } else {
+                qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}" style="width: 200px; height: 200px; display: block; margin: 0 auto;" alt="QR Code">`;
+            }
+        }
+
+        const btnWa = document.getElementById('btn-modal-qr-whatsapp');
+        if (btnWa) {
+            btnWa.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMsg || ('Enlace oficial de apoyo a Pastora Altagracia: ' + url))}`;
+        }
+
+        openModal('modal-universal-qr');
+    }
+
+    function abrirQRDeML(codigoMl, nombre) {
+        const host = window.location.origin;
+        const folder = window.location.pathname.includes('PLATAFORMA%20DIGITAL-PAD-28-32') ? 'PLATAFORMA%20DIGITAL-PAD-28-32' : 'PLATAFORMA DIGITAL-PAD-28-32';
+        const url = `${host}/${folder}/registro.html?canal=red_ml&ref=${encodeURIComponent(codigoMl)}`;
+        const msg = `¡Hola! Te invito a formar parte de nuestra red de colaboradores en apoyo a Pastora Altagracia De Los Santos. Inscríbete oficialmente aquí: ${url}`;
+        abrirModalUniversalQR(`Código QR - ${codigoMl}`, `Red de Captación de ${nombre}. Todas las inscripciones sumarán directamente a su meta en el escalafón.`, url, msg);
+    }
+
+    function compartirEnlaceActivacion(token, nombre) {
+        const host = window.location.origin;
+        const folder = window.location.pathname.includes('PLATAFORMA%20DIGITAL-PAD-28-32') ? 'PLATAFORMA%20DIGITAL-PAD-28-32' : 'PLATAFORMA DIGITAL-PAD-28-32';
+        const url = `${host}/${folder}/activar.php?token=${encodeURIComponent(token)}`;
+        const msg = `¡Hola ${nombre}! Completa el alta y activación de tu cuenta de Militante Líder en la plataforma oficial de Pastora Altagracia accediendo a este enlace seguro: ${url}`;
+        abrirModalUniversalQR(`Enlace de Activación de Cuenta`, `Enlace de alta segura (válido por 72 horas) para ${nombre}.`, url, msg);
+    }
+
+    function descargarUniversalQR() {
+        const container = document.getElementById('universal-qrcode-container');
+        if (!container) return;
+
+        let dataUrl = '';
+        const canvas = container.querySelector('canvas');
+        if (canvas) {
+            dataUrl = canvas.toDataURL('image/png');
+        } else {
+            const img = container.querySelector('img');
+            if (img) dataUrl = img.src;
+        }
+
+        if (dataUrl) {
+            const a = document.createElement('a');
+            a.href = dataUrl;
+            a.download = `QR_OFICIAL_PAD2832_${Date.now()}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } else {
+            alert("No se pudo obtener la imagen del código QR.");
+        }
+    }
+
+    function copiarTextoAlPortapapeles(texto) {
+        if (!texto) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(texto).then(() => {
+                showNotification("✓ Enlace copiado al portapapeles.", "success");
+            }).catch(() => {
+                prompt("Copie el siguiente enlace manualmente:", texto);
+            });
+        } else {
+            prompt("Copie el siguiente enlace manualmente:", texto);
+        }
+    }
+
+    function escapeHTML(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     // Exponer las funciones de impresión y compartición en el ámbito global
+    window.loadModuloUsuarios = loadModuloUsuarios;
+    window.abrirModalUsuarioCRUD = abrirModalUsuarioCRUD;
+    window.toggleEstadoUsuario = toggleEstadoUsuario;
+    window.abrirModalDetalleUsuario = abrirModalDetalleUsuario;
+    window.regenerarTokenActivacion = regenerarTokenActivacion;
+    window.abrirQRDeML = abrirQRDeML;
+    window.compartirEnlaceActivacion = compartirEnlaceActivacion;
+    window.abrirModalEscalafonConfig = abrirModalEscalafonConfig;
+    window.loadDashboardAvanceML = loadDashboardAvanceML;
+    window.abrirModalUniversalQR = abrirModalUniversalQR;
+    window.copiarTextoAlPortapapeles = copiarTextoAlPortapapeles;
     window.printVoterVoucher = printVoterVoucher;
     window.printNetworkSeccionedPDF = printNetworkSeccionedPDF;
     window.printNetworkGeneralPDF = printNetworkGeneralPDF;

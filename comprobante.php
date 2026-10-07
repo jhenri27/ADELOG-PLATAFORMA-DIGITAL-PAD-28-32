@@ -145,6 +145,35 @@ if ($pm) {
     }
 }
 $recintoNombre = !empty($pm['nombre_recinto']) ? $pm['nombre_recinto'] : $v['recinto_ubicacion'];
+
+// Consultar si este elector tiene una cuenta de usuario como Militante Líder (ML)
+$uMl = null;
+$esMlConCuenta = false;
+$urlRedML = '';
+$urlActivarML = '';
+$codigoMlOficial = '';
+
+$sqlMl = "
+    SELECT u.*, p.nombre as perfil_nombre, c.nombre as nombre_coordinador
+    FROM usuarios u
+    LEFT JOIN perfiles p ON u.perfil_id = p.id
+    LEFT JOIN usuarios c ON u.coordinador_id = c.id
+    WHERE (u.inscrito_id = " . intval($v['id']) . " 
+           OR u.cedula = '$cedEsc' 
+           OR REPLACE(u.cedula, '-', '') = '$cleanEsc')
+      AND (u.perfil_id = 4 OR u.codigo_ml IS NOT NULL OR u.codigo_ml != '')
+    LIMIT 1
+";
+$resMl = $conn->query($sqlMl);
+if ($resMl && $resMl->num_rows > 0) {
+    $uMl = $resMl->fetch_assoc();
+    $esMlConCuenta = true;
+    $codigoMlOficial = $uMl['codigo_ml'] ?: ('ML-' . str_pad($uMl['id'], 4, '0', STR_PAD_LEFT));
+    $urlRedML = $protocol . $host . "/" . $folder . "/registro.html?canal=red_ml&ref=" . urlencode($codigoMlOficial);
+    if (!empty($uMl['token_activacion'])) {
+        $urlActivarML = $protocol . $host . "/" . $folder . "/activar.php?token=" . urlencode($uMl['token_activacion']);
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -323,6 +352,82 @@ $recintoNombre = !empty($pm['nombre_recinto']) ? $pm['nombre_recinto'] : $v['rec
                 </div>
             </div>
         </div>
+
+        <?php if ($esMlConCuenta || !empty($v['es_militante_lider'])): ?>
+        <!-- SECCIÓN EXCLUSIVA PARA MILITANTE LÍDER (ML): CREDENCIALES Y CANAL DE PROSPECCIÓN -->
+        <div style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); border: 2px solid #E3A113; border-radius: 16px; padding: 24px; color: #ffffff; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(227, 161, 19, 0.4); padding-bottom: 12px; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="background: #E3A113; color: #0f172a; font-weight: 900; font-size: 18px; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa fa-star"></i>
+                    </span>
+                    <div>
+                        <h3 style="margin: 0; font-size: 17px; font-weight: 800; color: #ffffff; letter-spacing: -0.3px;">CREDENCIALES Y ACCESO DE MILITANTE LÍDER</h3>
+                        <span style="font-size: 11px; color: #cbd5e1; text-transform: uppercase; font-weight: 600;">Estatus: <?php echo htmlspecialchars($uMl['nivel_avance_label'] ?? 'NIVEL MILITANTE LÍDER (ML)'); ?></span>
+                    </div>
+                </div>
+                <div style="background: rgba(227, 161, 19, 0.2); border: 1px solid #E3A113; color: #fef08a; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 800; font-family: monospace;">
+                    ID: <?php echo htmlspecialchars($codigoMlOficial ?: 'ML-' . str_pad($v['id'], 4, '0', STR_PAD_LEFT)); ?>
+                </div>
+            </div>
+
+            <!-- Tabla de credenciales para login -->
+            <div style="background: rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 13px;">
+                    <div>
+                        <span style="color: #94a3b8; display: block; font-size: 11px; text-transform: uppercase;">Usuario / ID de Acceso:</span>
+                        <strong style="color: #38bdf8; font-size: 15px; font-family: monospace;"><?php echo htmlspecialchars($codigoMlOficial ?: ($uMl['username'] ?? 'ML-' . str_pad($v['id'], 4, '0', STR_PAD_LEFT))); ?></strong>
+                    </div>
+                    <div>
+                        <span style="color: #94a3b8; display: block; font-size: 11px; text-transform: uppercase;">Contraseña de Ingreso:</span>
+                        <strong style="color: #4ade80; font-size: 15px; font-family: monospace;"><?php echo htmlspecialchars($v['cedula']); ?></strong>
+                        <span style="display: block; font-size: 10px; color: #cbd5e1;">(Cédula completa o sin guiones)</span>
+                    </div>
+                    <div>
+                        <span style="color: #94a3b8; display: block; font-size: 11px; text-transform: uppercase;">Coordinador Asignado:</span>
+                        <strong style="color: #ffffff;"><?php echo htmlspecialchars($uMl['nombre_coordinador'] ?? $v['coordinador'] ?? 'Coordinador General'); ?></strong>
+                    </div>
+                    <div>
+                        <span style="color: #94a3b8; display: block; font-size: 11px; text-transform: uppercase;">Colaboradores Vinculados:</span>
+                        <strong style="color: #fde047; font-size: 15px;"><?php echo intval($uMl['total_colaboradores'] ?? 0); ?> Registrados</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Caja de Prospección y QR Personal -->
+            <div style="background: #ffffff; color: #0f172a; border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
+                <div id="ml-referral-qr-box" style="background: #f8fafc; padding: 8px; border-radius: 10px; border: 1.5px solid #e2e8f0; text-align: center;">
+                    <div id="qrcode_ml"></div>
+                    <span style="display: block; font-size: 10px; font-weight: 800; color: #0369a1; margin-top: 4px;">QR PROMETEDOR</span>
+                </div>
+                <div style="flex: 1; min-width: 240px;">
+                    <h4 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 800; color: #0054A6;">
+                        <i class="fa fa-users"></i> Su Enlace Personal de Captación
+                    </h4>
+                    <p style="font-size: 12px; color: #475569; margin: 0 0 10px 0; line-height: 1.4;">
+                        Comparta este código QR o su enlace directo con sus familiares, simpatizantes y colaboradores. Todas las personas que se inscriban con este enlace sumarán directamente a su meta en el Escalafón.
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <input type="text" id="input_enlace_ml" value="<?php echo htmlspecialchars($urlRedML); ?>" readonly style="flex: 1; min-width: 180px; padding: 8px 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 12px; font-family: monospace; background: #f1f5f9; color: #0f172a;">
+                        <button type="button" onclick="copiarEnlaceML()" style="background: #0054A6; color: #ffffff; border: none; padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                            <i class="fa fa-copy"></i> Copiar
+                        </button>
+                        <a href="https://api.whatsapp.com/send?text=<?php echo urlencode('¡Hola! Te invito a formar parte de nuestro equipo de apoyo a la candidata Pastora Altagracia De Los Santos. Inscríbete en nuestro padrón oficial aquí: ' . $urlRedML); ?>" target="_blank" style="background: #25D366; color: #ffffff; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                    </div>
+                    <?php if (!empty($urlActivarML)): ?>
+                    <div style="margin-top: 10px; font-size: 11px; color: #64748b;">
+                        <span>Enlace de activación de cuenta: </span>
+                        <a href="<?php echo htmlspecialchars($urlActivarML); ?>" target="_blank" style="color: #0284c7; font-weight: 700; text-decoration: underline;">
+                            Completar / Personalizar Cuenta en Línea
+                        </a>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
         
         <!-- Print Button -->
         <div class="no-print" style="text-align: center; margin-top: 20px;">
@@ -338,6 +443,20 @@ $recintoNombre = !empty($pm['nombre_recinto']) ? $pm['nombre_recinto'] : $v['rec
 
     <!-- Script para renderizar el Código QR de forma segura -->
     <script>
+        function copiarEnlaceML() {
+            var input = document.getElementById('input_enlace_ml');
+            if (input) {
+                input.select();
+                input.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(input.value).then(function() {
+                    alert('✓ Enlace personal copiado al portapapeles. ¡Listo para compartir!');
+                }).catch(function() {
+                    document.execCommand('copy');
+                    alert('✓ Enlace personal copiado al portapapeles.');
+                });
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             var urlValidacion = <?php echo json_encode($urlValidar); ?>;
             var qrContainer = document.getElementById('qrcode');
@@ -351,7 +470,6 @@ $recintoNombre = !empty($pm['nombre_recinto']) ? $pm['nombre_recinto'] : $v['rec
                     correctLevel: QRCode.CorrectLevel.M
                 });
             } else if (qrContainer) {
-                // Fallback SVG / API si la librería no carga
                 var img = document.createElement('img');
                 img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(urlValidacion);
                 img.alt = 'QR Validación';
@@ -359,6 +477,30 @@ $recintoNombre = !empty($pm['nombre_recinto']) ? $pm['nombre_recinto'] : $v['rec
                 img.style.height = '120px';
                 qrContainer.appendChild(img);
             }
+
+            // QR de Militante Líder
+            var urlRedML = <?php echo json_encode($urlRedML); ?>;
+            var qrContainerML = document.getElementById('qrcode_ml');
+            if (qrContainerML && urlRedML) {
+                if (typeof QRCode !== 'undefined') {
+                    new QRCode(qrContainerML, {
+                        text: urlRedML,
+                        width: 120,
+                        height: 120,
+                        colorDark: "#0054A6",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                } else {
+                    var imgML = document.createElement('img');
+                    imgML.src = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=' + encodeURIComponent(urlRedML);
+                    imgML.alt = 'QR Red ML';
+                    imgML.style.width = '120px';
+                    imgML.style.height = '120px';
+                    qrContainerML.appendChild(imgML);
+                }
+            }
+
             <?php if (!empty($_GET['print']) || !empty($_GET['auto_print'])): ?>
             setTimeout(function() {
                 window.print();

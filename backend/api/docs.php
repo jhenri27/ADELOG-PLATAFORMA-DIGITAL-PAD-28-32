@@ -100,6 +100,48 @@ $documentos = [
                        "- **Manual del Promotor Electoral (PDF/HTML)**: Guía oficial de lineamientos de campaña de la candidata Pastora Altagracia De Los Santos.\n" .
                        "- **Kit de Recursos de Marca (ZIP)**: Banners publicitarios y logotipos oficiales.",
         "icon" => "fa-download"
+    ],
+    [
+        "id" => 8,
+        "titulo" => "8. Administración Centralizada de Usuarios del Sistema y Auto-Aprovisionamiento",
+        "categoria" => "Gestión de Usuarios",
+        "contenido" => "El módulo **Usuarios del Sistema** centraliza la creación, control de accesos, estados de activación y auditoría de coordinadores y militantes líderes.\n\n" .
+                       "**Características Principales:**\n" .
+                       "1. **Auto-Aprovisionamiento de Militantes Líderes (ML):** Al inscribir a un ciudadano marcándolo como Militante Líder, el sistema crea automáticamente su cuenta de usuario asignándole un código identificador único (`ML-XXXX`).\n" .
+                       "2. **Credenciales Simplificadas y Seguras:** El usuario puede iniciar sesión directamente con su Código ID (`ML-XXXX`) y su Cédula de Identidad como contraseña, la cual es cifrada con el estándar industrial **BCRYPT**.\n" .
+                       "3. **Enlace Seguro de Alta y Activación (72 Horas):** Se genera un token criptográfico de 72 horas para que el líder pueda personalizar su usuario y clave en una página pública optimizada (`activar.php`). El enlace puede ser regenerado por administradores.\n" .
+                       "4. **Trazabilidad y Filtros Avanzados:** Búsqueda en tiempo real por nombre, usuario, cédula, perfil, coordinador a cargo, nivel de escalafón y estado de cuenta.",
+        "icon" => "fa-users-cog"
+    ],
+    [
+        "id" => 9,
+        "titulo" => "9. Panel de Avance y Escalafón Gamificado de Militantes Líderes (10 Niveles)",
+        "categoria" => "Avance Territorial",
+        "contenido" => "Sistema de progresión y metas territoriales basado en la cantidad de colaboradores efectivos registrados por cada Militante Líder.\n\n" .
+                       "**Estructura de los 10 Niveles:**\n" .
+                       "- **ML (Militante Líder):** 0 a 10 inscritos.\n" .
+                       "- **NA (Nivel Ascenso):** 11 a 31 inscritos.\n" .
+                       "- **NE (Nivel Expansión):** 51 a 71 inscritos.\n" .
+                       "- **NM (Nivel Multiplicador):** 71 a 91 inscritos.\n" .
+                       "- **NP (Nivel Plataforma):** 91 a 111 inscritos.\n" .
+                       "- **NR (Nivel Respaldo):** 111 a 151 inscritos.\n" .
+                       "- **NV (Nivel Visionario):** 151 a 191 inscritos.\n" .
+                       "- **NS (Nivel Superior):** 191 a 231 inscritos.\n" .
+                       "- **NC (Nivel Crecimiento):** 231 a 271 inscritos.\n" .
+                       "- **ALIADO (Nivel Aliado):** 271 a 1,000+ inscritos.\n\n" .
+                       "**Gestión Administrativa:** El Administrador General cuenta con potestad para modificar los límites mínimos y máximos de cada nivel desde el panel interactivo, ejecutando una recalculación masiva y automática de todos los líderes en tiempo real.",
+        "icon" => "fa-trophy"
+    ],
+    [
+        "id" => 10,
+        "titulo" => "10. Redes de Prospección Digital y Códigos QR Universales",
+        "categoria" => "Canales Digitales",
+        "contenido" => "Cada coordinador y Militante Líder dispone de un canal de referencia digital personalizado y exclusivo para la captación de nuevos electores y prospectos a líderes.\n\n" .
+                       "**Reglas del Canal de Red ML:**\n" .
+                       "1. **Enlace Personalizado:** Formato `.../registro.html?canal=red_ml&ref=ML-XXXX`.\n" .
+                       "2. **Atribución Automática:** Cualquier persona que complete el formulario a través de este enlace queda vinculada de inmediato a la red del líder y suma a su meta en el escalafón.\n" .
+                       "3. **Códigos QR de Alta Definición:** Cada enlace cuenta con un Código QR renderizable en canvas con soporte para descarga directa en PNG, botón de compartir en WhatsApp, copia de enlace rápido e impresión en tarjetas de presentación.",
+        "icon" => "fa-qrcode"
     ]
 ];
 

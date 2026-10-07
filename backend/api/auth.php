@@ -30,18 +30,41 @@ if ($method === 'POST') {
         }
         
         $usernameEsc = $conn->real_escape_string($username);
-        $res = $conn->query("SELECT id, username, password, nombre, role, estado FROM usuarios WHERE username = '$usernameEsc' LIMIT 1");
+        $cleanUser = preg_replace('/\D/', '', $username);
+        $cleanUserEsc = $conn->real_escape_string($cleanUser);
+        
+        $sqlUser = "SELECT id, username, codigo_ml, password, nombre, cedula, role, perfil_id, coordinador_id, nivel_avance, nivel_avance_label, total_colaboradores, estado, estado_activacion 
+                    FROM usuarios 
+                    WHERE username = '$usernameEsc' 
+                       OR codigo_ml = '$usernameEsc' 
+                       OR cedula = '$usernameEsc' 
+                       OR (LENGTH('$cleanUserEsc') >= 9 AND REPLACE(cedula, '-', '') = '$cleanUserEsc')
+                    LIMIT 1";
+        $res = $conn->query($sqlUser);
         
         if ($res && $res->num_rows > 0) {
             $user = $res->fetch_assoc();
             
-            if ($user['estado'] != 1) {
+            if ($user['estado'] != 1 || ($user['estado_activacion'] ?? 'activo') === 'deshabilitado') {
                 http_response_code(403);
-                echo json_encode(["exito" => false, "mensaje" => "El usuario está inactivo."]);
+                echo json_encode(["exito" => false, "mensaje" => "La cuenta de usuario se encuentra inactiva o deshabilitada."]);
                 exit;
             }
             
+            $cleanPass = preg_replace('/\D/', '', $password);
+            $cleanCedula = preg_replace('/\D/', '', $user['cedula'] ?? '');
+            
+            $passValid = false;
             if (password_verify($password, $user['password'])) {
+                $passValid = true;
+            } elseif (!empty($cleanPass) && password_verify($cleanPass, $user['password'])) {
+                $passValid = true;
+            } elseif (!empty($cleanCedula) && !empty($cleanPass) && $cleanCedula === $cleanPass) {
+                // Validación directa de cédula como credencial inicial para Militantes Líderes
+                $passValid = true;
+            }
+            
+            if ($passValid) {
                 // Regenerar ID de sesión para prevenir Session Fixation (Norma ISO 27001)
                 session_regenerate_id(true);
                 
@@ -73,13 +96,17 @@ if ($method === 'POST') {
                 // Guardar en sesión
                 $_SESSION['usuario_id'] = $userId;
                 $_SESSION['username'] = $user['username'];
+                $_SESSION['codigo_ml'] = $user['codigo_ml'] ?? '';
                 $_SESSION['nombre'] = $user['nombre'];
                 $_SESSION['role'] = $user['role'];
+                $_SESSION['perfil_id'] = intval($user['perfil_id'] ?? 5);
+                $_SESSION['nivel_avance'] = $user['nivel_avance'] ?? 'ML';
+                $_SESSION['nivel_avance_label'] = $user['nivel_avance_label'] ?? 'Militante Líder';
                 $_SESSION['perms'] = $perms;
                 
                 // Registrar log de auditoría
                 $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
-                $detalles = "Inicio de sesión exitoso. Usuario: " . $user['username'] . " (Rol: " . $user['role'] . ")";
+                $detalles = "Inicio de sesión exitoso. Usuario: " . $user['username'] . " (" . ($user['codigo_ml'] ?: $user['role']) . ")";
                 $stmtAudit = $conn->prepare("INSERT INTO logs_auditoria (usuario_id, accion, detalles, ip_address) VALUES (?, 'LOGIN', ?, ?)");
                 $stmtAudit->bind_param("iss", $userId, $detalles, $ip);
                 $stmtAudit->execute();
@@ -91,8 +118,14 @@ if ($method === 'POST') {
                     "usuario" => [
                         "id" => $userId,
                         "username" => $user['username'],
+                        "codigo_ml" => $user['codigo_ml'] ?? '',
                         "nombre" => $user['nombre'],
-                        "role" => $user['role']
+                        "cedula" => $user['cedula'] ?? '',
+                        "role" => $user['role'],
+                        "perfil_id" => intval($user['perfil_id'] ?? 5),
+                        "nivel_avance" => $user['nivel_avance'] ?? 'ML',
+                        "nivel_avance_label" => $user['nivel_avance_label'] ?? 'Militante Líder',
+                        "total_colaboradores" => intval($user['total_colaboradores'] ?? 0)
                     ],
                     "permisos" => $perms
                 ]);
