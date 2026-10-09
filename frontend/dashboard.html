@@ -2129,13 +2129,28 @@
     <div id="modal-universal-qr" class="modal">
         <div class="modal-content" style="max-width: 480px; text-align: center;">
             <div class="modal-header" style="justify-content: center; position: relative;">
-                <h3 id="modal-qr-title" style="margin: 0; font-size: 18px; color: #ffffff;"><i class="fa fa-qrcode" style="color: var(--secondary);"></i> Código QR Oficial</h3>
+                <h3 id="modal-qr-title" style="margin: 0; font-size: 18px; color: var(--text-white, #0f172a); font-weight: 800;"><i class="fa fa-qrcode" style="color: var(--secondary);"></i> Código QR Oficial</h3>
                 <button type="button" onclick="closeModal('modal-universal-qr')" class="btn btn-outline" style="position: absolute; right: 15px; padding: 6px 10px;"><i class="fa fa-times"></i></button>
             </div>
             <div class="modal-body" style="padding: 24px 20px;">
-                <p id="modal-qr-subtitle" style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+                <p id="modal-qr-subtitle" style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
                     Escanee con la cámara de su teléfono o comparta este enlace con su red.
                 </p>
+
+                <!-- Selector de Host / Red para Compatibilidad Móvil y Local -->
+                <div id="modal-qr-host-container" style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="font-size: 12px; font-weight: 700; color: #cbd5e1; margin: 0;">
+                            <i class="fa fa-network-wired" style="color: #38bdf8; margin-right: 4px;"></i> Destino del Enlace / QR:
+                        </label>
+                        <span id="modal-qr-host-badge" class="badge" style="font-size: 10px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-weight: 700;">Recomendado</span>
+                    </div>
+                    <select id="modal-qr-host-select" class="form-control" style="font-size: 12px; padding: 5px 10px; height: 32px; background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.15);">
+                    </select>
+                    <small id="modal-qr-host-hint" style="display: block; margin-top: 5px; font-size: 11px; color: #94a3b8;">
+                        💡 Para WhatsApp o escaneo desde celulares en la red Wi-Fi, utilice la <strong>IP de red (10.65.119.168)</strong> o Hostname.
+                    </small>
+                </div>
 
                 <div id="universal-qr-box" style="background: #ffffff; padding: 16px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 20px;">
                     <div id="universal-qrcode-container"></div>
@@ -2161,7 +2176,7 @@
     </div>
 
     <!-- Script Global de la Aplicación y Motor RBAC -->
-    <script src="assets/js/app.js?v=3.0"></script>
+    <script src="assets/js/app.js?v=3.1"></script>
     <script src="assets/js/perfiles_engine.js?v=2.1"></script>
 </body>
 </html>

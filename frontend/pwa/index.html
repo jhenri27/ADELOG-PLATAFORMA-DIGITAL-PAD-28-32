@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PAD-28/32 — Gestión Electoral Móvil</title>
+  
+  <!-- Manifest & PWA Theming -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#002F6C">
+  
+  <!-- iOS Safari PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PAD-28/32">
+  <link rel="apple-touch-icon" href="img/icon-192.png">
+  <link rel="icon" type="image/png" href="img/icon-192.png">
+
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+
+  <!-- Estilos PWA Mobile-First -->
+  <link rel="stylesheet" href="css/pwa-style.css?v=20261009_v1">
+</head>
+<body>
+
+  <!-- Contenedor Principal SPA de la Aplicación -->
+  <div id="app-root">
+    <!-- Renderizado dinámico por app.js / router.js -->
+  </div>
+
+  <!-- Contenedor Global de Toasts y Alertas -->
+  <div id="pwa-toast-container" class="pwa-toast-container"></div>
+
+  <!-- Modal Global de Alertas y Vouchers -->
+  <div id="pwa-modal-overlay" class="pwa-modal-overlay" style="display: none;">
+    <div class="pwa-modal-card" id="pwa-modal-card">
+      <div class="pwa-modal-header">
+        <h4 id="pwa-modal-title">Título</h4>
+        <button class="pwa-modal-close" onclick="App.closeModal()"><i class="fa fa-times"></i></button>
+      </div>
+      <div class="pwa-modal-body" id="pwa-modal-body">
+        <!-- Contenido dinámico -->
+      </div>
+      <div class="pwa-modal-footer" id="pwa-modal-footer">
+        <button class="btn-pwa btn-primary" onclick="App.closeModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Librería Local QR Code -->
+  <script src="js/qrcode.min.js"></script>
+
+  <!-- Núcleo de la Aplicación PWA -->
+  <script src="js/api.js?v=20261009_v6"></script>
+  <script src="js/auth.js?v=20261009_v6"></script>
+  <script src="js/router.js?v=20261009_v6"></script>
+
+  <!-- Vistas Modulares por Rol y Funcionalidad -->
+  <script src="js/views/ml.js?v=20261009_v6"></script>
+  <script src="js/views/coordinador.js?v=20261009_v6"></script>
+  <script src="js/views/inscripcion.js?v=20261009_v6"></script>
+  <script src="js/views/consulta.js?v=20261009_v6"></script>
+  <script src="js/views/mis_inscritos.js?v=20261009_v6"></script>
+
+  <!-- Inicializador Maestro -->
+  <script src="js/app.js?v=20261009_v6"></script>
+
+</body>
+</html>

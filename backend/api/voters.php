@@ -172,7 +172,7 @@ function getCoordinatorsStats($conn, $nivelFiltro = 'all') {
 }
 
 // Permitir registros públicos si vienen de la campaña masiva QR o solicitud de comprobantes e impresión
-$isPublicRegistration = ($method === 'POST' && $action === 'public_register') || ($method === 'GET' && in_array($action, ['email_voucher', 'detail']));
+$isPublicRegistration = ($method === 'POST' && $action === 'public_register') || ($method === 'GET' && in_array($action, ['email_voucher', 'detail', 'resolve_ref']));
 
 if (!$isPublicRegistration) {
     // Si no es público, validar autenticación general
@@ -184,6 +184,41 @@ if (!$isPublicRegistration) {
 }
 
 if ($method === 'GET') {
+    if ($action === 'resolve_ref') {
+        $ref = trim($_GET['ref'] ?? '');
+        if (empty($ref)) {
+            echo json_encode(["exito" => false, "mensaje" => "Código de referencia vacío."]);
+            exit;
+        }
+        $refEsc = $conn->real_escape_string($ref);
+        $cleanRef = preg_replace('/\D/', '', $ref);
+        $whereRef = "codigo_ml = '$refEsc' OR username = '$refEsc'";
+        if (is_numeric($ref)) {
+            $whereRef .= " OR id = " . intval($ref);
+        }
+        $q = $conn->query("SELECT id, codigo_ml, username, nombre, role, perfil_id FROM usuarios WHERE $whereRef LIMIT 1");
+        if ($q && $q->num_rows > 0) {
+            $u = $q->fetch_assoc();
+            $isML = ($u['perfil_id'] == 5 || stripos($u['role'], 'Militante') !== false || !empty($u['codigo_ml']));
+            $isCoord = (stripos($u['role'], 'Coordinador') !== false || in_array(intval($u['perfil_id']), [2, 3, 4]));
+            echo json_encode([
+                "exito" => true,
+                "usuario" => [
+                    "id" => intval($u['id']),
+                    "codigo_ml" => $u['codigo_ml'],
+                    "username" => $u['username'],
+                    "nombre" => $u['nombre'],
+                    "role" => $u['role'],
+                    "es_ml" => $isML,
+                    "es_coordinador" => $isCoord
+                ]
+            ]);
+        } else {
+            echo json_encode(["exito" => false, "mensaje" => "Referente no encontrado."]);
+        }
+        exit;
+    }
+
     if ($action === 'email_voucher') {
         $id = intval($_GET['id'] ?? 0);
         $email = trim($_GET['email'] ?? '');
@@ -213,17 +248,12 @@ if ($method === 'GET') {
                 if (!empty($configs['candidato_cargo'])) $candidato_cargo = $configs['candidato_cargo'];
             }
         
-        $uri = $_SERVER['REQUEST_URI'] ?? '';
-        $folder = "PLATAFORMA DIGITAL-PAD-28-32";
-        if (str_contains($uri, 'PLATAFORMA%20DIGITAL-PAD-28-32')) {
-            $folder = "PLATAFORMA%20DIGITAL-PAD-28-32";
-        } else if (str_contains($uri, 'PLATAFORMA_INTEGRADA')) {
-            $folder = "PLATAFORMA_INTEGRADA";
-        }
-        
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? '') == 443) ? "https://" : "http://";
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $linkComprobante = $protocol . $host . "/" . $folder . "/comprobante.php?id=" . $idEsc;
+        $script = $_SERVER['SCRIPT_NAME'] ?? '';
+        $posBackend = strpos($script, '/backend');
+        $baseDir = ($posBackend !== false) ? substr($script, 0, $posBackend) : '';
+        $linkComprobante = rtrim("$protocol$host$baseDir", '/') . "/comprobante.php?id=" . $idEsc;
         
         // Cargar asunto de la base de datos
         $subjectRes = $conn->query("SELECT valor FROM configuraciones WHERE clave = 'flow_email_subject' LIMIT 1");
@@ -353,11 +383,35 @@ if ($method === 'GET') {
     }
 
     if ($action === 'network_voters') {
+        $sessUserId = intval($_SESSION['usuario_id'] ?? 0);
+        $sessRole = trim($_SESSION['role'] ?? '');
+        $sessPerfilId = intval($_SESSION['perfil_id'] ?? 0);
+        $sessNombre = trim($_SESSION['nombre'] ?? '');
+        $sessCodigoML = trim($_SESSION['codigo_ml'] ?? '');
+
+        $isSuperior = ($sessPerfilId === 1 || $sessPerfilId === 2 || 
+                       $sessRole === 'Administrador' || 
+                       $sessRole === 'Coordinador General' || 
+                       $sessRole === 'Jefe Electoral');
+
         $coordName = trim($_GET['coordinador'] ?? '');
         $nivelFiltro = trim($_GET['nivel'] ?? 'all');
         
         $whereNet = ["periodo = '2028'"];
-        if (!empty($coordName)) {
+        
+        if (!$isSuperior) {
+            $nombreEsc = $conn->real_escape_string($sessNombre);
+            $codMLEsc = $conn->real_escape_string($sessCodigoML);
+            if ($sessRole === 'Digitador' || $sessPerfilId === 6) {
+                $whereNet[] = "registrado_por = $sessUserId";
+            } elseif ($sessRole === 'ML - Militante Líder' || $sessPerfilId === 5 || !empty($sessCodigoML)) {
+                $whereNet[] = "(registrado_por = $sessUserId OR referido_por_ml_id = $sessUserId" . (!empty($codMLEsc) ? " OR codigo_ref_origen = '$codMLEsc'" : "") . ")";
+            } elseif ($sessRole === 'Coordinador' || $sessRole === 'Sub-coordinador' || in_array($sessPerfilId, [3, 4])) {
+                $whereNet[] = "(coordinador = '$nombreEsc' OR registrado_por = $sessUserId OR coordinador_padre_id = $sessUserId)";
+            } else {
+                $whereNet[] = "registrado_por = $sessUserId";
+            }
+        } elseif (!empty($coordName)) {
             $cEsc = $conn->real_escape_string($coordName);
             $whereNet[] = "(coordinador = '$cEsc' OR nombres LIKE '%$cEsc%' OR apellidos LIKE '%$cEsc%')";
         }
@@ -379,7 +433,7 @@ if ($method === 'GET') {
                 $votersNet[] = $r;
             }
         }
-        echo json_encode(["exito" => true, "total" => count($votersNet), "votantes" => $votersNet]);
+        echo json_encode(["exito" => true, "total" => count($votersNet), "votantes" => $votersNet, "voters" => $votersNet]);
         exit;
     }
     
@@ -420,9 +474,50 @@ if ($method === 'GET') {
         } elseif ($tipo_elector === 'Votante' || $tipo_elector === '0') {
             $whereClauses[] = "es_militante_lider = 0";
         }
+        $registrado_por = intval($_GET['registrado_por'] ?? 0);
+        if ($registrado_por > 0) {
+            $whereClauses[] = "registrado_por = $registrado_por";
+        }
         if (!empty($nivel_estructura) && $nivel_estructura !== 'all') {
             $neEsc = $conn->real_escape_string($nivel_estructura);
             $whereClauses[] = "nivel_estructura = '$neEsc'";
+        }
+        
+        // -------------------------------------------------------------
+        // CONTROL ESTRICTO DE VISIBILIDAD POR JERARQUÍA DE ROL (PLAD-SEC-01)
+        // -------------------------------------------------------------
+        // Perfiles Superiores (Administrador, Coordinador General, Jefe Electoral):
+        // Capacidad de ver TODO el universo de inscritos de toda la demarcación.
+        // Otros perfiles (Digitador, Militante Líder ML, Coordinadores de Zona):
+        // Únicamente tienen visibilidad de sus propios inscritos o su red territorial.
+        $sessUserId = intval($_SESSION['usuario_id'] ?? 0);
+        $sessRole = trim($_SESSION['role'] ?? '');
+        $sessPerfilId = intval($_SESSION['perfil_id'] ?? 0);
+        $sessNombre = trim($_SESSION['nombre'] ?? '');
+        $sessCodigoML = trim($_SESSION['codigo_ml'] ?? '');
+
+        $isSuperior = ($sessPerfilId === 1 || $sessPerfilId === 2 || 
+                       $sessRole === 'Administrador' || 
+                       $sessRole === 'Coordinador General' || 
+                       $sessRole === 'Jefe Electoral');
+
+        if (!$isSuperior) {
+            $nombreEsc = $conn->real_escape_string($sessNombre);
+            $codMLEsc = $conn->real_escape_string($sessCodigoML);
+
+            if ($sessRole === 'Digitador' || $sessPerfilId === 6) {
+                // Digitador: Únicamente los electores registrados por este usuario
+                $whereClauses[] = "registrado_por = $sessUserId";
+            } elseif ($sessRole === 'ML - Militante Líder' || $sessPerfilId === 5 || !empty($sessCodigoML)) {
+                // Militante Líder (ML): Únicamente sus captaciones directas o referidas a su red
+                $whereClauses[] = "(registrado_por = $sessUserId OR referido_por_ml_id = $sessUserId" . (!empty($codMLEsc) ? " OR codigo_ref_origen = '$codMLEsc'" : "") . ")";
+            } elseif ($sessRole === 'Coordinador' || $sessRole === 'Sub-coordinador' || in_array($sessPerfilId, [3, 4])) {
+                // Coordinador / Sub-coordinador: Sus inscritos directos y los asignados a su coordinación
+                $whereClauses[] = "(coordinador = '$nombreEsc' OR registrado_por = $sessUserId OR coordinador_padre_id = $sessUserId)";
+            } else {
+                // Fallback de seguridad para cualquier otro perfil no superior
+                $whereClauses[] = "registrado_por = $sessUserId";
+            }
         }
         
         $whereSql = "";
@@ -470,7 +565,8 @@ if ($method === 'GET') {
             "total" => intval($totalRows),
             "pagina" => $page,
             "limite" => $limit,
-            "votantes" => $voters
+            "votantes" => $voters,
+            "voters" => $voters
         ]);
         exit;
     }
@@ -560,10 +656,14 @@ if ($method === 'GET') {
     }
 
     if ($action === 'query_2024') {
-        checkPerm('can_view_historical');
-        $search = trim($_GET['search'] ?? $_POST['search'] ?? '');
+        if (!isset($_SESSION['usuario_id'])) {
+            http_response_code(401);
+            echo json_encode(["exito" => false, "mensaje" => "No autorizado. Inicie sesión para consultar el estatus del elector."]);
+            exit;
+        }
+        $search = trim($_GET['search'] ?? $_POST['search'] ?? $_GET['cedula'] ?? $_POST['cedula'] ?? '');
         if (empty($search)) {
-            echo json_encode(["exito" => true, "votantes" => []]);
+            echo json_encode(["exito" => true, "total" => 0, "votantes" => []]);
             exit;
         }
         
@@ -875,9 +975,13 @@ if ($method === 'GET') {
             }
         }
         
+        $firstVoter = count($voters) > 0 ? $voters[0] : null;
         echo json_encode([
             "exito" => true,
             "total" => count($voters),
+            "partido_encontrado" => $firstVoter ? boolval($firstVoter['en_padron_partido']) : false,
+            "candidata_encontrado" => $firstVoter ? boolval($firstVoter['en_padron_candidata']) : false,
+            "estado_diagnostico" => $firstVoter ? $firstVoter['estado_diagnostico'] : 'NO_LOCALIZADO',
             "votantes" => $voters
         ]);
         exit;
@@ -1309,7 +1413,7 @@ if ($method === 'POST') {
         $canalEsc = $conn->real_escape_string($canal_origen);
         
         $registradoPor = isset($_SESSION['usuario_id']) ? intval($_SESSION['usuario_id']) : "NULL";
-        $esML = !empty($input['es_militante_lider']) ? 1 : 0;
+        $esML = (!empty($input['es_militante_lider']) || (isset($input['tipo']) && strtolower($input['tipo']) === 'ml') || (isset($_GET['tipo']) && strtolower($_GET['tipo']) === 'ml')) ? 1 : 0;
         $nivelEstructura = trim($input['nivel_estructura'] ?? ($esML ? 'ML - Militante Líder' : 'Votante'));
         $nivelEstructuraEsc = $conn->real_escape_string($nivelEstructura);
         $coordPadreId = !empty($input['coordinador_padre_id']) ? intval($input['coordinador_padre_id']) : "NULL";
@@ -1323,16 +1427,32 @@ if ($method === 'POST') {
         
         if (!empty($refInput)) {
             $refEsc = $conn->real_escape_string($refInput);
-            $qML = $conn->query("SELECT id, coordinador_id FROM usuarios WHERE codigo_ml = '$refEsc' OR username = '$refEsc' OR id = " . intval($refInput) . " LIMIT 1");
-            if ($qML && $qML->num_rows > 0) {
-                $mlFound = $qML->fetch_assoc();
-                $referidoPorMLId = intval($mlFound['id']);
+            $whereRef = "codigo_ml = '$refEsc' OR username = '$refEsc'";
+            if (is_numeric($refInput)) {
+                $whereRef .= " OR id = " . intval($refInput);
+            }
+            $qRef = $conn->query("SELECT id, coordinador_id, nombre, role, perfil_id, codigo_ml FROM usuarios WHERE $whereRef LIMIT 1");
+            if ($qRef && $qRef->num_rows > 0) {
+                $refUser = $qRef->fetch_assoc();
+                $refUserId = intval($refUser['id']);
                 $codigoRefOrigen = "'$refEsc'";
-                $canal_origen = 'Red ML';
-                $canalEsc = $conn->real_escape_string($canal_origen);
-                if (empty($coordPadreId) || $coordPadreId === "NULL") {
-                    $coordPadreId = !empty($mlFound['coordinador_id']) ? intval($mlFound['coordinador_id']) : $referidoPorMLId;
+                $isCoord = (stripos($refUser['role'] ?? '', 'Coordinador') !== false || in_array(intval($refUser['perfil_id'] ?? 0), [2, 3, 4]));
+                
+                if ($isCoord) {
+                    $canal_origen = 'Red Coordinador';
+                    $coordinadorEsc = $conn->real_escape_string($refUser['nombre']);
+                    $coordPadreId = $refUserId;
+                } else {
+                    $referidoPorMLId = $refUserId;
+                    $canal_origen = 'Red ML';
+                    if (empty($coordPadreId) || $coordPadreId === "NULL") {
+                        $coordPadreId = !empty($refUser['coordinador_id']) ? intval($refUser['coordinador_id']) : $referidoPorMLId;
+                    }
+                    if (empty($coordinador) || $coordinador === 'Campaña Digital') {
+                        $coordinadorEsc = $conn->real_escape_string($refUser['nombre']);
+                    }
                 }
+                $canalEsc = $conn->real_escape_string($canal_origen);
             }
         }
         
@@ -1388,8 +1508,8 @@ if ($method === 'POST') {
                     if ($conn->query($sqlNewU)) {
                         $userMLId = $conn->insert_id;
                         $conn->query("INSERT INTO permisos (usuario_id, can_create, can_edit, can_view, can_print, can_send, can_view_historical)
-                                      VALUES ($userMLId, 1, 0, 1, 1, 0, 0)
-                                      ON DUPLICATE KEY UPDATE can_view = 1");
+                                      VALUES ($userMLId, 1, 0, 1, 1, 0, 1)
+                                      ON DUPLICATE KEY UPDATE can_view = 1, can_view_historical = 1");
                     }
                 }
             }

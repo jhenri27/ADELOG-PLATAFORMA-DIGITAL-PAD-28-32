@@ -1,0 +1,26 @@
+{
+  "short_name": "PAD-28/32",
+  "name": "PAD-28/32 — Gestión Electoral Móvil",
+  "description": "App PWA Móvil para Coordinadores y Militantes Líderes (ML) de la Plataforma Electoral PAD-28/32.",
+  "icons": [
+    {
+      "src": "img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "index.html",
+  "scope": "./",
+  "background_color": "#07101E",
+  "theme_color": "#002F6C",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "es-DO"
+}

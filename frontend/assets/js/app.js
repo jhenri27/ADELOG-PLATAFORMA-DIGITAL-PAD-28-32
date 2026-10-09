@@ -6,6 +6,30 @@
 var streamRef = null;
 window.streamRef = null;
 
+// Función universal para obtener la URL base de la aplicación dinámicamente
+function getAppBaseUrl(customHost = null) {
+    const protocol = window.location.protocol;
+    const host = customHost || window.location.host;
+    const origin = `${protocol}//${host}`;
+    const pathname = window.location.pathname;
+
+    const idxFrontend = pathname.indexOf('/frontend');
+    if (idxFrontend !== -1) {
+        return origin + pathname.substring(0, idxFrontend);
+    }
+    const idxBackend = pathname.indexOf('/backend');
+    if (idxBackend !== -1) {
+        return origin + pathname.substring(0, idxBackend);
+    }
+    const parts = pathname.split('/').filter(Boolean);
+    if (parts.length > 1) {
+        parts.pop();
+        return origin + '/' + parts.join('/');
+    }
+    return origin;
+}
+window.getAppBaseUrl = getAppBaseUrl;
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- DIÁLOGOS Y ALERTAS ESTILIZADOS PERSONALIZADOS ---
     const originalAlert = window.alert;
@@ -136,6 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     loadDashboardData();
                     poblarRolesSelects();
                     startDashboardPolling();
+
+                    // Cargar información de red del servidor para compatibilidad móvil / LAN
+                    fetch('../backend/api/users.php?action=network_info')
+                        .then(r => r.json())
+                        .then(d => { if (d.exito) State.serverInfo = d; })
+                        .catch(() => {});
                 } else {
                     window.location.href = 'login.html';
                 }
@@ -952,6 +982,64 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pubCedInput && pubCedInput.value.replace(/\D/g, '').length === 11) {
             buscarEnPadronCirc3(pubCedInput.value, 'public-');
         }
+
+        // Detección de Enlaces Oficiales de Captación y Red Territorial (?canal=...&ref=...)
+        const urlParams = new URLSearchParams(window.location.search);
+        const refParam = urlParams.get('ref');
+        const canalParam = urlParams.get('canal');
+        const tipoParam = urlParams.get('tipo');
+
+        if (tipoParam === 'ml') {
+            State.tipoRegistro = 'ml';
+            const formTitle = document.querySelector('#public-landing h2');
+            if (formTitle) {
+                formTitle.innerHTML = '<i class="fa fa-user-shield" style="color: var(--secondary);"></i> Registro de Militante Líder (ML)';
+            }
+        }
+
+        if (refParam) {
+            State.refCodigo = refParam;
+            State.canalOrigen = canalParam || (tipoParam === 'ml' ? 'red_ml' : 'red_coordinador');
+
+            fetch(`../backend/api/voters.php?action=resolve_ref&ref=${encodeURIComponent(refParam)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.exito && data.usuario) {
+                        const u = data.usuario;
+                        const inputCoord = document.getElementById('public-coordinador');
+                        if (inputCoord) {
+                            inputCoord.value = u.nombre;
+                        }
+
+                        // Banner de bienvenida e invitación oficial
+                        const form = document.getElementById('public-voter-form');
+                        if (form) {
+                            let banner = document.getElementById('public-ref-banner');
+                            if (!banner) {
+                                banner = document.createElement('div');
+                                banner.id = 'public-ref-banner';
+                                banner.style.cssText = 'background: rgba(0, 84, 166, 0.12); border: 1.5px solid #0054A6; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; color: var(--text-white, #0f172a); font-size: 13px; display: flex; align-items: center; gap: 12px;';
+                                form.parentNode.insertBefore(banner, form);
+                            }
+                            const isML = u.es_ml;
+                            const badgeRole = isML ? 'Militante Líder' : (u.role || 'Coordinador');
+                            const isMLReg = (State.tipoRegistro === 'ml');
+                            banner.innerHTML = `
+                                <div style="background: var(--primary); color: #fff; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0;">
+                                    <i class="fa ${isMLReg ? 'fa-star' : 'fa-user-check'}"></i>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--secondary, #E3A113); display: block; font-size: 14px;">
+                                        ${isMLReg ? '🌟 Invitación para Asumir Liderazgo (Militante Líder)' : 'Invitación Oficial de Apoyo'}
+                                    </strong>
+                                    <span>Has sido invitado por <strong>${escapeHTML(u.nombre)}</strong> (${escapeHTML(badgeRole)}) a sumarte al proyecto de Pastora Altagracia.${isMLReg ? ' Al registrarte recibirás acceso inmediato a la PWA con tu código y credenciales.' : ''}</span>
+                                </div>
+                            `;
+                        }
+                    }
+                })
+                .catch(err => console.log("Error al verificar referente:", err));
+        }
     }
 
     function trackCampaignClick(code) {
@@ -1566,6 +1654,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        let canalFinal = 'QR Campaign';
+        if (State.canalOrigen === 'red_ml') {
+            canalFinal = 'Red ML';
+        } else if (State.canalOrigen === 'red_coordinador') {
+            canalFinal = 'Red Coordinador';
+        }
+
+        const isMLType = (State.tipoRegistro === 'ml');
         const voterData = {
             cedula: document.getElementById('public-cedula').value,
             nombres: document.getElementById('public-nombres').value,
@@ -1580,8 +1676,13 @@ document.addEventListener('DOMContentLoaded', () => {
             email: document.getElementById('public-email').value,
             coordinador: document.getElementById('public-coordinador').value,
             centro_acopio: 'Campaña Digital QR',
-            canal_origen: 'QR Campaign',
-            campana_codigo: State.campanaCodigo
+            canal_origen: canalFinal,
+            campana_codigo: State.campanaCodigo || '',
+            ref: State.refCodigo || '',
+            canal: State.canalOrigen || '',
+            tipo: isMLType ? 'ml' : '',
+            es_militante_lider: isMLType ? 1 : 0,
+            nivel_estructura: isMLType ? 'ML - Militante Líder' : 'Votante'
         };
 
         fetch('../backend/api/voters.php?action=public_register', {
@@ -1685,7 +1786,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     printArea.className = 'print-hidden-container';
                     
                     const combinedId = v.codigo_comprobante || (`PAD2832-${v.numero_lista}-${v.cedula}`);
-                    const validUrl = `${window.location.protocol}//${window.location.host}/PLATAFORMA%20DIGITAL-PAD-28-32/validar.php?cedula=${encodeURIComponent(v.cedula)}&folio=${encodeURIComponent(combinedId)}`;
+                    const validUrl = `${getAppBaseUrl()}/validar.php?cedula=${encodeURIComponent(v.cedula)}&folio=${encodeURIComponent(combinedId)}`;
                     const isFuera = v.es_fuera_circ3 || (v.region && v.region.includes('1')) || (v.sector && v.sector.toUpperCase().includes('ISABELITA')) || (v.colegio_electoral == '1823');
                     const tagElector = v.tipo_elector || (isFuera ? 'Nuevo Elector (Simpatizante Externo)' : (v.es_militante_lider == 1 ? 'Nuevo Elector (ML)' : 'Nuevo Elector'));
                     const estatusPRM = v.militancia_partido_label || (isFuera ? 'No figura en Padrón Circ. 3 (Elector Circunscripción 1 - Santo Domingo Este)' : 'Padrón Maestro JCE / PRM');
@@ -3043,20 +3144,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function shareVoucherWhatsApp(id) {
-        const currentPath = window.location.pathname;
-        const folder = currentPath.split('/')[1];
-        const url = `${window.location.protocol}//${window.location.host}/${folder}/comprobante.php?id=${id}`;
-        
+        const url = `${getAppBaseUrl()}/comprobante.php?id=${id}`;
         const shareText = `¡Hola! Aquí tienes tu comprobante oficial de inscripción en la Plataforma Digital. Puedes descargarlo o imprimirlo aquí: ${url}`;
         const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
         window.open(whatsappUrl, '_blank');
     }
 
     function shareVoucherTelegram(id) {
-        const currentPath = window.location.pathname;
-        const folder = currentPath.split('/')[1];
-        const url = `${window.location.protocol}//${window.location.host}/${folder}/comprobante.php?id=${id}`;
-        
+        const url = `${getAppBaseUrl()}/comprobante.php?id=${id}`;
         const shareText = `¡Hola! Aquí tienes tu comprobante oficial de inscripción en la Plataforma Digital. Puedes descargarlo o imprimirlo aquí: ${url}`;
         const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareText)}`;
         window.open(tgUrl, '_blank');
@@ -4400,10 +4495,13 @@ document.addEventListener('DOMContentLoaded', () => {
             action: 'list',
             page: moduloUsersCurrentPage,
             limit: moduloUsersLimit,
+            q: search,
             search: search,
             perfil_id: perfilId,
             coordinador_id: coordId,
+            nivel_avance: nivel,
             nivel: nivel,
+            estado_activacion: estado,
             estado: estado
         });
 
@@ -4504,9 +4602,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let html = '';
         data.usuarios.forEach(u => {
-            const isML = u.es_militante_lider || (u.codigo_ml && u.codigo_ml !== '');
-            const badgeCodigo = isML 
-                ? `<span class="badge" style="background: rgba(227, 161, 19, 0.2); border: 1px solid #E3A113; color: #fef08a; font-family: monospace; font-size: 11px;">${u.codigo_ml || ('ML-' + String(u.id).padStart(4, '0'))}</span>`
+            const isML = u.es_militante_lider || (u.codigo_ml && u.codigo_ml !== '') || (u.role && u.role.includes('Militante'));
+            const isCoord = (u.role && (u.role.includes('Coordinador') || u.role.includes('Sub-coordinador'))) || [2, 3, 4].includes(parseInt(u.perfil_id));
+            const hasQR = isML || isCoord || Boolean(u.codigo_ml);
+            const refCode = u.codigo_ml || u.username || ('USER-' + u.id);
+            const badgeCodigo = (isML || isCoord || u.codigo_ml)
+                ? `<span class="badge" style="background: rgba(227, 161, 19, 0.2); border: 1px solid #E3A113; color: #fef08a; font-family: monospace; font-size: 11px;">${refCode}</span>`
                 : `<span class="badge" style="background: rgba(255,255,255,0.08); color: var(--text-muted); font-family: monospace;">#${u.id}</span>`;
 
             // Estado Badge
@@ -4527,7 +4628,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Acciones
             const btnDetail = `<button class="btn btn-outline btn-sm" onclick="abrirModalDetalleUsuario(${u.id})" title="Ver Expediente y Colaboradores" style="padding: 4px 8px;"><i class="fa fa-eye"></i></button>`;
-            const btnQR = isML ? `<button class="btn btn-primary btn-sm" onclick="abrirQRDeML('${u.codigo_ml || ('ML-' + String(u.id).padStart(4, '0'))}', '${escapeHTML(u.nombre)}')" title="Ver Código QR de Captación" style="padding: 4px 8px;"><i class="fa fa-qrcode"></i></button>` : '';
+            const qrHint = isCoord ? 'Ver Código QR Territorial (Red Coordinador)' : 'Ver Código QR de Captación (Red ML)';
+            const btnQR = hasQR 
+                ? `<button class="btn btn-primary btn-sm" onclick="abrirQRUniversalUsuario(${u.id}, '${escapeHTML(refCode)}', '${escapeHTML(u.nombre)}', '${escapeHTML(u.role || u.perfil_nombre || '')}')" title="${qrHint}" style="padding: 4px 8px;"><i class="fa fa-qrcode"></i></button>` 
+                : '';
             const btnLinkActivar = (u.estado_activacion === 'pendiente' && u.token_activacion)
                 ? `<button class="btn btn-outline btn-sm" onclick="compartirEnlaceActivacion('${u.token_activacion}', '${escapeHTML(u.nombre)}')" title="Enlace de Alta / Activación" style="padding: 4px 8px; border-color: #f59e0b; color: #f59e0b;"><i class="fa fa-link"></i></button>`
                 : '';
@@ -4795,10 +4899,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnMiQr = document.getElementById('btn-mi-qr-promocion');
         if (btnMiQr) {
             btnMiQr.addEventListener('click', () => {
-                if (State.user && State.user.codigo_ml) {
-                    abrirQRDeML(State.user.codigo_ml, State.user.nombre);
+                if (State.user) {
+                    const refCode = State.user.codigo_ml || State.user.username || ('USER-' + State.user.id);
+                    abrirQRUniversalUsuario(State.user.id, refCode, State.user.nombre, State.user.role);
                 } else {
-                    alert("Su usuario actual no posee un código de Militante Líder asignado.");
+                    alert("No se pudo identificar la información del usuario en sesión.");
                 }
             });
         }
@@ -4806,10 +4911,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnCopiarLink = document.getElementById('btn-copiar-mi-link-ml');
         if (btnCopiarLink) {
             btnCopiarLink.addEventListener('click', () => {
-                if (State.user && State.user.codigo_ml) {
-                    const host = window.location.origin;
-                    const folder = window.location.pathname.includes('PLATAFORMA%20DIGITAL-PAD-28-32') ? 'PLATAFORMA%20DIGITAL-PAD-28-32' : 'PLATAFORMA DIGITAL-PAD-28-32';
-                    const link = `${host}/${folder}/registro.html?canal=red_ml&ref=${encodeURIComponent(State.user.codigo_ml)}`;
+                if (State.user) {
+                    const refCode = State.user.codigo_ml || State.user.username || ('USER-' + State.user.id);
+                    const isCoord = (State.user.role && (State.user.role.includes('Coordinador') || State.user.role.includes('Sub-coordinador')));
+                    const canal = isCoord ? 'red_coordinador' : 'red_ml';
+                    const targetHost = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                        ? (State.serverInfo?.lan_ip || '10.65.119.168')
+                        : window.location.host;
+                    const link = `${getAppBaseUrl(targetHost)}/registro.html?canal=${canal}&ref=${encodeURIComponent(refCode)}`;
                     copiarTextoAlPortapapeles(link);
                 }
             });
@@ -4821,6 +4930,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => res.json())
             .then(data => {
                 if (data.exito) {
+                    if (data.server_info) {
+                        State.serverInfo = data.server_info;
+                    }
                     renderDashboardAvanceML(data);
                 }
             })
@@ -5004,17 +5116,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── VISOR UNIVERSAL DE CÓDIGOS QR & COMPARTICIÓN ────────────────────────
     // =========================================================================
 
-    function abrirModalUniversalQR(titulo, subtitulo, url, whatsappMsg) {
-        document.getElementById('modal-qr-title').innerHTML = `<i class="fa fa-qrcode" style="color: var(--secondary); margin-right: 8px;"></i> ${titulo}`;
-        document.getElementById('modal-qr-subtitle').textContent = subtitulo;
-        document.getElementById('modal-qr-url-input').value = url;
+    let currentQRModalState = {
+        titulo: '',
+        subtitulo: '',
+        relPath: '',
+        whatsappTemplate: ''
+    };
+
+    function renderModalQR(selectedHost = null) {
+        const activeHost = selectedHost || (document.getElementById('modal-qr-host-select') ? document.getElementById('modal-qr-host-select').value : window.location.host);
+        const baseUrl = getAppBaseUrl(activeHost);
+        const fullUrl = `${baseUrl}/${currentQRModalState.relPath.replace(/^\//, '')}`;
+        
+        const inputUrl = document.getElementById('modal-qr-url-input');
+        if (inputUrl) inputUrl.value = fullUrl;
 
         const qrContainer = document.getElementById('universal-qrcode-container');
         if (qrContainer) {
             qrContainer.innerHTML = '';
             if (typeof QRCode !== 'undefined') {
                 new QRCode(qrContainer, {
-                    text: url,
+                    text: fullUrl,
                     width: 200,
                     height: 200,
                     colorDark: "#0054A6",
@@ -5022,32 +5144,126 @@ document.addEventListener('DOMContentLoaded', () => {
                     correctLevel: QRCode.CorrectLevel.H
                 });
             } else {
-                qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}" style="width: 200px; height: 200px; display: block; margin: 0 auto;" alt="QR Code">`;
+                qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(fullUrl)}" style="width: 200px; height: 200px; display: block; margin: 0 auto;" alt="QR Code">`;
             }
         }
 
         const btnWa = document.getElementById('btn-modal-qr-whatsapp');
         if (btnWa) {
-            btnWa.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappMsg || ('Enlace oficial de apoyo a Pastora Altagracia: ' + url))}`;
+            const rawMsg = currentQRModalState.whatsappTemplate || ('Enlace oficial de apoyo a Pastora Altagracia: {{URL}}');
+            const finalMsg = rawMsg.replace('{{URL}}', fullUrl);
+            btnWa.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(finalMsg)}`;
+        }
+    }
+
+    function abrirModalUniversalQR(titulo, subtitulo, relativePathOrUrl, whatsappTemplate) {
+        let relPath = relativePathOrUrl;
+        if (typeof relPath === 'string' && (relPath.startsWith('http://') || relPath.startsWith('https://'))) {
+            try {
+                const parsed = new URL(relPath);
+                const match = parsed.pathname.match(/(registro\.html|activar\.php|validar\.php|comprobante\.php|index\.html)/);
+                if (match) {
+                    relPath = parsed.pathname.substring(match.index) + parsed.search;
+                }
+            } catch(e) {}
         }
 
+        currentQRModalState = {
+            titulo: titulo,
+            subtitulo: subtitulo,
+            relPath: relPath,
+            whatsappTemplate: whatsappTemplate || 'Enlace oficial de apoyo a Pastora Altagracia: {{URL}}'
+        };
+
+        const titleEl = document.getElementById('modal-qr-title');
+        if (titleEl) titleEl.innerHTML = `<i class="fa fa-qrcode" style="color: var(--secondary); margin-right: 8px;"></i> ${titulo}`;
+        
+        const subEl = document.getElementById('modal-qr-subtitle');
+        if (subEl) subEl.textContent = subtitulo;
+
+        const hostSelect = document.getElementById('modal-qr-host-select');
+        if (hostSelect) {
+            const currentHost = window.location.host;
+            const hosts = [];
+
+            // 1. Host actual del navegador
+            hosts.push({ value: currentHost, label: `Host Actual (${currentHost})` });
+
+            // 2. IP LAN reportada por el servidor
+            const lanIp = State.serverInfo?.lan_ip;
+            const srvHostname = State.serverInfo?.hostname;
+
+            if (lanIp && !hosts.some(h => h.value === lanIp)) {
+                hosts.push({ value: lanIp, label: `IP Red Local (${lanIp})` });
+            }
+            if (srvHostname && !hosts.some(h => h.value === srvHostname)) {
+                hosts.push({ value: srvHostname, label: `Hostname (${srvHostname})` });
+            }
+
+            // Fallback de conveniencia para la instancia de laptop con la IP 10.65.119.168 / JAHENRIQUEZM
+            if (!hosts.some(h => h.value.includes('10.65.119.168'))) {
+                hosts.push({ value: '10.65.119.168', label: 'Laptop Wi-Fi IP (10.65.119.168)' });
+            }
+            if (!hosts.some(h => h.value.includes('JAHENRIQUEZM'))) {
+                hosts.push({ value: 'JAHENRIQUEZM', label: 'Laptop Hostname (JAHENRIQUEZM)' });
+            }
+
+            hostSelect.innerHTML = hosts.map(h => `<option value="${h.value}">${h.label}</option>`).join('');
+
+            // Si el usuario está navegando desde localhost o 127.0.0.1, auto-seleccionar la IP de red
+            // para que al escanear con celulares en la red Wi-Fi funcione de inmediato
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                const lanCandidate = hosts.find(h => h.value.includes('10.65.119.168') || h.value.startsWith('10.') || h.value.startsWith('192.168.'));
+                if (lanCandidate) {
+                    hostSelect.value = lanCandidate.value;
+                }
+            } else {
+                hostSelect.value = currentHost;
+            }
+
+            hostSelect.onchange = () => {
+                renderModalQR(hostSelect.value);
+            };
+        }
+
+        renderModalQR(hostSelect ? hostSelect.value : null);
         openModal('modal-universal-qr');
     }
 
-    function abrirQRDeML(codigoMl, nombre) {
-        const host = window.location.origin;
-        const folder = window.location.pathname.includes('PLATAFORMA%20DIGITAL-PAD-28-32') ? 'PLATAFORMA%20DIGITAL-PAD-28-32' : 'PLATAFORMA DIGITAL-PAD-28-32';
-        const url = `${host}/${folder}/registro.html?canal=red_ml&ref=${encodeURIComponent(codigoMl)}`;
-        const msg = `¡Hola! Te invito a formar parte de nuestra red de colaboradores en apoyo a Pastora Altagracia De Los Santos. Inscríbete oficialmente aquí: ${url}`;
-        abrirModalUniversalQR(`Código QR - ${codigoMl}`, `Red de Captación de ${nombre}. Todas las inscripciones sumarán directamente a su meta en el escalafón.`, url, msg);
+    function abrirQRUniversalUsuario(userId, refCode, nombre, role) {
+        const roleStr = String(role || '');
+        const isCoord = roleStr.includes('Coordinador') || roleStr.includes('Sub-coordinador');
+        const canal = isCoord ? 'red_coordinador' : 'red_ml';
+        const relPath = `registro.html?canal=${canal}&ref=${encodeURIComponent(refCode)}`;
+        
+        let titulo = `Código QR - ${refCode}`;
+        let subtitulo = '';
+        let msgTemplate = '';
+        
+        if (isCoord) {
+            titulo = `Código QR - ${refCode}`;
+            subtitulo = `Red Territorial de ${nombre} (${roleStr}). Todas las inscripciones recibidas mediante este enlace quedarán asignadas a su estructura de coordinación.`;
+            msgTemplate = `¡Hola! Te invito a registrarte oficialmente en apoyo a la candidatura de Pastora Altagracia De Los Santos a través de nuestra red de coordinación: {{URL}}`;
+        } else {
+            titulo = `Código QR - ${refCode}`;
+            subtitulo = `Red de Captación de ${nombre} (Militante Líder). Todas las inscripciones sumarán directamente a su meta en el escalafón.`;
+            msgTemplate = `¡Hola! Te invito a formar parte de nuestra red de colaboradores en apoyo a Pastora Altagracia De Los Santos. Inscríbete oficialmente aquí: {{URL}}`;
+        }
+        
+        abrirModalUniversalQR(titulo, subtitulo, relPath, msgTemplate);
     }
 
+    function abrirQRDeML(codigoMl, nombre) {
+        abrirQRUniversalUsuario(0, codigoMl, nombre, 'ML - Militante Líder');
+    }
+
+    window.abrirQRUniversalUsuario = abrirQRUniversalUsuario;
+    window.abrirQRDeML = abrirQRDeML;
+
     function compartirEnlaceActivacion(token, nombre) {
-        const host = window.location.origin;
-        const folder = window.location.pathname.includes('PLATAFORMA%20DIGITAL-PAD-28-32') ? 'PLATAFORMA%20DIGITAL-PAD-28-32' : 'PLATAFORMA DIGITAL-PAD-28-32';
-        const url = `${host}/${folder}/activar.php?token=${encodeURIComponent(token)}`;
-        const msg = `¡Hola ${nombre}! Completa el alta y activación de tu cuenta de Militante Líder en la plataforma oficial de Pastora Altagracia accediendo a este enlace seguro: ${url}`;
-        abrirModalUniversalQR(`Enlace de Activación de Cuenta`, `Enlace de alta segura (válido por 72 horas) para ${nombre}.`, url, msg);
+        const relPath = `activar.php?token=${encodeURIComponent(token)}`;
+        const msgTemplate = `¡Hola ${nombre}! Completa el alta y activación de tu cuenta de Militante Líder en la plataforma oficial de Pastora Altagracia accediendo a este enlace seguro: {{URL}}`;
+        abrirModalUniversalQR(`Enlace de Activación de Cuenta`, `Enlace de alta segura (válido por 72 horas) para ${nombre}.`, relPath, msgTemplate);
     }
 
     function descargarUniversalQR() {

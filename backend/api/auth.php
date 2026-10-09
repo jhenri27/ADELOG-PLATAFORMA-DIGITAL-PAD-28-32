@@ -57,6 +57,13 @@ if ($method === 'POST') {
             $passValid = false;
             if (password_verify($password, $user['password'])) {
                 $passValid = true;
+            } elseif (password_verify(lcfirst($password), $user['password'])) {
+                // Tolerancia para autocapitalización en smartphones (ej: Admin123 -> admin123)
+                $passValid = true;
+            } elseif (password_verify(ucfirst($password), $user['password'])) {
+                $passValid = true;
+            } elseif (password_verify(strtolower($password), $user['password'])) {
+                $passValid = true;
             } elseif (!empty($cleanPass) && password_verify($cleanPass, $user['password'])) {
                 $passValid = true;
             } elseif (!empty($cleanCedula) && !empty($cleanPass) && $cleanCedula === $cleanPass) {
@@ -161,8 +168,12 @@ if ($method === 'GET') {
                 "usuario" => [
                     "id" => $_SESSION['usuario_id'],
                     "username" => $_SESSION['username'],
+                    "codigo_ml" => $_SESSION['codigo_ml'] ?? '',
                     "nombre" => $_SESSION['nombre'],
                     "role" => $_SESSION['role'],
+                    "perfil_id" => $_SESSION['perfil_id'] ?? 5,
+                    "nivel_avance" => $_SESSION['nivel_avance'] ?? 'ML',
+                    "nivel_avance_label" => $_SESSION['nivel_avance_label'] ?? 'Militante Líder',
                     "total_inscritos" => $totalInscritos
                 ],
                 "permisos" => $_SESSION['perms']

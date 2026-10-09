@@ -146,9 +146,60 @@
   - GitHub origin main sincronizado (Commit 5f7151c: 30 archivos actualizados).
   - Paquete para Google Drive preparado en `F:\ADELOG\PLATAFORMA DIGITAL-PAD-28-32-backup\LISTO_PARA_GOOGLE_DRIVE\`.
 
+## Fase 10: Desarrollo e Implementación de la App PWA Móvil PAD-28/32 (Normas PLAD & Benchmark Más Que Fianzas)
+- [x] 10.1 Estructura Shell y Manifest W3C (`frontend/pwa/index.html`, `manifest.json`, `img/`):
+  - Configuración standalone para Android e iOS Safari con safe-areas y meta-tags completos.
+- [x] 10.2 Service Worker Resiliente (`frontend/pwa/sw.js`):
+  - Caché Stale-While-Revalidate para UI y bypass obligatorio para endpoints `/backend/api/`.
+- [x] 10.3 Estilos Mobile-First y Barra Inferior Anti-Desplazamiento (`frontend/pwa/css/pwa-style.css`):
+  - Implementación de regla anti-solapamiento FAIL-004 para `.pwa-navbar` (`position: fixed`, `z-index: 99999`).
+- [x] 10.4 Gestor de Autenticación y Adaptador de API (`frontend/pwa/js/auth.js`, `api.js`, `router.js`):
+  - Soporte de acceso por Usuario, Código ML o Cédula, con token resiliente y captura de error 409 (Duplicado).
+- [x] 10.5 Motor Móvil de Inscripción Rápida (`frontend/pwa/js/views/inscripcion.js`):
+  - Escaneo OCR por cámara (`/backend/api/ocr.php`), validador Luhn Mod 10 y Lookup instantáneo en Padrón Maestro Circ. 3.
+- [x] 10.6 Vistas Segregadas de Rendimiento por Rol (`frontend/pwa/js/views/ml.js`, `coordinador.js`):
+  - Gamificación de meta 0/25 para Militantes Líderes y métricas de red territorial para Coordinadores.
+- [x] 10.7 Generador Autónomo de Vouchers y Compartición WhatsApp (`frontend/pwa/js/app.js`):
+  - Renderizado dinámico de QR local vía `qrcode.min.js` apuntando a `validar.php` y botón para compartir voucher por WhatsApp.
+- [x] 10.8 Módulo de Consulta Dual de Estatus (Lógica de 4 Estados PLAD-REL-INGESTA-01):
+  - Buscador táctil en caliente para militantes vs simpatizantes en terreno.
+- [x] 10.9 Pruebas de Calidad, Verificación en Dispositivos y Sincronización en Espejo (`pad2832`):
+  - Verificación rigurosa en Android/iOS y sincronización en espejo (100% de assets retornan HTTP 200 OK).
+
+## Fase 11: Control Estricto de Visibilidad Padronal por Rol en PWA (Norma PLAD-SEC-01)
+- [x] 11.1 Aislamiento de backend en `voters.php?action=list` y `action=network_voters`:
+  - Perfiles Superiores (Administrador, Coordinador General, Jefe Electoral): Visibilidad total de todos los inscritos.
+  - Coordinador / Sub-coordinador: Visibilidad restringida a su propia red territorial (`coordinador = $nombre` O `registrado_por = $id` O `coordinador_padre_id = $id`).
+  - Digitador: Visibilidad restringida estrictamente a los electores registrados por su usuario (`registrado_por = $id`).
+  - Militante Líder (ML): Visibilidad restringida a sus electores de cuota personal (`registrado_por = $id` O `referido_por_ml_id = $id`).
+- [x] 11.2 Actualización de vistas PWA (`mis_inscritos.js`, `coordinador.js`, `ml.js`):
+  - Títulos y subtítulos contextuales por jerarquía (Padrón General, Padrón de Mi Red, Mis Electores Digitados, Mis 25 Electores).
+  - Filtrado de MLs en el dashboard de coordinador para mostrar únicamente los asignados a su red.
+- [x] 11.3 Pruebas automatizadas de aislamiento:
+  - Administrador y Coordinador General ven los 19 registros globales.
+  - Digitador (`digitador1`) ve exactamente sus 11 registros digitados.
+  - Coordinador y ML ven únicamente sus propios registros asignados.
+
+## Fase 12: Módulo de Perfil, Control de Valor, Enlaces Oficiales de Captación y Auto-Aprovisionamiento de Líderes ML (PWA PAD-28/32)
+- [x] 12.1 Corrección y activación del botón de configuración superior (`⚙`) y chapa de usuario en la barra PWA:
+  - Enrutamiento dinámico forzado a `#perfil` (`App.abrirConfiguracion()`).
+- [x] 12.2 Tarjeta de Identidad y Datos del Personal Logueado:
+  - Avatar adaptativo según rol, Nombre, Cédula con Luhn, Usuario, Código de Red (`ML-XXXX` / `USER-X`) y Demarcación SDE Circ. 3.
+- [x] 12.3 Panel de Control de Valor Electoral en Tiempo Real:
+  - Electores aportados en vivo (consulta a `API.getVotantes()`).
+  - Líderes en Red (ML) activos.
+  - Meta asignada y barra de progreso con porcentaje de cumplimiento en tiempo real.
+  - Escala gamificada de liderazgo (Niveles Bronce, Plata, Oro y Diamante).
+- [x] 12.4 Enlaces Oficiales de Captación con Atribución Permanente:
+  - Enlace 1: Militante Simpatizante (`registro.php?canal=pwa_simpatizante&ref=...`) para votantes generales.
+  - Enlace 2: Militante Líder ML (`registro.php?tipo=ml&canal=red_ml&ref=...`) para incorporar nuevos líderes multiplicadores.
+  - Acciones integradas en cada enlace: Copiar al portapapeles, Enviar por WhatsApp con invitación formal y Ver Código QR de alta resolución en modal.
+- [x] 12.5 Auto-Aprovisionamiento de Cuentas para Militantes Líderes (ML):
+  - Detección de parámetro `tipo=ml` en el formulario público y backend `voters.php`.
+  - Creación automática de usuario con código secuencial `ML-XXXX`, rol 5 y contraseña cifrada (su cédula) para acceso inmediato a la PWA.
+- [x] 12.6 Botón de Cerrar Sesión Segura:
+  - Invocación de `Auth.logout()`, purga de tokens y redirección a login móvil.
+
 ## Sección de Revisión y Lecciones Aprendidas
 - [x] Documentar resultados finales en `tasks/todo.md` y verificar actualización en `tasks/lessons.md`.
-- [x] Auditoría final de no-regresión y cumplimiento estricto de la Norma de Paridad PLAD-ENTREGABLES-SYNC-01.
-
-
-
+- [x] Auditoría final de no-regresión y cumplimiento estricto de la Norma de Paridad PLAD-ENTREGABLES-SYNC-01 y PLAD-SEC-01.

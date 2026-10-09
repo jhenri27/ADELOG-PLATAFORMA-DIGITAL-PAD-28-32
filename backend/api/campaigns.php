@@ -31,7 +31,12 @@ if ($method === 'GET') {
             while ($row = $res->fetch_assoc()) {
                 $codigo = $row['codigo_campana'];
                 // Formar enlace digital de la campaña
-                $enlace = "http://localhost/PLATAFORMA%20DIGITAL-PAD-28-32/frontend/index.html?c=" . urlencode($codigo);
+                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? '') == 443) ? "https://" : "http://";
+                $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                $script = $_SERVER['SCRIPT_NAME'] ?? '';
+                $posBackend = strpos($script, '/backend');
+                $baseDir = ($posBackend !== false) ? substr($script, 0, $posBackend) : '';
+                $enlace = rtrim("$protocol$host$baseDir", '/') . "/frontend/index.html?c=" . urlencode($codigo);
                 // Código QR dinámico usando api.qrserver.com (API pública estable y activa)
                 $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" . urlencode($enlace);
                 

@@ -57,6 +57,13 @@ graph TD
 *   **PayPal Ledger**: Módulo contable que registra transacciones por compras de licencias de promotores, desglosando brutos, comisiones y saldos netos.
 *   **Notificaciones Premium**: Plantillas de correo institucional (SMTP) con depuración visual del protocolo en tiempo real.
 
+### 📱 PWA Móvil PAD-28/32 (Gestión de Campo Android e iOS)
+*   **App Móvil Instalable (W3C Standalone)**: Diseñada específicamente para Coordinadores y Militantes Líderes (ML) en Santo Domingo Este Circunscripción 3.
+*   **Aislamiento Estricto por Rol (PLAD-SEC-01)**: Cada usuario ve únicamente los electores de su red, mientras que los perfiles superiores tienen visibilidad general.
+*   **Control de Valor Electoral**: Monitoreo de electores aportados, líderes captados, % de meta y gamificación en 4 niveles (*Bronce, Plata, Oro, Diamante*).
+*   **Difusión y Auto-Aprovisionamiento 1-Clic**: Enlaces oficiales para simpatizantes y militantes líderes con generación local de Códigos QR y compartir por WhatsApp.
+*   📖 *Para más detalles técnicos, consulte el [Manual de la PWA Móvil](docs/MANUAL_PWA_PAD2832.md).*
+
 ---
 
 ## 🔒 Seguridad, Privacidad y Cumplimiento Normativo
@@ -76,18 +83,29 @@ Para mitigar riesgos legales y garantizar la viabilidad del proyecto, ADELOG inc
 
 ```text
 ├── backend/
-│   ├── api/                  # APIs de Gestión (voters, auth, settings, ocr, helpdesk)
+│   ├── api/                  # APIs RESTful (voters, auth, padron_lookup, ocr, social_feed)
 │   ├── libs/                 # Librerías auxiliares (PHPMailer, etc.)
 │   ├── backups/              # Destino local de respaldos SQL de la plataforma
-│   ├── db.php                # Inicializador de la conexión PDO/MySQL (Singleton)
+│   ├── db.php                # Conexión MySQLi centralizada
 │   └── Mailer.php            # Motor centralizado de correos con logging SQL
 ├── frontend/
-│   ├── assets/               # Hojas de estilo CSS (styles.css), JavaScript (app.js) e iconos
+│   ├── assets/               # CSS, JS (app.js) e iconos de escritorio
+│   ├── pwa/                  # 📱 Progressive Web App Móvil (Mobile-First)
+│   │   ├── css/pwa-style.css # Estilos móviles con Safe-Area y fix de navbar
+│   │   ├── js/               # api.js, auth.js, router.js, qrcode.min.js
+│   │   │   └── views/        # ml.js, coordinador.js, inscripcion.js, mis_inscritos.js
+│   │   ├── manifest.json     # Manifiesto W3C Standalone
+│   │   └── sw.js             # Service Worker para resiliencia offline
 │   ├── dashboard.html        # Consola de Control de Administradores
 │   ├── index.html            # Portal público de auto-registro QR
 │   └── login.html            # Portal de acceso seguro
+├── docs/                     # Documentación técnica y estructura electoral
+│   ├── MANUAL_PWA_PAD2832.md # Manual Oficial de la PWA Móvil
+│   └── ESTRUCTURA_ELECTORAL_JCE_CIRC3.md
+├── backup-adelog.bat         # Comando oficial de respaldo físico (F:\) y GitHub
+├── backup-adelog.ps1         # Script PowerShell orquestador de respaldo
 ├── README.md                 # Ficha técnica oficial
-└── .gitignore                # Reglas de exclusión para credenciales de producción (config.php)
+└── .gitignore                # Reglas de exclusión para credenciales
 ```
 
 ---

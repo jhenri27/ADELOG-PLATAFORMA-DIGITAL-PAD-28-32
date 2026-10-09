@@ -63,17 +63,53 @@ function recalcularNivelML($conn, $usuarioId) {
     ];
 }
 
+function getBaseAppUrl() {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? '') == 443) ? "https://" : "http://";
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $script = $_SERVER['SCRIPT_NAME'] ?? '';
+    $posBackend = strpos($script, '/backend');
+    if ($posBackend !== false) {
+        $base = substr($script, 0, $posBackend);
+    } else {
+        $posFrontend = strpos($script, '/frontend');
+        if ($posFrontend !== false) {
+            $base = substr($script, 0, $posFrontend);
+        } else {
+            $base = dirname($script);
+            if ($base === '/' || $base === '\\') $base = '';
+        }
+    }
+    return rtrim("$protocol$host$base", '/');
+}
+
 if ($method === 'GET') {
+    
+    // -------------------------------------------------------------
+    // ACCION: OBTENER INFORMACION DE RED DEL SERVIDOR
+    // -------------------------------------------------------------
+    if ($action === 'network_info') {
+        $port = (isset($_SERVER['SERVER_PORT']) && !in_array($_SERVER['SERVER_PORT'], [80, 443])) ? ':' . $_SERVER['SERVER_PORT'] : '';
+        $lanIp = gethostbyname(gethostname()) . $port;
+        $hostname = gethostname() . $port;
+        echo json_encode([
+            "exito" => true,
+            "lan_ip" => $lanIp,
+            "hostname" => $hostname,
+            "current_host" => $_SERVER['HTTP_HOST'] ?? 'localhost',
+            "base_url" => getBaseAppUrl()
+        ]);
+        exit;
+    }
     
     // -------------------------------------------------------------
     // ACCION: LISTAR USUARIOS CON FILTROS, PAGINACION Y METRICAS
     // -------------------------------------------------------------
     if ($action === 'list') {
-        $q = trim($_GET['q'] ?? '');
+        $q = trim($_GET['q'] ?? $_GET['search'] ?? '');
         $perfilId = intval($_GET['perfil_id'] ?? 0);
         $coordinadorId = intval($_GET['coordinador_id'] ?? 0);
-        $nivelAvance = trim($_GET['nivel_avance'] ?? '');
-        $estadoActivacion = trim($_GET['estado_activacion'] ?? '');
+        $nivelAvance = trim($_GET['nivel_avance'] ?? $_GET['nivel'] ?? '');
+        $estado = trim($_GET['estado'] ?? $_GET['estado_activacion'] ?? '');
         $page = max(1, intval($_GET['page'] ?? 1));
         $limit = max(5, min(100, intval($_GET['limit'] ?? 15)));
         $offset = ($page - 1) * $limit;
@@ -101,9 +137,20 @@ if ($method === 'GET') {
             $nivEsc = $conn->real_escape_string($nivelAvance);
             $where[] = "u.nivel_avance = '$nivEsc'";
         }
-        if (!empty($estadoActivacion)) {
-            $estEsc = $conn->real_escape_string($estadoActivacion);
-            $where[] = "u.estado_activacion = '$estEsc'";
+        if (!empty($estado)) {
+            $estClean = strtolower(trim($estado));
+            if ($estClean === 'activo') {
+                $where[] = "(u.estado = 1 AND (u.estado_activacion = 'activo' OR u.estado_activacion IS NULL OR u.estado_activacion = ''))";
+            } else if ($estClean === 'pendiente') {
+                $where[] = "(u.estado_activacion = 'pendiente')";
+            } else if ($estClean === 'inactivo' || $estClean === 'deshabilitado') {
+                $where[] = "(u.estado = 0 OR u.estado_activacion = 'inactivo' OR u.estado_activacion = 'deshabilitado')";
+            } else if ($estClean === 'vencido') {
+                $where[] = "(u.estado_activacion = 'vencido')";
+            } else {
+                $estEsc = $conn->real_escape_string($estClean);
+                $where[] = "(u.estado_activacion = '$estEsc')";
+            }
         }
         
         $whereStr = implode(' AND ', $where);
@@ -139,15 +186,15 @@ if ($method === 'GET') {
                 }
                 
                 // Construir URL de activación y enlace de red personal
-                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? '') == 443) ? "https://" : "http://";
-                $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-                
+                $baseUrl = getBaseAppUrl();
                 $row['enlace_activacion'] = !empty($row['token_activacion']) 
-                    ? "$protocol$host/pad2832/activar.php?token=" . $row['token_activacion'] 
+                    ? "$baseUrl/activar.php?token=" . $row['token_activacion'] 
                     : "";
                 
-                $refCode = !empty($row['codigo_ml']) ? $row['codigo_ml'] : ('USER-' . $row['id']);
-                $row['enlace_red_prospeccion'] = "$protocol$host/pad2832/frontend/index.html?canal=red_ml&ref=" . urlencode($refCode);
+                $isCoord = (stripos($row['role'] ?? '', 'Coordinador') !== false || in_array(intval($row['perfil_id'] ?? 0), [2, 3, 4]));
+                $canal = $isCoord ? 'red_coordinador' : 'red_ml';
+                $refCode = !empty($row['codigo_ml']) ? $row['codigo_ml'] : (!empty($row['username']) ? $row['username'] : ('USER-' . $row['id']));
+                $row['enlace_red_prospeccion'] = "$baseUrl/registro.html?canal=$canal&ref=" . urlencode($refCode);
                 
                 $usuarios[] = $row;
             }
@@ -227,13 +274,14 @@ if ($method === 'GET') {
         }
         
         // Enlaces listos
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? '') == 443) ? "https://" : "http://";
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $refCode = !empty($usuario['codigo_ml']) ? $usuario['codigo_ml'] : ('USER-' . $usuario['id']);
+        $baseUrl = getBaseAppUrl();
+        $isCoord = (stripos($usuario['role'] ?? '', 'Coordinador') !== false || in_array(intval($usuario['perfil_id'] ?? 0), [2, 3, 4]));
+        $canal = $isCoord ? 'red_coordinador' : 'red_ml';
+        $refCode = !empty($usuario['codigo_ml']) ? $usuario['codigo_ml'] : (!empty($usuario['username']) ? $usuario['username'] : ('USER-' . $usuario['id']));
         
-        $usuario['enlace_red_prospeccion'] = "$protocol$host/pad2832/frontend/index.html?canal=red_ml&ref=" . urlencode($refCode);
+        $usuario['enlace_red_prospeccion'] = "$baseUrl/registro.html?canal=$canal&ref=" . urlencode($refCode);
         $usuario['enlace_activacion'] = !empty($usuario['token_activacion']) 
-            ? "$protocol$host/pad2832/activar.php?token=" . $usuario['token_activacion'] 
+            ? "$baseUrl/activar.php?token=" . $usuario['token_activacion'] 
             : "";
         
         echo json_encode([
@@ -315,11 +363,21 @@ if ($method === 'GET') {
             }
         }
         
+        $port = (isset($_SERVER['SERVER_PORT']) && !in_array($_SERVER['SERVER_PORT'], [80, 443])) ? ':' . $_SERVER['SERVER_PORT'] : '';
+        $lanIp = gethostbyname(gethostname()) . $port;
+        $hostname = gethostname() . $port;
+
         echo json_encode([
             "exito" => true,
             "distribucion" => $distribucion,
             "top_lideres" => $topLideres,
-            "progreso_personal" => $progresoPersonal
+            "progreso_personal" => $progresoPersonal,
+            "server_info" => [
+                "lan_ip" => $lanIp,
+                "hostname" => $hostname,
+                "current_host" => $_SERVER['HTTP_HOST'] ?? 'localhost',
+                "base_url" => getBaseAppUrl()
+            ]
         ]);
         exit;
     }
@@ -431,8 +489,8 @@ if ($method === 'POST') {
             $canCreate = ($role === 'Digitador' || $isML) ? 1 : 0;
             $canEdit = ($isAdmin) ? 1 : 0;
             $conn->query("INSERT INTO permisos (usuario_id, can_create, can_edit, can_view, can_print, can_send, can_view_historical)
-                          VALUES ($newId, $canCreate, $canEdit, 1, 1, 0, 0)
-                          ON DUPLICATE KEY UPDATE can_view = 1");
+                          VALUES ($newId, $canCreate, $canEdit, 1, 1, 0, 1)
+                          ON DUPLICATE KEY UPDATE can_view = 1, can_view_historical = 1");
             
             // Registrar auditoría
             $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
@@ -580,9 +638,8 @@ if ($method === 'POST') {
                       estado_activacion = 'pendiente' 
                       WHERE id = $id");
         
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? '') == 443) ? "https://" : "http://";
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $enlace = "$protocol$host/pad2832/activar.php?token=$token";
+        $baseUrl = getBaseAppUrl();
+        $enlace = "$baseUrl/activar.php?token=$token";
         
         echo json_encode([
             "exito" => true,

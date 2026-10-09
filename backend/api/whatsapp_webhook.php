@@ -523,18 +523,12 @@ if ($resSession && $resSession->num_rows > 0) {
                     $conn->commit();
                     
                     // Enviar confirmación al WhatsApp
-                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? '') == 443) ? "https://" : "http://";
                     $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-                    
-                    $uri = $_SERVER['REQUEST_URI'] ?? '';
-                    $folder = "PLATAFORMA DIGITAL-PAD-28-32";
-                    if (str_contains($uri, 'PLATAFORMA%20DIGITAL-PAD-28-32')) {
-                        $folder = "PLATAFORMA%20DIGITAL-PAD-28-32";
-                    } else if (str_contains($uri, 'PLATAFORMA_INTEGRADA')) {
-                        $folder = "PLATAFORMA_INTEGRADA";
-                    }
-                    
-                    $linkComprobante = $protocol . $host . "/" . $folder . "/comprobante.php?id=" . $newVoterId;
+                    $script = $_SERVER['SCRIPT_NAME'] ?? '';
+                    $posBackend = strpos($script, '/backend');
+                    $baseDir = ($posBackend !== false) ? substr($script, 0, $posBackend) : '';
+                    $linkComprobante = rtrim("$protocol$host$baseDir", '/') . "/comprobante.php?id=" . $newVoterId;
                     
                     $reply = "¡Felicidades! Registro completado con éxito.\n\n• Su número de lista oficial es: *$numero_lista*\n\n🔗 Descarga tu comprobante oficial aquí:\n" . $linkComprobante . "\n\nGracias por inscribirse y apoyar a la Diputada Pastora Altagracia. ¡Juntos ganamos!";
                     

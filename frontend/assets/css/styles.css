@@ -734,3 +734,23 @@ body.light-theme .subtab-link.active {
     color: #ffffff;
     background: var(--primary);
 }
+
+/* Modal Universal QR Contrast Enforcements */
+#modal-universal-qr #modal-qr-title {
+    color: var(--text-white, #f8fafc);
+    font-weight: 800;
+}
+body.light-theme #modal-universal-qr #modal-qr-title {
+    color: #0f172a !important;
+}
+body.light-theme #modal-universal-qr #modal-qr-subtitle {
+    color: #334155 !important;
+    font-weight: 500;
+}
+body.light-theme #modal-universal-qr #modal-qr-url-input {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1.5px solid #cbd5e1 !important;
+    font-weight: 600;
+}
+

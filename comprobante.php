@@ -111,15 +111,11 @@ $codigoComprobante = "PAD2832-" . $v['numero_lista'] . "-" . $v['cedula'];
 // Construir URL pública absoluta para validación del QR
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? '') == 443) ? "https://" : "http://";
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$uri = $_SERVER['REQUEST_URI'] ?? '';
-$folder = "PLATAFORMA DIGITAL-PAD-28-32";
-if (str_contains($uri, 'PLATAFORMA%20DIGITAL-PAD-28-32')) {
-    $folder = "PLATAFORMA%20DIGITAL-PAD-28-32";
-} elseif (str_contains($uri, 'PLATAFORMA_INTEGRADA')) {
-    $folder = "PLATAFORMA_INTEGRADA";
-}
+$script = $_SERVER['SCRIPT_NAME'] ?? '';
+$baseDir = dirname($script);
+if ($baseDir === '/' || $baseDir === '\\') $baseDir = '';
 
-$urlValidar = $protocol . $host . "/" . $folder . "/validar.php?cedula=" . urlencode($v['cedula']) . "&folio=" . urlencode($codigoComprobante);
+$urlValidar = rtrim("$protocol$host$baseDir", '/') . "/validar.php?cedula=" . urlencode($v['cedula']) . "&folio=" . urlencode($codigoComprobante);
 
 // Detección de circunscripción y elector externo
 $circunscripcion = 'Circunscripción 3 (Santo Domingo Este)';
