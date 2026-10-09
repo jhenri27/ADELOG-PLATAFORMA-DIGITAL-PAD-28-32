@@ -339,8 +339,8 @@ const InscripcionView = {
   // Despliega el voucher con QR en el modal para compartirlo por WhatsApp
   mostrarVoucherExito(res, payload) {
     const voterId = res.id;
-    const folio = res.codigo_comprobante || `PAD2832-${res.numero_lista}-${payload.cedula.replace(/\D/g, '')}`;
-    const qrTargetUrl = `${window.location.origin}/PLATAFORMA%20DIGITAL-PAD-28-32/validar.php?folio=${encodeURIComponent(folio)}&cedula=${encodeURIComponent(payload.cedula)}`;
+    const cleanCed = payload.cedula.replace(/\D/g, '');
+    const qrTargetUrl = API.getPublicUrl(`validar.php?folio=${encodeURIComponent(folio)}&cedula=${encodeURIComponent(cleanCed)}`);
 
     const bodyHtml = `
       <div class="voucher-box">

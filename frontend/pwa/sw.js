@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pad2832-pwa-v1.6';
+const CACHE_NAME = 'pad2832-pwa-v1.7';
 
 const ASSETS_TO_CACHE = [
   './index.html',

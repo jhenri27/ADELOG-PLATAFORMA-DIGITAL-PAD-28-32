@@ -195,8 +195,8 @@ const CoordinadorView = {
             </div>
           </div>
         `).join('');
+        }
       }
-
     } catch (e) {
       console.warn('Error cargando métricas de coordinador:', e);
     }

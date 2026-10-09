@@ -11,7 +11,11 @@ const Router = {
   },
 
   navigate(route) {
-    window.location.hash = '#' + route;
+    if (window.location.hash === '#' + route) {
+      this.handleRoute();
+    } else {
+      window.location.hash = '#' + route;
+    }
   },
 
   handleRoute() {
@@ -39,35 +43,46 @@ const Router = {
       return;
     }
 
-    // Montar la vista correspondiente
-    switch (this.currentRoute) {
-      case 'dashboard':
-        if (Auth.isML() || Auth.isDigitador()) {
-          MLView.render(contentArea);
-        } else {
-          CoordinadorView.render(contentArea);
-        }
-        break;
+    try {
+      // Montar la vista correspondiente
+      switch (this.currentRoute) {
+        case 'dashboard':
+          if (Auth.isML() || Auth.isDigitador()) {
+            if (typeof MLView !== 'undefined' && MLView.render) {
+              MLView.render(contentArea);
+            }
+          } else {
+            if (typeof CoordinadorView !== 'undefined' && CoordinadorView.render) {
+              CoordinadorView.render(contentArea);
+            } else if (typeof MLView !== 'undefined' && MLView.render) {
+              MLView.render(contentArea);
+            }
+          }
+          break;
 
-      case 'inscribir':
-        InscripcionView.render(contentArea);
-        break;
+        case 'inscribir':
+          if (typeof InscripcionView !== 'undefined') InscripcionView.render(contentArea);
+          break;
 
-      case 'consultar':
-        ConsultaView.render(contentArea);
-        break;
+        case 'consultar':
+          if (typeof ConsultaView !== 'undefined') ConsultaView.render(contentArea);
+          break;
 
-      case 'mis-inscritos':
-        MisInscritosView.render(contentArea);
-        break;
+        case 'mis-inscritos':
+          if (typeof MisInscritosView !== 'undefined') MisInscritosView.render(contentArea);
+          break;
 
-      case 'perfil':
-        this.renderPerfil(contentArea);
-        break;
+        case 'perfil':
+          this.renderPerfil(contentArea);
+          break;
 
-      default:
-        this.navigate('dashboard');
-        break;
+        default:
+          this.navigate('dashboard');
+          break;
+      }
+    } catch (err) {
+      console.error('Error al renderizar vista:', err);
+      UI.showToast(err.message || 'Error al cargar vista.', 'danger');
     }
 
     window.scrollTo(0, 0);
